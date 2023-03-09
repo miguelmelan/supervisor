@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/************** TagsInput component */
+/* The input */
+.tags-input {
+  @apply w-full rounded-md bg-white border-gray-400 hover:border-gray-neutral-55 mt-1 block border p-0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tags-input div {
+  @apply text-xs
+}
+
+.tags-input input {
+  @apply rounded-md leading-6 p-0 mb-0.5;
+  flex: 1;
+  background: transparent;
+  border: none;
+}
+
+.tags-input input:focus {
+  @apply ring-transparent border-transparent;
+  outline: none;
+}
+
+.tags-input input[type="text"] {}
+
+.tags-input .tags-input.active {
+  @apply border-blue-50 ring-1 ring-blue-50;
+}
+
+.tags-input-wrapper-default {
+  @apply px-3 py-2;
+}
+
+.tags-input-wrapper-default.active {
+  outline: 0 none;
+}
+
+/* Tag badge styles */
+.tags-input-badge {
+  @apply text-xs mr-3 mb-0.5 leading-6;
+  position: relative;
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.35em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tags-input-badge-pill {}
+
+.tags-input-badge-pill.disabled {
+  padding-right: 0.6em;
+}
+
+.tags-input-badge-selected-default {
+  @apply text-white bg-blue-50;
+}
+
+/* Typeahead - badges */
+.typeahead-badges {
+  @apply flex items-center justify-center;
+}
+
+.typeahead-badges>span {
+  @apply mt-2 mr-2 cursor-pointer text-xs text-blue-50 bg-white leading-6;
+}
+
+/* Typeahead elements style/theme */
+.tags-input-typeahead-item-default {
+  @apply hover:text-white hover:bg-blue-50 border border-blue-300;
+}
+
+.tags-input-typeahead-item-highlighted-default {
+  @apply text-blue-50 border border-blue-50 hover:text-white hover:bg-blue-50;
+}
+
+/* Typeahead */
+.typeahead-hide-btn {
+  @apply px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-blue-50 tracking-widest shadow-sm hover:bg-gray-300 hover:text-blue-500 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-blue-900 active:bg-gray-50 disabled:opacity-25 transition;
+}
+
+
+/************** Treeview component */
+.tree .icon-wrapper svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tree .checkbox-wrapper.checked, .tree .checkbox-wrapper.indeterminate {
+  @apply bg-blue-50 border-2 border-blue-50;
+}
+
+.tree .checkbox-wrapper::after {
+  left: -2px;
+}
+
+
+/************** Datepicker */
+.dp__main, .dp__menu, .dp__calendar_wrap {
+  font-family: Noto Sans, sans-serif;
+}
+
+.dp__input {
+  font-family: Noto Sans, sans-serif;
+  @apply py-2.5 pl-9 pr-2.5 text-sm text-gray-900 bg-gray-50 rounded-md;
+}
+
+.dp__input::placeholder {
+  @apply text-gray-900;
+}
