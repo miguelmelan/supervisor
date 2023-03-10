@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch, inject } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { Link, useForm } from '@inertiajs/inertia-vue3';
 import 'flowbite';
@@ -14,6 +14,8 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import Pagination from '@/Components/Pagination.vue';
 import PrimaryLink from '@/Components/PrimaryLink.vue';
+
+const translate = inject('translate');
 
 const props = defineProps({
     automatedProcesses: Object,
@@ -30,6 +32,13 @@ const confirmingBulkDeletion = ref(false);
 const selected = ref([]);
 
 const form = useForm({});
+
+const breadcrumb = computed(() => {
+    return [
+        { href: route("configuration.index"), text: translate("Configuration") },
+        { text: translate("Automated business processes") },
+    ];
+});
 
 watch(search, debounce(function (value) {
     let attributes = value ? { search: value } : {};
@@ -94,19 +103,6 @@ const resetBulkDeletion = () => {
 };
 </script>
 
-<script>
-    export default {
-    computed: {
-        breadcrumb() {
-            return [
-                { href: route("configuration.index"), text: this.__("Configuration") },
-                { text: this.__("Automated business processes") },
-            ];
-        }
-    },
-}
-</script>
-    
 <template>
     <AppLayout :title="__('Configuration') + ' > ' + __('Automated business processes')">
         <template #header>

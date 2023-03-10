@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch, inject } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { Link, useForm } from '@inertiajs/inertia-vue3';
 import debounce from 'lodash/debounce';
@@ -16,6 +16,8 @@ import Pagination from '@/Components/Pagination.vue';
 import PrimaryLink from '@/Components/PrimaryLink.vue';
 import VerificationStatus from '@/Components/VerificationStatus.vue';
 
+const translate = inject('translate');
+
 const props = defineProps({
     orchestratorConnections: Object,
     filters: Object
@@ -31,6 +33,13 @@ const confirmingBulkDeletion = ref(false);
 const selected = ref([]);
 
 const form = useForm({});
+
+const breadcrumb = computed(() => {
+    return [
+        { href: route("configuration.index"), text: translate("Configuration") },
+        { text: translate("UiPath Orchestrator connections") },
+    ];
+});
 
 watch(search, debounce(function (value) {
     let attributes = value ? { search: value } : {};
@@ -96,19 +105,6 @@ const resetBulkDeletion = () => {
 };
 </script>
 
-<script>
-export default {
-    computed: {
-        breadcrumb() {
-            return [
-                { href: route("configuration.index"), text: this.__("Configuration") },
-                { text: this.__("UiPath Orchestrator connections") },
-            ];
-        }
-    },
-}
-</script>
-    
 <template>
     <AppLayout :title="__('Configuration') + ' > ' + __('UiPath Orchestrator connections')">
         <template #header>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, inject } from 'vue';
 import { useForm } from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Actions from './Partials/Actions.vue';
@@ -8,6 +8,8 @@ import OrchestratorConnectionsSelectionDetails from './Partials/OrchestratorConn
 import RelatedEntitiesSelectionDetails from './Partials/RelatedEntitiesSelection/Details.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
+
+const translate = inject('translate');
 
 const props = defineProps({
     automatedProcess: Object,
@@ -56,6 +58,14 @@ const form = useForm({
 
 const cancelling = ref(false);
 
+const breadcrumb = computed(() => {
+    return [
+        { href: route('configuration.index'), text: translate('Configuration') },
+        { href: route('configuration.automated-processes.index'), text: translate("Automated business processes") },
+        { text: form.name },
+    ];
+});
+
 const submit = () => {
     form.put(route('configuration.automated-processes.update', props.automatedProcess.id), {
         preserveScroll: true,
@@ -64,20 +74,6 @@ const submit = () => {
 };
 </script>
 
-<script>
-export default {
-    computed: {
-        breadcrumb() {
-            return [
-                { href: route('configuration.index'), text: this.__('Configuration') },
-                { href: route('configuration.automated-processes.index'), text: this.__("Automated business processes") },
-                { text: this.form.name },
-            ];
-        },
-    }
-}
-</script>
-        
 <template>
     <AppLayout :title="__('Configuration') + ' > ' + __('Automated business processes')">
         <template #header>

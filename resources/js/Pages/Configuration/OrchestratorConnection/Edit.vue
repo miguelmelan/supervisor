@@ -144,20 +144,6 @@ watch(() => props.orchestratorConnection.tenants, (tenants) => {
 });
 </script>
 
-<!-- <script>
-export default {
-    computed: {
-        breadcrumb() {
-            return [
-                { href: route('configuration.index'), text: this.__('Configuration') },
-                { href: route('configuration.orchestrator-connections.index'), text: this.__("UiPath Orchestrator connections") },
-                { text: this.form.name },
-            ];
-        },
-    }
-}
-</script> -->
-        
 <template>
     <AppLayout :title="__('Configuration') + ' > ' + __('UiPath Orchestrator connections')">
         <template #header>

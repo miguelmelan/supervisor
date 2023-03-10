@@ -1,4 +1,5 @@
 <script setup>
+import { inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue';
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue';
@@ -8,22 +9,18 @@ import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfile
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 
+const translate = inject('translate');
+
 defineProps({
     confirmsTwoFactorAuthentication: Boolean,
     sessions: Array,
 });
-</script>
 
-<script>
-    export default {
-        computed: {
-            breadcrumb() {
-                return [
-                    { text: this.__("Profile") },
-                ];
-            }
-        }
-    }
+const breadcrumb = computed(() => {
+    return [
+        { text: translate("Profile") },
+    ];
+});
 </script>
 
 <template>

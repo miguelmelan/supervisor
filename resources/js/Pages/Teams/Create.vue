@@ -1,19 +1,16 @@
 <script setup>
+import { inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CreateTeamForm from '@/Pages/Teams/Partials/CreateTeamForm.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
-</script>
 
-<script>
-    export default {
-        computed: {
-            breadcrumb() {
-                return [
-                    { text: this.__("Create Team") },
-                ];
-            }
-        }
-    }
+const translate = inject('translate');
+
+const breadcrumb = computed(() => {
+    return [
+        { text: translate("Create Team") },
+    ];
+});
 </script>
 
 <template>

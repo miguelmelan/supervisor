@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onUpdated, reactive, ref } from 'vue';
+import { computed, onUpdated, reactive, ref, inject } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -10,6 +10,8 @@ import KibanaDetails from './Partials/KibanaDetails.vue';
 import OrchestratorDetails from './Partials/OrchestratorDetails.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
+
+const translate = inject('translate');
 
 const form = useForm({
     code: '',
@@ -52,6 +54,14 @@ const verification = reactive({
     recent: false,
     message: '',
     tenantsMessages: [],
+});
+
+const breadcrumb = computed(() => {
+    return [
+        { href: route('configuration.index'), text: translate('Configuration') },
+        { href: route('configuration.orchestrator-connections.index'), text: translate("UiPath Orchestrator connections") },
+        { text: translate('Create') },
+    ];
 });
 
 const canVerify = computed(() => {
@@ -121,20 +131,6 @@ onUpdated(() => {
 });
 </script>
 
-<script>
-export default {
-    computed: {
-        breadcrumb() {
-            return [
-                { href: route('configuration.index'), text: this.__('Configuration') },
-                { href: route('configuration.orchestrator-connections.index'), text: this.__("UiPath Orchestrator connections") },
-                { text: this.__('Create') },
-            ];
-        },
-    }
-}
-</script>
-        
 <template>
     <AppLayout :title="__('Configuration') + ' > ' + __('UiPath Orchestrator connections')">
         <template #header>

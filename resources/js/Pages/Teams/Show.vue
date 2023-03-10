@@ -1,4 +1,5 @@
 <script setup>
+import { inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DeleteTeamForm from '@/Pages/Teams/Partials/DeleteTeamForm.vue';
 import TeamMemberManager from '@/Pages/Teams/Partials/TeamMemberManager.vue';
@@ -6,23 +7,19 @@ import UpdateTeamNameForm from '@/Pages/Teams/Partials/UpdateTeamNameForm.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 
+const translate = inject('translate');
+
 defineProps({
     team: Object,
     availableRoles: Array,
     permissions: Object,
 });
-</script>
 
-<script>
-    export default {
-        computed: {
-            breadcrumb() {
-                return [
-                    { text: this.__("Team Settings") },
-                ];
-            }
-        }
-    }
+const breadcrumb = computed(() => {
+    return [
+        { text: translate("Team Settings") },
+    ];
+});
 </script>
 
 <template>
