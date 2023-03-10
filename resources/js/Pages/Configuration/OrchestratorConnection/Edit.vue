@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUpdated, reactive, ref, watch } from 'vue';
+import { computed, onUpdated, reactive, ref, watch, inject } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -10,6 +10,8 @@ import OrchestratorDetails from './Partials/OrchestratorDetails.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import ConnectionDetails from './Partials/Connection/Details.vue';
+
+const translate = inject('translate');
 
 const props = defineProps({
     orchestratorConnection: Object
@@ -54,6 +56,14 @@ const verification = reactive({
     recent: false,
     message: '',
     tenantsMessages: [],
+});
+
+const breadcrumb = computed(() => {
+    return [
+        { href: route('configuration.index'), text: translate('Configuration') },
+        { href: route('configuration.orchestrator-connections.index'), text: translate("UiPath Orchestrator connections") },
+        { text: form.name },
+    ];
 });
 
 const canVerify = computed(() => {
@@ -134,7 +144,7 @@ watch(() => props.orchestratorConnection.tenants, (tenants) => {
 });
 </script>
 
-<script>
+<!-- <script>
 export default {
     computed: {
         breadcrumb() {
@@ -146,7 +156,7 @@ export default {
         },
     }
 }
-</script>
+</script> -->
         
 <template>
     <AppLayout :title="__('Configuration') + ' > ' + __('UiPath Orchestrator connections')">
