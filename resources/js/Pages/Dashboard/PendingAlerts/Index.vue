@@ -21,6 +21,7 @@ const props = defineProps({
     alertsAverageResolutionTime: String,
     filters: Object,
     alertsProperties: Object,
+    orchestratorConnectionsProperties: Object,
 });
 
 const pendingAlertsCount = ref(props.alertsCount);
@@ -39,10 +40,16 @@ const filtersData = computed(() => {
     if (data) {
         return {
             alert: {
-                creationDateRange: data.alert.creationDateRange ?? [],
-                selectedSeverities: data.alert.selectedSeverities ?? [],
-                selectedNotificationNames: data.alert.selectedNotificationNames ?? [],
-                selectedComponents: data.alert.selectedComponents ?? [],
+                creationDateRange: data.alert ? data.alert.creationDateRange ?? [] : [],
+                selectedSeverities: data.alert ? data.alert.selectedSeverities ?? [] : [],
+                selectedNotificationNames: data.alert ? data.alert.selectedNotificationNames ?? [] : [],
+                selectedComponents: data.alert ? data.alert.selectedComponents ?? [] : [],
+            },
+            orchestratorConnection: {
+                selected: data.orchestratorConnection ? data.orchestratorConnection.selected ?? [] : [],
+                selectedTenants: data.orchestratorConnection ? data.orchestratorConnection.selectedTenants ?? [] : [],
+                selectedHostingTypes: data.orchestratorConnection ? data.orchestratorConnection.selectedHostingTypes ?? [] : [],
+                selectedEnvironmentTypes: data.orchestratorConnection ? data.orchestratorConnection.selectedEnvironmentTypes ?? [] : [],
             },
         };
     }
@@ -53,6 +60,12 @@ const filtersData = computed(() => {
             selectedSeverities: [],
             selectedNotificationNames: [],
             selectedComponents: [],
+        },
+        orchestratorConnection: {
+            selected: [],
+            selectedTenants: [],
+            selectedHostingTypes: [],
+            selectedEnvironmentTypes: [],
         },
     };
 });
@@ -77,22 +90,38 @@ watch(sorting, function (value) {
     });
 });
 
-const filterOnAlertProperties = () => {
+const filter = () => {
     const alertFilters = filtersData.value.alert;
-    let attributes = alertFilters.creationDateRange ? { creationDateRange: alertFilters.creationDateRange } : {};
+    let alertAttributes = alertFilters.creationDateRange ? { creationDateRange: alertFilters.creationDateRange } : {};
     if (alertFilters.selectedSeverities) {
-        attributes.selectedSeverities = alertFilters.selectedSeverities;
+        alertAttributes.selectedSeverities = alertFilters.selectedSeverities;
     }
     if (alertFilters.selectedNotificationNames) {
-        attributes.selectedNotificationNames = alertFilters.selectedNotificationNames;
+        alertAttributes.selectedNotificationNames = alertFilters.selectedNotificationNames;
     }
     if (alertFilters.selectedComponents) {
-        attributes.selectedComponents = alertFilters.selectedComponents;
+        alertAttributes.selectedComponents = alertFilters.selectedComponents;
+    }
+
+    const orchestratorConnectionFilters = filtersData.value.orchestratorConnection;
+    let orchestratorConnectionAttributes = {};
+    if (orchestratorConnectionFilters.selected) {
+        orchestratorConnectionAttributes.selected = orchestratorConnectionFilters.selected;
+    }
+    if (orchestratorConnectionFilters.selectedTenants) {
+        orchestratorConnectionAttributes.selectedTenants = orchestratorConnectionFilters.selectedTenants;
+    }
+    if (orchestratorConnectionFilters.selectedHostingTypes) {
+        orchestratorConnectionAttributes.selectedHostingTypes = orchestratorConnectionFilters.selectedHostingTypes;
+    }
+    if (orchestratorConnectionFilters.selectedEnvironmentTypes) {
+        orchestratorConnectionAttributes.selectedEnvironmentTypes = orchestratorConnectionFilters.selectedEnvironmentTypes;
     }
 
     Inertia.get(route('pending-alerts.index'), {
         data: {
-            alert: attributes,
+            alert: alertAttributes,
+            orchestratorConnection: orchestratorConnectionAttributes,
         },
     }, {
         preserveScroll: true,
@@ -277,8 +306,10 @@ onMounted(() => {
                 </div>
 
                 <Filters :data="filtersData" 
-                    :alerts-properties="props.alertsProperties"
-                    @alert-property-updated="filterOnAlertProperties" class="mb-4" />
+                    :alerts-properties="alertsProperties"
+                    :orchestrator-connections-properties="orchestratorConnectionsProperties"
+                    @property-updated="filter"
+                    class="mb-4" />
                 
                 <BulkButtons class="mb-4" :selected="selected"
                     @reading="triggerBulkAction('read')"

@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AutomatedProcessResource;
+use App\Http\Resources\OrchestratorConnectionResource;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Http\Resources\OrchestratorConnectionTenantResource;
 use App\Models\AutomatedProcess;
+use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
 use App\Models\OrchestratorConnectionTenantAlert;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
@@ -24,12 +27,14 @@ class PendingAlertsController extends Controller
 
         $periods = 7;
 
-        $alerts = OrchestratorConnectionTenantAlert::query()
+        $alerts = DB::table('orchestrator_connection_tenant_alerts')
+            ->join('orchestrator_connection_tenants', 'orchestrator_connection_tenant_alerts.tenant_id', '=', 'orchestrator_connection_tenants.id')
+            ->join('orchestrator_connections', 'orchestrator_connection_tenants.orchestrator_connection_id', '=', 'orchestrator_connections.id')
             ->when(request('sorting'), function ($query, $sorting) {
                 $query->orderBy($sorting['field'], $sorting['direction']);
             })
             ->when(!request('sorting'), function ($query) {
-                $query->orderBy('id', 'desc');
+                $query->orderBy('orchestrator_connection_tenant_alerts.id', 'desc');
             })
             ->when(request('data.alert.creationDateRange'), function ($query, $creationDateRange) {
                 $query->where('creation_time', '>=', $creationDateRange[0])
@@ -44,7 +49,14 @@ class PendingAlertsController extends Controller
             ->when(request('data.alert.selectedComponents'), function ($query, $selectedComponents) {
                 $query->whereIn('component', $selectedComponents);
             })
+            ->when(request('data.orchestratorConnection.selectedHostingTypes'), function ($query, $selectedHostingTypes) {
+                $query->whereIn('orchestrator_connections.hosting_type', $selectedHostingTypes);
+            })
+            ->when(request('data.orchestratorConnection.selectedEnvironmentTypes'), function ($query, $selectedEnvironmentTypes) {
+                $query->whereIn('orchestrator_connections.environment_type', $selectedEnvironmentTypes);
+            })
             ->where('read_at', null)
+            ->select('orchestrator_connection_tenant_alerts.*')
             ->paginate(config('constants.pagination.items_per_page'))
             ->withQueryString()
             ->through(fn ($alert) => [
@@ -63,7 +75,7 @@ class PendingAlertsController extends Controller
                 'severity' => $alert->severity,
                 'creation_time' => $alert->creation_time,
                 'creation_time_for_humans' => Carbon::parse($alert->creation_time)->diffForHumans(Carbon::now()),
-                'unread' => $alert->unread,
+                'state' => $alert->state,
                 'deep_link_relative_url' => $alert->deep_link_relative_url,
                 'read_at' => $alert->read_at,
                 'resolution_time_in_seconds' => $alert->resolution_time_in_seconds,
@@ -76,6 +88,14 @@ class PendingAlertsController extends Controller
         $alertsSeverities = $alertsCollection->pluck('severity')->unique();
         $alertsNotificationNames = $alertsCollection->pluck('notification_name')->unique();
         $alertsComponents = $alertsCollection->pluck('component')->unique();
+        $orchestratorConnectionTenants = OrchestratorConnectionTenantResource::collection(
+            OrchestratorConnectionTenant::with('orchestratorConnection')->get()->sortBy('name')->whereIn('id', $alertsCollection->pluck('tenant.id')->unique())
+        );
+        $orchestratorConnections = OrchestratorConnectionResource::collection(
+            OrchestratorConnection::all()->sortBy('name')->whereIn('id', $orchestratorConnectionTenants->pluck('orchestratorConnection.id')->unique())
+        );
+        $orchestratorConnectionsHostingTypes = $orchestratorConnections->pluck('hosting_type')->unique();
+        $orchestratorConnectionsEnvironmentTypes = $orchestratorConnections->pluck('environment_type')->unique();
 
         $closedAlerts = OrchestratorConnectionTenantAlertResource::collection(
             OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', !null)
@@ -98,6 +118,12 @@ class PendingAlertsController extends Controller
                 'severity' => $alertsSeverities,
                 'notificationName' => $alertsNotificationNames,
                 'component' => $alertsComponents,
+            ],
+            'orchestratorConnectionsProperties' => [
+                'self' => $orchestratorConnections,
+                'tenants' => $orchestratorConnectionTenants,
+                'hostingType' => $orchestratorConnectionsHostingTypes,
+                'environmentType' => $orchestratorConnectionsEnvironmentTypes,
             ],
         ]);
     }

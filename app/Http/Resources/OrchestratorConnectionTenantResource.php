@@ -19,6 +19,7 @@ class OrchestratorConnectionTenantResource extends JsonResource
             'name' => $this->name,
             'client_id' => $this->client_id,
             'client_secret' => '',
+            'webhook_secret' => '',
             'verified' => $this->verified,
             'verified_at_for_humans' => $this->verified_at_for_humans,
             'pivot' => new OrchestratorConnectionTenantPivotResource($this->pivot),

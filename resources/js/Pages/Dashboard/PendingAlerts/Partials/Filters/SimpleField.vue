@@ -7,6 +7,7 @@ import { computed } from 'vue';
 const props = defineProps({
     values: Object,
     selectedValues: Object,
+    labels: Array,
     label: String,
     placeholder: String,
 });
@@ -40,10 +41,10 @@ const toggle = (value) => {
             </template>
             <template #content>
                 <div class="w-full">
-                    <DropdownLink v-for="value in values"
+                    <DropdownLink v-for="(value, index) in values"
                         as="a" @click.prevent="toggle(value)"
                         href="#" icon-position="right" :withBottomBorder="true">
-                        {{ __(value) }}
+                        {{ labels && labels.length > 0 ? __(labels[index]) : __(value) }}
                         <template #icon>
                             <svg v-if="selectedValues.includes(value)" aria-hidden="true" class="text-error-50" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -54,8 +55,8 @@ const toggle = (value) => {
             </template>
         </Dropdown>
         <div v-if="selectedValues && selectedValues.length > 0" class="mt-2">
-            <span v-for="value in selectedValues" class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2 py-0.5 rounded border border-gray-500">
-                {{ __(value) }}
+            <span v-for="(value, index) in selectedValues" class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2 py-0.5 rounded border border-gray-500">
+                {{ labels && labels.length > 0 ? __(labels[index]) : __(value) }}
                 <button @click.prevent="toggle(value)" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-gray-400 bg-transparent rounded-sm hover:bg-gray-200 hover:text-gray-900" :aria-label="__('Remove')">
                     <svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
