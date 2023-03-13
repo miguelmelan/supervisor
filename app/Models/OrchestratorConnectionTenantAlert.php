@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,20 +16,11 @@ class OrchestratorConnectionTenantAlert extends Model
         'component',
         'severity',
         'creation_time',
-        'state',
         'deep_link_relative_url',
         'read_at',
         'resolution_time_in_seconds',
+        'locked_at',
     ];
-
-    /* public function readAt(): Attribute
-    {
-        return Attribute::set(function ($original) {
-            $this->resolution_time_in_seconds = 55;
-            //$this->resolution_time_in_seconds = Carbon::parse(Carbon::instance($original))->diffInSeconds(Carbon::now());
-            return $original;
-        });
-    } */
 
     public function tenant()
     {
@@ -56,5 +45,15 @@ class OrchestratorConnectionTenantAlert extends Model
     public function queue()
     {
         return $this->belongsTo(OrchestratorConnectionTenantQueue::class);
+    }
+
+    public function readBy()
+    {
+        return $this->belongsTo(User::class, 'read_by');
+    }
+
+    public function lockedBy()
+    {
+        return $this->belongsTo(User::class, 'locked_by');
     }
 }

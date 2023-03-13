@@ -73,7 +73,6 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
             'component' => $component,
             'severity' => $severity,
             'creation_time' => $creationTime,
-            'state' => 'Unread',
         ]);
 
         OrchestratorConnectionTenantAlertCreated::dispatch($alert);
@@ -100,7 +99,6 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
             'component' => $component,
             'severity' => $severity,
             'creation_time' => $creationTime,
-            'state' => 'Unread',
         ]);
 
         OrchestratorConnectionTenantAlertCreated::dispatch($alert);
@@ -132,7 +130,6 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
             'component' => $component,
             'severity' => $severity,
             'creation_time' => $creationTime,
-            'state' => 'Unread',
         ]);
 
         OrchestratorConnectionTenantAlertCreated::dispatch($alert);

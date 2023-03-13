@@ -24,10 +24,10 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'component' => $this->component,
             'severity' => $this->severity,
             'creation_time' => $this->creation_time,
-            'unread' => $this->unread,
             'deep_link_relative_url' => $this->deep_link_relative_url,
             'read_at' => $this->read_at,
             'resolution_time_in_seconds' => $this->resolution_time_in_seconds,
+            'locked_at' => $this->locked_at,
         ];
     }
 }

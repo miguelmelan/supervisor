@@ -20,16 +20,18 @@ return new class extends Migration
             $table->unsignedBigInteger('release_id')->nullable();
             $table->unsignedBigInteger('machine_id')->nullable();
             $table->unsignedBigInteger('queue_id')->nullable();
+            $table->unsignedBigInteger('read_by')->nullable();
+            $table->unsignedBigInteger('locked_by')->nullable();
             $table->string('external_id')->nullable();
             $table->string('notification_name');
             $table->json('data');
             $table->string('component');
             $table->string('severity');
             $table->timestamp('creation_time');
-            $table->string('state');
             $table->text('deep_link_relative_url')->nullable();
             $table->timestamp('read_at')->nullable();
             $table->integer('resolution_time_in_seconds')->nullable();
+            $table->timestamp('locked_at')->nullable();
             $table->timestamps();
             $table
                 ->foreign('tenant_id', 'octa_t_id_foreign')

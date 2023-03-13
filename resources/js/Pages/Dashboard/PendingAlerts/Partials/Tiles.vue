@@ -11,9 +11,9 @@ const props = defineProps({
     alertsAverageResolutionTime: String,
 });
 
-const alertsAverageResolutionTime = ref(props.alertsAverageResolutionTime);
+const alertsAverageResolutionTime = computed(() => props.alertsAverageResolutionTime);
 
-const pendingAlertsCount = ref(props.pendingAlertsCount);
+const pendingAlertsCount = computed(() => props.pendingAlertsCount);
 
 const indicators = ref([{
     id: 'by-severity',

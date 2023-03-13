@@ -1,6 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/inertia-vue3';
-import { ref, inject } from 'vue';
+import { ref, inject, computed } from 'vue';
 
 const abbr = inject('abbr');
 
@@ -9,7 +9,7 @@ const props = defineProps({
     closedAlertsCount: Number,
 });
 
-const pendingAlertsCount = ref(props.pendingAlertsCount);
+const pendingAlertsCount = computed(() => props.pendingAlertsCount);
 const newPendingAlertsCount = ref(0);
 const closedAlertsCount = ref(props.closedAlertsCount);
 const newClosedAlertsCount = ref(0);

@@ -30,7 +30,6 @@ class UpdateOrchestratorConnectionTenantAlertRequest extends FormRequest
             'component' => 'required',
             'severity' => 'required',
             'creation_time' => 'required',
-            'unread' => 'required',
             'deep_link_relative_url' => 'nullable',
         ];
 

@@ -6,10 +6,12 @@ use App\Http\Resources\AutomatedProcessResource;
 use App\Http\Resources\OrchestratorConnectionResource;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Http\Resources\OrchestratorConnectionTenantResource;
+use App\Http\Resources\UserResource;
 use App\Models\AutomatedProcess;
 use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
 use App\Models\OrchestratorConnectionTenantAlert;
+use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
@@ -81,10 +83,11 @@ class PendingAlertsController extends Controller
                 'severity' => $alert->severity,
                 'creation_time' => $alert->creation_time,
                 'creation_time_for_humans' => Carbon::parse($alert->creation_time)->diffForHumans(Carbon::now()),
-                'state' => $alert->state,
                 'deep_link_relative_url' => $alert->deep_link_relative_url,
                 'read_at' => $alert->read_at,
                 'resolution_time_in_seconds' => $alert->resolution_time_in_seconds,
+                'locked_at' => $alert->locked_at,
+                'locked_by' => $alert->locked_by ? new UserResource(User::find($alert->locked_by)) : null,
             ]);
 
         $alertsCollection = OrchestratorConnectionTenantAlertResource::collection(
@@ -141,16 +144,25 @@ class PendingAlertsController extends Controller
 
     public function read(OrchestratorConnectionTenantAlert $alert)
     {
+        $alert->read_at = Carbon::now();
+        $alert->readBy()->associate(auth()->user());
+        $alert->save();
         return redirect()->route('pending-alerts.index');
     }
 
     public function lock(OrchestratorConnectionTenantAlert $alert)
     {
+        $alert->locked_at = Carbon::now();
+        $alert->lockedBy()->associate(auth()->user());
+        $alert->save();
         return redirect()->route('pending-alerts.index');
     }
 
     public function unlock(OrchestratorConnectionTenantAlert $alert)
     {
+        $alert->locked_at = null;
+        $alert->lockedBy()->dissociate();
+        $alert->save();
         return redirect()->route('pending-alerts.index');
     }
 

@@ -24,7 +24,7 @@ const props = defineProps({
     orchestratorConnectionsProperties: Object,
 });
 
-const pendingAlertsCount = ref(props.alertsCount);
+const pendingAlertsCount = computed(() => props.alertsCount);
 const newPendingAlertsCount = ref(0);
 const closedAlertsCount = ref(props.closedAlertsCount);
 const newClosedAlertsCount = ref(0);
@@ -157,6 +157,8 @@ const read = (callback) => {
         onSuccess: () => {
             callback();
         },
+        preserveScroll: true,
+        preserveState: true,
     });
 };
 
@@ -167,6 +169,8 @@ const lock = (callback) => {
         onSuccess: () => {
             callback();
         },
+        preserveScroll: true,
+        preserveState: true,
     });
 };
 
@@ -177,6 +181,8 @@ const unlock = (callback) => {
         onSuccess: () => {
             callback();
         },
+        preserveScroll: true,
+        preserveState: true,
     });
 };
 
@@ -219,6 +225,8 @@ const bulkRead = (callback) => {
         onSuccess: () => {
             callback();
         },
+        preserveScroll: true,
+        preserveState: true,
     });
 };
 
@@ -229,6 +237,8 @@ const bulkLock = (callback) => {
         onSuccess: () => {
             callback();
         },
+        preserveScroll: true,
+        preserveState: true,
     });
 };
 
@@ -239,6 +249,8 @@ const bulkUnlock = (callback) => {
         onSuccess: () => {
             callback();
         },
+        preserveScroll: true,
+        preserveState: true,
     });
 };
 
@@ -379,7 +391,13 @@ onMounted(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in alerts.data" :key="item.id" class="bg-white border-b">
+                        <tr v-for="(item, index) in alerts.data" :key="item.id" class="border-b"
+                            :class="{
+                                'bg-white': index % 2 === 0,
+                                'bg-gray-50': index % 2 !== 0,
+                                'bg-yellow-100 text-yellow-900': item.locked_at && item.locked_by.id === $page.props.user.id,
+                                'bg-red-100 text-red-900': item.locked_at && item.locked_by.id !== $page.props.user.id,
+                            }">
                             <td class="p-4 w-4">
                                 <div class="flex items-center">
                                     <input type="checkbox"
@@ -388,7 +406,7 @@ onMounted(() => {
                                     <label :for="'checkbox-' + item.id" class="sr-only">{{ __('Select item') }}</label>
                                 </div>
                             </td>
-                            <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap">
+                            <th scope="row" class="py-4 px-6 font-medium font-semibold whitespace-nowrap">
                                 {{ item.id_padded }}
                             </th>
                             <td class="py-4 px-6">
@@ -410,7 +428,7 @@ onMounted(() => {
                                 {{ __(item.component) }}
                             </td>
                             <td class="py-4 px-6">
-                                <dl class="max-w-md text-gray-900 divide-y divide-gray-200">
+                                <dl class="max-w-md text-gray-900">
                                     <div class="flex flex-col pb-3">
                                         <dt class="mb-1 text-gray-500">{{ __('UiPath Orchestrator') }}</dt>
                                         <dd class="font-semibold">
@@ -440,27 +458,30 @@ onMounted(() => {
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
                                         </svg>
                                     </button>
-                                    <button type="button"
+                                    <button v-if="!item.locked_at || item.locked_by.id === $page.props.user.id" type="button"
                                         @click.prevent="triggerAction('read', item)"
                                         class="inline-flex items-center px-2 py-1 border border-gray-400 text-sm leading-4 font-medium rounded-md text-gray-neutral-55 bg-white hover:bg-gray-300 hover:text-gray-500 focus:outline-none focus:bg-gray-300 active:bg-gray-300 transition mr-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                         </svg>
                                     </button>
-                                    <button type="button"
+                                    <button v-if="!item.locked_at" type="button"
                                         @click.prevent="triggerAction('lock', item)"
                                         class="inline-flex items-center px-2 py-1 border border-gray-400 text-sm leading-4 font-medium rounded-md text-gray-neutral-55 bg-white hover:bg-gray-300 hover:text-gray-500 focus:outline-none focus:bg-gray-300 active:bg-gray-300 transition mr-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                         </svg>
                                     </button>
-                                    <button type="button"
+                                    <button v-if="item.locked_at && item.locked_by.id === $page.props.user.id" type="button"
                                         @click.prevent="triggerAction('unlock', item)"
                                         class="inline-flex items-center px-2 py-1 border border-gray-400 text-sm leading-4 font-medium rounded-md text-gray-neutral-55 bg-white hover:bg-gray-300 hover:text-gray-500 focus:outline-none focus:bg-gray-300 active:bg-gray-300 transition mr-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                         </svg>
                                     </button>
+                                </div>
+                                <div v-if="item.locked_at" class="flex justify-center mt-2">
+                                    {{ __('Locked by') }} {{ item.locked_by.id === $page.props.user.id ? __('you') : item.locked_by.name }}
                                 </div>
                             </td>
                         </tr>
