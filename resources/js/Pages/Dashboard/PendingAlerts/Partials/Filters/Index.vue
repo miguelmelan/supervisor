@@ -4,7 +4,7 @@ import AlertCreationDateFilter from './Alert/CreationDate.vue';
 import SimpleFieldFilter from './SimpleField.vue';
 import OrchestratorConnectionFilter from './OrchestratorConnection/Self.vue';
 import OrchestratorConnectionTenantFilter from './OrchestratorConnection/Tenant.vue';
-import { onMounted, inject, computed, reactive } from 'vue';
+import { onMounted, inject, computed, ref } from 'vue';
 
 const props = defineProps({
     data: {
@@ -38,7 +38,7 @@ const filtersCount = computed(() => alertFiltersCount.value + orchestratorConnec
 
 const alertFiltersCount = computed(() => {
     let count = 0;
-    if (alertCreationDateRange && alertCreationDateRange.length === 2) {
+    if (alertCreationDateRange.value && alertCreationDateRange.value.length === 2) {
         count++;
     }
     if (selectedAlertSeverities.value && selectedAlertSeverities.value.length > 0) {
@@ -71,11 +71,11 @@ const orchestratorConnectionFiltersCount = computed(() => {
     return count;
 });
 
-const alertCreationDateRange = reactive(props.data.alert.creationDateRange);
+const alertCreationDateRange = computed(() => props.data.alert.creationDateRange);
 const updateAlertCreationDateRange = (data) => {
-    alertCreationDateRange.splice(0, alertCreationDateRange.length);
+    alertCreationDateRange.value.splice(0, alertCreationDateRange.value.length);
     if (data) {
-        alertCreationDateRange.push(...data);
+        alertCreationDateRange.value.push(...data);
     }
     emit('property-updated');
 };

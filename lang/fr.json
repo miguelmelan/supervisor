@@ -355,6 +355,7 @@
     "Select UiPath Orchestrator connections": "Sélectionnez les connexions à UiPath Orchestrator",
     "UiPath Orchestrator tenant": "Locataire de UiPath Orchestrator",
     "Select UiPath Orchestrator tenants": "Sélectionnez les locataires de UiPath Orchestrator",
+    "Automated business process": "Processus métier automatisé",
     "Select hosting types": "Sélectionnez les types d'hébergement",
     "Select environment types": "Sélectionnez les types d'environnement",
     "Read multiple pending alerts": "Lire plusieurs alertes en attente",
