@@ -31,7 +31,8 @@ class OrchestratorConnectionTenant extends Model
     {
         static::creating(function ($tenant) {
             $tenant->uuid = Str::uuid();
-            $tenant->webhook_secret = fake(app()->getLocale())->password(12);
+            $faker = \Faker\Factory::create(app()->getLocale());
+            $tenant->webhook_secret = $faker->password(12);
         });
     }
 
