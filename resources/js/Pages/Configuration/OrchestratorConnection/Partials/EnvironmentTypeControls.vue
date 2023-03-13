@@ -9,7 +9,7 @@ const props = defineProps({
 
 <template>
     <div class="col-span-6 sm:col-span-4">
-        <InputLabel for="environment-type" :value="__('Environment Type')" />
+        <InputLabel for="environment-type" :value="__('Environment type')" />
         <InputError :message="form.errors.environment_type" class="mt-2" />
         <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
             <button type="button"

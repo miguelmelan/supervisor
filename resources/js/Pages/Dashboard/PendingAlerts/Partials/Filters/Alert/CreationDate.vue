@@ -10,15 +10,8 @@ const emit = defineEmits([
     'updated',
 ]);
 
-const range = computed(() => props.range);
-
-const setRange = (data) => {
-    if (!data) {
-        range.value.splice(0, range.value.length);
-    } else {
-        range.value.push(...data);
-    }
-    emit('updated', range.value);
+const setRange = () => {
+    emit('updated', props.range);
 };
 
 const startTime = ref([

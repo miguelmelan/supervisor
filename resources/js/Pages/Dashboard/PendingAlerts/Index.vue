@@ -368,7 +368,7 @@ onMounted(() => {
                                 <span>{{ __('Component') }}</span>
                             </th>
                             <th scope="col" class="py-3 px-6">
-                                <span>{{ __('UiPath Orchestrator / Tenant') }}</span>
+                                <span>{{ __('UiPath Orchestrator connection') }}</span>
                             </th>
                             <th v-if="automatedProcessesCount > 0" scope="col" class="py-3 px-6">
                                 <span>{{ __('Automated business process') }}</span>

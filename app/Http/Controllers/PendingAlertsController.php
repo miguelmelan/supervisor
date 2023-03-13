@@ -36,24 +36,30 @@ class PendingAlertsController extends Controller
             ->when(!request('sorting'), function ($query) {
                 $query->orderBy('orchestrator_connection_tenant_alerts.id', 'desc');
             })
-            ->when(request('data.alert.creationDateRange'), function ($query, $creationDateRange) {
-                $query->where('creation_time', '>=', $creationDateRange[0])
-                    ->where('creation_time', '<=', $creationDateRange[1]);
+            ->when(request('data.alert.creationDateRange'), function ($query, $range) {
+                $query->where('creation_time', '>=', $range[0])
+                    ->where('creation_time', '<=', $range[1]);
             })
-            ->when(request('data.alert.selectedSeverities'), function ($query, $selectedSeverities) {
-                $query->whereIn('severity', $selectedSeverities);
+            ->when(request('data.alert.selectedSeverities'), function ($query, $selected) {
+                $query->whereIn('severity', $selected);
             })
-            ->when(request('data.alert.selectedNotificationNames'), function ($query, $selectedNotificationNames) {
-                $query->whereIn('notification_name', $selectedNotificationNames);
+            ->when(request('data.alert.selectedNotificationNames'), function ($query, $selected) {
+                $query->whereIn('notification_name', $selected);
             })
-            ->when(request('data.alert.selectedComponents'), function ($query, $selectedComponents) {
-                $query->whereIn('component', $selectedComponents);
+            ->when(request('data.alert.selectedComponents'), function ($query, $selected) {
+                $query->whereIn('component', $selected);
             })
-            ->when(request('data.orchestratorConnection.selectedHostingTypes'), function ($query, $selectedHostingTypes) {
-                $query->whereIn('orchestrator_connections.hosting_type', $selectedHostingTypes);
+            ->when(request('data.orchestratorConnection.selected'), function ($query, $selected) {
+                $query->whereIn('orchestrator_connections.id', $selected);
             })
-            ->when(request('data.orchestratorConnection.selectedEnvironmentTypes'), function ($query, $selectedEnvironmentTypes) {
-                $query->whereIn('orchestrator_connections.environment_type', $selectedEnvironmentTypes);
+            ->when(request('data.orchestratorConnection.selectedTenants'), function ($query, $selected) {
+                $query->whereIn('orchestrator_connection_tenants.id', $selected);
+            })
+            ->when(request('data.orchestratorConnection.selectedHostingTypes'), function ($query, $selected) {
+                $query->whereIn('orchestrator_connections.hosting_type', $selected);
+            })
+            ->when(request('data.orchestratorConnection.selectedEnvironmentTypes'), function ($query, $selected) {
+                $query->whereIn('orchestrator_connections.environment_type', $selected);
             })
             ->where('read_at', null)
             ->select('orchestrator_connection_tenant_alerts.*')
@@ -85,14 +91,14 @@ class PendingAlertsController extends Controller
             OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', null)
         );
         $alertsCount = $alertsCollection->count();
-        $alertsSeverities = $alertsCollection->pluck('severity')->unique();
-        $alertsNotificationNames = $alertsCollection->pluck('notification_name')->unique();
-        $alertsComponents = $alertsCollection->pluck('component')->unique();
+        $alertsSeverities = $alertsCollection->unique('severity')->pluck('severity');
+        $alertsNotificationNames = $alertsCollection->unique('notification_name')->pluck('notification_name');
+        $alertsComponents = $alertsCollection->unique('component')->pluck('component');
         $orchestratorConnectionTenants = OrchestratorConnectionTenantResource::collection(
-            OrchestratorConnectionTenant::with('orchestratorConnection')->get()->sortBy('name')->whereIn('id', $alertsCollection->pluck('tenant.id')->unique())
+            OrchestratorConnectionTenant::with('orchestratorConnection')->get()->sortBy('code')->whereIn('id', $alertsCollection->pluck('tenant.id')->unique())
         );
         $orchestratorConnections = OrchestratorConnectionResource::collection(
-            OrchestratorConnection::all()->sortBy('name')->whereIn('id', $orchestratorConnectionTenants->pluck('orchestratorConnection.id')->unique())
+            OrchestratorConnection::all()->sortBy('code')->whereIn('id', $orchestratorConnectionTenants->pluck('orchestratorConnection.id')->unique())
         );
         $orchestratorConnectionsHostingTypes = $orchestratorConnections->pluck('hosting_type')->unique();
         $orchestratorConnectionsEnvironmentTypes = $orchestratorConnections->pluck('environment_type')->unique();

@@ -2,9 +2,8 @@
 import 'flowbite';
 import AlertCreationDateFilter from './Alert/CreationDate.vue';
 import SimpleFieldFilter from './SimpleField.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import InputLabel from '@/Components/InputLabel.vue';
+import OrchestratorConnectionFilter from './OrchestratorConnection/Self.vue';
+import OrchestratorConnectionTenantFilter from './OrchestratorConnection/Tenant.vue';
 import { onMounted, inject, computed, reactive } from 'vue';
 
 const props = defineProps({
@@ -57,11 +56,16 @@ const alertFiltersCount = computed(() => {
 
 const orchestratorConnectionFiltersCount = computed(() => {
     let count = 0;
-    
-    if (selectedOrchestratorConnectionHostingTypes && selectedOrchestratorConnectionHostingTypes.value.length > 0) {
+    if (selectedOrchestratorConnections.value && selectedOrchestratorConnections.value.length > 0) {
+        count ++;
+    }
+    if (selectedOrchestratorConnectionTenants.value && selectedOrchestratorConnectionTenants.value.length > 0) {
+        count ++;
+    }
+    if (selectedOrchestratorConnectionHostingTypes.value && selectedOrchestratorConnectionHostingTypes.value.length > 0) {
         count++;
     }
-    if (selectedOrchestratorConnectionEnvironmentTypes && selectedOrchestratorConnectionEnvironmentTypes.value.length > 0) {
+    if (selectedOrchestratorConnectionEnvironmentTypes.value && selectedOrchestratorConnectionEnvironmentTypes.value.length > 0) {
         count++;
     }
     return count;
@@ -69,16 +73,34 @@ const orchestratorConnectionFiltersCount = computed(() => {
 
 const alertCreationDateRange = reactive(props.data.alert.creationDateRange);
 const updateAlertCreationDateRange = (data) => {
-    Object.assign(alertCreationDateRange, data);
+    alertCreationDateRange.splice(0, alertCreationDateRange.length);
+    if (data) {
+        alertCreationDateRange.push(...data);
+    }
     emit('property-updated');
 };
-
 const selectedAlertSeverities = computed(() => props.data.alert.selectedSeverities);
 const selectedAlertNotificationNames = computed(() => props.data.alert.selectedNotificationNames);
 const selectedAlertComponents = computed(() => props.data.alert.selectedComponents);
+const resetAlertFilters = () => {
+    alertCreationDateRange.splice(0, alertCreationDateRange.length);
+    props.data.alert.selectedSeverities = [];
+    props.data.alert.selectedNotificationNames = [];
+    props.data.alert.selectedComponents = [];
+    emit('property-updated');
+};
 
+const selectedOrchestratorConnections = computed(() => props.data.orchestratorConnection.selected);
+const selectedOrchestratorConnectionTenants = computed(() => props.data.orchestratorConnection.selectedTenants);
 const selectedOrchestratorConnectionHostingTypes = computed(() => props.data.orchestratorConnection.selectedHostingTypes);
 const selectedOrchestratorConnectionEnvironmentTypes = computed(() => props.data.orchestratorConnection.selectedEnvironmentTypes);
+const resetOrchestratorConnectionFilters = () => {
+    props.data.orchestratorConnection.selected = [];
+    props.data.orchestratorConnection.selectedTenants = [];
+    props.data.orchestratorConnection.selectedHostingTypes = [];
+    props.data.orchestratorConnection.selectedEnvironmentTypes = [];
+    emit('property-updated');
+};
 
 onMounted(() => {    
     const accordionConfiguration = {
@@ -101,16 +123,16 @@ onMounted(() => {
             activeClasses: 'bg-gray-100 text-gray-900',
             inactiveClasses: 'bg-gray-50 text-gray-500',
             onOpen: (item) => {
-                console.log('accordion item has been shown');
-                //console.log(item);
+                /* console.log('accordion item has been shown');
+                console.log(item); */
             },
             onClose: (item) => {
-                console.log('accordion item has been hidden');
-                //console.log(item);
+                /* console.log('accordion item has been hidden');
+                console.log(item); */
             },
             onToggle: (item) => {
-                console.log('accordion item has been toggled');
-                //console.log(item);
+                /* console.log('accordion item has been toggled');
+                console.log(item); */
             },
         },
     };
@@ -144,9 +166,17 @@ onMounted(() => {
                         </svg>
                         <span>{{ __('Properties of alerts') }}</span>
                     </div>
-                    <span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        {{ alertFiltersCount }}
-                    </span>
+                    <div class="flex">
+                        <span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ alertFiltersCount }}
+                        </span>
+                        <button v-if="alertFiltersCount > 0" @click.stop="resetAlertFilters()" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-gray-400 bg-transparent rounded-sm hover:bg-gray-200 hover:text-gray-900" :aria-label="__('Remove')">
+                            <svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="sr-only">{{ __('Remove') }}</span>
+                        </button>
+                    </div>
                 </button>
             </h2>
             <div id="alert-properties-body" class="hidden" aria-labelledby="alert-properties-heading">
@@ -178,72 +208,38 @@ onMounted(() => {
                         </svg>
                         <span>{{ __('Properties of UiPath Orchestrator connections') }}</span>
                     </div>
-                    <span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        {{ orchestratorConnectionFiltersCount }}
-                    </span>
+                    <div class="flex">
+                        <span class="bg-gray-700 text-gray-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            {{ orchestratorConnectionFiltersCount }}
+                        </span>
+                        <button v-if="orchestratorConnectionFiltersCount > 0" @click.stop="resetOrchestratorConnectionFilters()" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-gray-400 bg-transparent rounded-sm hover:bg-gray-200 hover:text-gray-900" :aria-label="__('Remove')">
+                            <svg aria-hidden="true" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="sr-only">{{ __('Remove') }}</span>
+                        </button>
+                    </div>
                 </button>
             </h2>
             <div id="orchestrator-connection-properties-body" class="hidden" aria-labelledby="orchestrator-connection-properties-heading">
                 <div class="p-2 border border-t-0 border-gray-200">
                     <div class="grid grid-cols-4 gap-4">
-                        <div class="p-4">
-                            <InputLabel :value="__('UiPath Orchestrator connection')" />
-                            <Dropdown align="right" width="full" :contentClasses="['py-0', 'bg-gray-50', 'border', 'border-gray-300']" class="mt-1" :stay-opened="true">
-                                <template #trigger>
-                                    <button type="button"
-                                        class="inline-flex text-left items-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md w-full p-2.5 focus:outline-none transition">
-                                        {{ __('Select UiPath Orchestrator connections')}}
-                                    </button>
-                                </template>
-                                <template #content>
-                                    <div class="w-full">
-                                        <DropdownLink as="a" :withBottomBorder="true" :with-checkbox="true">
-                                            {{ __('Fatal') }}
-                                        </DropdownLink>
-                                        <DropdownLink as="a" :withBottomBorder="true" :with-checkbox="true">
-                                            {{ __('Error') }}
-                                        </DropdownLink>
-                                        <DropdownLink as="a" :withBottomBorder="true" :with-checkbox="true">
-                                            {{ __('Warn') }}
-                                        </DropdownLink>
-                                    </div>
-                                </template>
-                            </Dropdown>
-                        </div>
-                        <div class="p-4">
-                            <InputLabel :value="__('UiPath Orchestrator tenant')" />
-                            <Dropdown align="right" width="full" :contentClasses="['py-0', 'bg-gray-50', 'border', 'border-gray-300']" class="mt-1" :stay-opened="true">
-                                <template #trigger>
-                                    <button type="button"
-                                        class="inline-flex text-left items-center bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md w-full p-2.5 focus:outline-none transition">
-                                        {{ __('Select UiPath Orchestrator tenants')}}
-                                    </button>
-                                </template>
-                                <template #content>
-                                    <div class="w-full">
-                                        <DropdownLink as="a" :withBottomBorder="true" :with-checkbox="true">
-                                            {{ __('Fatal') }}
-                                        </DropdownLink>
-                                        <DropdownLink as="a" :withBottomBorder="true" :with-checkbox="true">
-                                            {{ __('Error') }}
-                                        </DropdownLink>
-                                        <DropdownLink as="a" :withBottomBorder="true" :with-checkbox="true">
-                                            {{ __('Warn') }}
-                                        </DropdownLink>
-                                    </div>
-                                </template>
-                            </Dropdown>
-                        </div>
+                        <OrchestratorConnectionFilter :values="orchestratorConnectionsProperties.self"
+                            :selected-values="selectedOrchestratorConnections"
+                            @updated="emit('property-updated')" />
+                        <OrchestratorConnectionTenantFilter :values="orchestratorConnectionsProperties.tenants"
+                            :selected-values="selectedOrchestratorConnectionTenants"
+                            @updated="emit('property-updated')" />
                         <SimpleFieldFilter :values="orchestratorConnectionsProperties.hostingType"
                             :labels="orchestratorConnectionsProperties.hostingType.map(ht => ht === 'cloud' ? translate('Cloud') : translate('On-Premise'))"
                             :selected-values="selectedOrchestratorConnectionHostingTypes"
-                            :label="__('Hosting Type')" :placeholder="__('Select hosting types')"
+                            :label="__('Hosting type')" :placeholder="__('Select hosting types')"
                             @updated="emit('property-updated')" />
                         <SimpleFieldFilter :values="orchestratorConnectionsProperties.environmentType"
                             :labels="orchestratorConnectionsProperties.environmentType
                                 .map(ht => ht.charAt(0).toUpperCase() + ht.slice(1))"
                             :selected-values="selectedOrchestratorConnectionEnvironmentTypes"
-                            :label="__('Environment Type')" :placeholder="__('Select environment types')"
+                            :label="__('Environment type')" :placeholder="__('Select environment types')"
                             @updated="emit('property-updated')" />
                     </div>
                 </div>

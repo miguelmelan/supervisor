@@ -14,7 +14,7 @@ const selectHostingType = (hostingType) => {
 
 <template>
     <div class="col-span-6 sm:col-span-4">
-        <InputLabel for="hosting-type" :value="__('Hosting Type')" />
+        <InputLabel for="hosting-type" :value="__('Hosting type')" />
         <InputError :message="form.errors.hosting_type" class="mt-2" />
         <div class="relative z-0 mt-1 border border-gray-200 rounded-lg cursor-pointer">
             <button type="button"
