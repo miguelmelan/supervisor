@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import CreateTeamForm from '@/Pages/Teams/Partials/CreateTeamForm.vue';
 import Breadcrumb from '@/Components/Breadcrumb.vue';

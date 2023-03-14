@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DeleteTeamForm from '@/Pages/Teams/Partials/DeleteTeamForm.vue';
 import TeamMemberManager from '@/Pages/Teams/Partials/TeamMemberManager.vue';
