@@ -1,5 +1,5 @@
 <script setup>
-import DangerButton from '@/Components/DangerButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ConfirmationModal from '@/Components/ConfirmationModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { computed } from 'vue';
@@ -25,7 +25,7 @@ const close = () => {
 </script>
 
 <template>
-    <ConfirmationModal :show="show" @close="close" :closeable="!form.processing" severity="error">
+    <ConfirmationModal :show="show" @close="close" :closeable="!form.processing" severity="info">
         <template #title>
             {{ __(`${action.charAt(0).toUpperCase() + action.slice(1)} a pending alert`) }}
         </template>
@@ -45,7 +45,7 @@ const close = () => {
                 </template>
             </SecondaryButton>
 
-            <DangerButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
+            <PrimaryButton class="ml-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                 @click="job">
                 {{ __(action.charAt(0).toUpperCase() + action.slice(1)) }}
                 <template #icon>
@@ -59,7 +59,7 @@ const close = () => {
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                     </svg>
                 </template>
-            </DangerButton>
+            </PrimaryButton>
         </template>
     </ConfirmationModal>
 </template>

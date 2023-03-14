@@ -7,9 +7,11 @@ import BulkButtons from './Partials/BulkButtons.vue';
 import Filters from './Partials/Filters/Index.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import Pagination from '@/Components/Pagination.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Tiles from './Partials/Tiles.vue';
 import Navbar from '../Navbar.vue';
-import { Link, useForm } from '@inertiajs/inertia-vue3';
+import { Link, useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
@@ -199,13 +201,19 @@ const singleDo = computed(() => {
 
 const selectAll = computed({
     get() {
-        return props.alerts.data.length > 0 ? selected.value.length == props.alerts.data.length : false;
+        const alertsData = props.alerts.data;
+        if (alertsData.length > 0) {
+            return selected.value.length === alertsData.filter(a => !a.locked_at || a.locked_by.id === usePage().props.value.user.id).length;
+        }
+        return false;
     },
     set(value) {
         let values = [];
         if (value) {
-            props.alerts.data.forEach(function (alert) {
-                values.push(alert.id);
+            props.alerts.data.forEach(alert => {
+                if (!alert.locked_at || alert.locked_by.id === usePage().props.value.user.id) {
+                    values.push(alert.id)
+                };
             });
         }
 
@@ -270,6 +278,10 @@ const resetBulkActions = () => {
     selected.value = [];
 };
 
+const alertsLockedByCurrentUser = computed(() => props.alerts.data.filter(a => a.locked_at && a.locked_by.id === usePage().props.value.user.id).map(a => a.id));
+const alertsLockedByOtherUsers = computed(() => props.alerts.data.filter(a => a.locked_at && a.locked_by.id !== usePage().props.value.user.id).map(a => a.id));
+const alertsUnlocked = computed(() => props.alerts.data.filter(a => !a.locked_at).map(a => a.id));
+
 onMounted(() => {
     Echo.channel('orchestrator-connection-tenant-alert')
         .listen('.new', (data) => {
@@ -324,6 +336,8 @@ onMounted(() => {
                     class="mb-4" />
                 
                 <BulkButtons class="mb-4" :selected="selected"
+                    :show-read="true" :show-lock="selected.every(a => alertsUnlocked.includes(a))"
+                    :show-unlock="selected.every(a => alertsLockedByCurrentUser.includes(a))"
                     @reading="triggerBulkAction('read')"
                     @locking="triggerBulkAction('lock')"
                     @unlocking="triggerBulkAction('unlock')"
@@ -334,11 +348,12 @@ onMounted(() => {
                         <tr>
                             <th scope="col" class="p-4">
                                 <div class="flex items-center">
-                                    <input type="checkbox" class="rounded text-blue-50 shadow-sm focus:border-blue-50" :class="{
-                                        'bg-gray-100 border-gray-300 hover:border-gray-400': alerts.data.length == 0,
-                                        'bg-white border-gray-400 hover:border-gray-neutral-55': alerts.data.length > 0
-                                    }" v-model="selectAll" name="checkbox-all"
-                                        :disabled="alerts.data.length == 0">
+                                    <input type="checkbox" class="rounded text-blue-50 shadow-sm focus:border-blue-50"
+                                        :class="{
+                                            'bg-gray-100 border-gray-300': alerts.data.length === 0,
+                                            'bg-white border-gray-400 hover:border-gray-neutral-55': alerts.data.length > 0,
+                                        }" v-model="selectAll" name="checkbox-all"
+                                        :disabled="alerts.data.length === 0">
                                     <label for="checkbox-all" class="sr-only">{{ __('Select all items')}}</label>
                                 </div>
                             </th>
@@ -401,8 +416,13 @@ onMounted(() => {
                             <td class="p-4 w-4">
                                 <div class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-400 hover:border-gray-neutral-55 text-blue-50 shadow-sm focus:border-blue-50"
-                                        v-model="selected" :name="'checkbox-' + item.id" :value="item.id" number>
+                                        class="rounded text-blue-50 shadow-sm focus:border-blue-50"
+                                        :class="{
+                                            'bg-gray-100 border-gray-300': item.locked_at && item.locked_by.id !== $page.props.user.id,
+                                            'bg-white border-gray-400 hover:border-gray-neutral-55': !item.locked_at || item.locked_by.id === $page.props.user.id,
+                                        }"
+                                        v-model="selected" :name="'checkbox-' + item.id" :value="item.id" number
+                                        :disabled="item.locked_at && item.locked_by.id !== $page.props.user.id">
                                     <label :for="'checkbox-' + item.id" class="sr-only">{{ __('Select item') }}</label>
                                 </div>
                             </td>
@@ -444,35 +464,34 @@ onMounted(() => {
                             </td>
                             <td class="py-4 px-6">
                                 <div class="flex justify-center">
-                                    <button type="button"
-                                        @click.prevent="edit(item)"
-                                        class="inline-flex items-center px-2 py-1 border border-gray-400 text-sm leading-4 font-medium rounded-md text-gray-neutral-55 bg-white hover:bg-gray-300 hover:text-gray-500 focus:outline-none focus:bg-gray-300 active:bg-gray-300 transition mr-1">
+                                    <PrimaryButton type="button"
+                                        @click.prevent="edit(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                             class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
                                         </svg>
-                                    </button>
-                                    <button v-if="!item.locked_at || item.locked_by.id === $page.props.user.id" type="button"
+                                    </PrimaryButton>
+                                    <PrimaryButton v-if="!item.locked_at || item.locked_by.id === $page.props.user.id" type="button"
                                         @click.prevent="triggerAction('read', item)"
-                                        class="inline-flex items-center px-2 py-1 border border-gray-400 text-sm leading-4 font-medium rounded-md text-gray-neutral-55 bg-white hover:bg-gray-300 hover:text-gray-500 focus:outline-none focus:bg-gray-300 active:bg-gray-300 transition mr-1">
+                                        class="ml-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                         </svg>
-                                    </button>
-                                    <button v-if="!item.locked_at" type="button"
+                                    </PrimaryButton>
+                                    <SecondaryButton v-if="!item.locked_at" type="button"
                                         @click.prevent="triggerAction('lock', item)"
-                                        class="inline-flex items-center px-2 py-1 border border-gray-400 text-sm leading-4 font-medium rounded-md text-gray-neutral-55 bg-white hover:bg-gray-300 hover:text-gray-500 focus:outline-none focus:bg-gray-300 active:bg-gray-300 transition mr-1">
+                                        class="ml-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                         </svg>
-                                    </button>
-                                    <button v-if="item.locked_at && item.locked_by.id === $page.props.user.id" type="button"
+                                    </SecondaryButton>
+                                    <SecondaryButton v-if="item.locked_at && item.locked_by.id === $page.props.user.id" type="button"
                                         @click.prevent="triggerAction('unlock', item)"
-                                        class="inline-flex items-center px-2 py-1 border border-gray-400 text-sm leading-4 font-medium rounded-md text-gray-neutral-55 bg-white hover:bg-gray-300 hover:text-gray-500 focus:outline-none focus:bg-gray-300 active:bg-gray-300 transition mr-1">
+                                        class="ml-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                         </svg>
-                                    </button>
+                                    </SecondaryButton>
                                 </div>
                                 <div v-if="item.locked_at" class="flex justify-center mt-2">
                                     {{ __('Locked by') }} {{ item.locked_by.id === $page.props.user.id ? __('you') : item.locked_by.name }}
@@ -483,6 +502,8 @@ onMounted(() => {
                 </table>
 
                 <BulkButtons class="mt-4" :selected="selected"
+                    :show-read="true" :show-lock="selected.some(a => alertsUnlocked.includes(a))"
+                    :show-unlocked="selected.some(a => alertsLockedByCurrentUser.includes(a))"
                     @reading="triggerBulkAction('read')"
                     @locking="triggerBulkAction('lock')"
                     @unlocking="triggerBulkAction('unlock')"

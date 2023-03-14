@@ -28,7 +28,7 @@ const close = () => {
 </script>
 
 <template>
-    <ConfirmationModal :show="confirming" @close="close" :closeable="!doing" severity="error">
+    <ConfirmationModal :show="confirming" @close="close" :closeable="!doing" severity="info">
         <template #title>
             {{ __(`${action.charAt(0).toUpperCase() + action.slice(1)} multiple pending alerts`) }}
         </template>
