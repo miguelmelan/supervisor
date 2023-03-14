@@ -406,17 +406,11 @@ onMounted(() => {
                                     <label :for="'checkbox-' + item.id" class="sr-only">{{ __('Select item') }}</label>
                                 </div>
                             </td>
-                            <th scope="row" class="py-4 px-6 font-medium font-semibold whitespace-nowrap">
+                            <th scope="row" class="py-4 px-6 font-semibold whitespace-nowrap">
                                 {{ item.id_padded }}
                             </th>
                             <td class="py-4 px-6">
-                                <span :data-tooltip-target="'tooltip-default-' + item.id">
                                 {{ item.creation_time_for_humans }}
-                                </span>
-                                <div :id="'tooltip-default-' + item.id" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-1 tooltip dark:bg-gray-700">
-                                    Tooltip content
-                                <div class="tooltip-arrow" data-popper-arrow></div>
-                                </div>
                             </td>
                             <td class="py-4 px-6">
                                 {{ __(item.severity) }}
