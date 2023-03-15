@@ -11,7 +11,7 @@ const props = defineProps({
 
 const pendingAlertsCount = computed(() => props.pendingAlertsCount);
 const newPendingAlertsCount = ref(0);
-const closedAlertsCount = ref(props.closedAlertsCount);
+const closedAlertsCount = computed(() => props.closedAlertsCount);
 const newClosedAlertsCount = ref(0);
 </script>
 

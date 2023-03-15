@@ -84,3 +84,10 @@ function roundToNearestMinuteInterval(Carbon $dateTime, $minuteInterval = 15)
         0
     );
 }
+
+function createToast($message, $style)
+{
+    session()->flash('toast', $message);
+    session()->flash('toastStyle', $style);
+    session()->flash('toastId', fake(app()->getLocale())->uuid());
+}

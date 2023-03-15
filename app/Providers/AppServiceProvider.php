@@ -39,6 +39,9 @@ class AppServiceProvider extends ServiceProvider
             'flash' => function () {
                 return [
                     'message' => Session::get('message'),
+                    'toast' => Session::get('toast'),
+                    'toastStyle' => Session::get('toastStyle'),
+                    'toastId' => Session::get('toastId'),
                 ];
             },
             'locale' => function () {

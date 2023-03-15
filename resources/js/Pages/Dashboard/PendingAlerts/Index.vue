@@ -28,9 +28,9 @@ const props = defineProps({
 
 const pendingAlertsCount = computed(() => props.alertsCount);
 const newPendingAlertsCount = ref(0);
-const closedAlertsCount = ref(props.closedAlertsCount);
+const closedAlertsCount = computed(() => props.closedAlertsCount);
 const newClosedAlertsCount = ref(0);
-const automatedProcessesCount = ref(props.automatedProcessesCount);
+const automatedProcessesCount = computed(() => props.automatedProcessesCount);
 
 const sorting = reactive(props.filters.sorting ?? {
     field: 'id',
@@ -228,7 +228,7 @@ const triggerBulkAction = (action) => {
 
 const bulkRead = (callback) => {
     Inertia.post(route('pending-alerts.bulk-read'), {
-        selected: props.selected
+        selected: selected.value
     }, {
         onSuccess: () => {
             callback();
@@ -240,7 +240,7 @@ const bulkRead = (callback) => {
 
 const bulkLock = (callback) => {
     Inertia.post(route('pending-alerts.bulk-lock'), {
-        selected: props.selected
+        selected: selected.value
     }, {
         onSuccess: () => {
             callback();
@@ -252,7 +252,7 @@ const bulkLock = (callback) => {
 
 const bulkUnlock = (callback) => {
     Inertia.post(route('pending-alerts.bulk-unlock'), {
-        selected: props.selected
+        selected: selected.value
     }, {
         onSuccess: () => {
             callback();
@@ -406,10 +406,8 @@ onMounted(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in alerts.data" :key="item.id" class="border-b"
+                        <tr v-for="(item, index) in alerts.data" :key="item.id" class="bg-white border-b"
                             :class="{
-                                'bg-white': index % 2 === 0,
-                                'bg-gray-50': index % 2 !== 0,
                                 'bg-yellow-100 text-yellow-900': item.locked_at && item.locked_by.id === $page.props.user.id,
                                 'bg-red-100 text-red-900': item.locked_at && item.locked_by.id !== $page.props.user.id,
                             }">
