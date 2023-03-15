@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Inertia } from '@inertiajs/inertia';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Footer from '@/Components/Footer.vue';
@@ -26,6 +27,11 @@ const submit = () => {
     })).post(route('login'), {
         onFinish: () => form.reset('password'),
     });
+};
+
+const github = () => {
+    form.processing = true;
+    Inertia.get(route('auth.github.redirect'));
 };
 </script>
 
@@ -78,6 +84,12 @@ const submit = () => {
                 <PrimaryButton class="w-full mt-10" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     {{ __('Log in') }}
+                </PrimaryButton>
+
+                <PrimaryButton @click.stop="github()" class="w-full mt-2 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    <img src="/images/github-mark-white.png" class="h-5 w-5 mr-2" />
+                    {{ __('Log in with Github') }}
                 </PrimaryButton>
 
                 <div class="flex items-center justify-center mt-4">

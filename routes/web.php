@@ -3,13 +3,12 @@
 use App\Http\Controllers\AutomatedProcessController;
 use App\Http\Controllers\ClosedAlertsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GithubController;
 use App\Http\Controllers\OrchestratorConnectionController;
 use App\Http\Controllers\PendingAlertsController;
 use App\Http\Controllers\PropertyKeyController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UiPathController;
-use App\Http\Resources\OrchestratorConnectionResource;
-use App\Models\OrchestratorConnection;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -45,15 +44,15 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::name('pending-alerts.')->prefix('pending-alerts')->group(function () {
-        Route::get('/', [PendingAlertsController::class, 'index'])->name('index');
-        Route::get('/{alert}/edit', [PendingAlertsController::class, 'edit'])->name('edit');
-        Route::post('/{alert}/read', [PendingAlertsController::class, 'read'])->name('read');
-        Route::post('/{alert}/lock', [PendingAlertsController::class, 'lock'])->name('lock');
-        Route::post('/{alert}/unlock', [PendingAlertsController::class, 'unlock'])->name('unlock');
-        Route::post('/bulk-read', [PendingAlertsController::class, 'bulkRead'])->name('bulk-read');
-        Route::post('/bulk-lock', [PendingAlertsController::class, 'bulkLock'])->name('bulk-lock');
-        Route::post('/bulk-unlock', [PendingAlertsController::class, 'bulkUnlock'])->name('bulk-unlock');
+    Route::controller(PendingAlertsController::class)->name('pending-alerts.')->prefix('pending-alerts')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{alert}/edit', 'edit')->name('edit');
+        Route::post('/{alert}/read', 'read')->name('read');
+        Route::post('/{alert}/lock', 'lock')->name('lock');
+        Route::post('/{alert}/unlock', 'unlock')->name('unlock');
+        Route::post('/bulk-read', 'bulkRead')->name('bulk-read');
+        Route::post('/bulk-lock', 'bulkLock')->name('bulk-lock');
+        Route::post('/bulk-unlock', 'bulkUnlock')->name('bulk-unlock');
     });
     
     Route::name('closed-alerts.')->prefix('closed-alerts')->group(function () {
@@ -100,5 +99,12 @@ Route::middleware([
             'property-keys/bulk-destroy',
             [PropertyKeyController::class, 'bulkDestroy']
         )->name('property-keys.bulk-destroy');
+    });
+});
+
+Route::name('auth.')->prefix('auth')->group(function () {
+    Route::controller(GithubController::class)->name('github.')->prefix('github')->group(function () {
+        Route::get('', 'redirect')->name('redirect');
+        Route::get('callback', 'callback')->name('callback');
     });
 });
