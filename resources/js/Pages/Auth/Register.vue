@@ -1,5 +1,7 @@
 <script setup>
+import { computed, inject } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Inertia } from '@inertiajs/inertia';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -8,6 +10,8 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+
+const translate = inject('translate');
 
 const form = useForm({
     name: '',
@@ -22,19 +26,23 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
-</script>
 
-<script>
-export default {
-    computed: {
-        termsAndPrivacyPolicyText() {
-            return this.__('I agree to the :terms_of_service and :privacy_policy', {
-                terms_of_service: '<a target="_blank" href="' + route('terms.show') + '" class= "underline text-sm text-gray-600 hover:text-gray-900">' + this.__('Terms of Service') + '</a>',
-                privacy_policy: '<a target="_blank" href="' + route('policy.show') + '" class= "underline text-sm text-gray-600 hover:text-gray-900">' + this.__('Privacy Policy') + '</a>'
-            });
-        }
-    }
-}
+const termsAndPrivacyPolicyText = computed(() => {
+    return translate('I agree to the :terms_of_service and :privacy_policy', {
+        terms_of_service: '<a target="_blank" href="' + route('terms.show') + '" class= "underline text-sm text-gray-600 hover:text-gray-900">' + translate('Terms of Service') + '</a>',
+        privacy_policy: '<a target="_blank" href="' + route('policy.show') + '" class= "underline text-sm text-gray-600 hover:text-gray-900">' + translate('Privacy Policy') + '</a>'
+    });
+});
+
+const google = () => {
+    form.processing = true;
+    Inertia.get(route('auth.google.redirect'));
+};
+
+const github = () => {
+    form.processing = true;
+    Inertia.get(route('auth.github.redirect'));
+};
 </script>
 
 <template>
@@ -94,6 +102,25 @@ export default {
                 <PrimaryButton class="w-full mt-10" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     {{ __('Sign up') }}
+                </PrimaryButton>
+
+                <div class="inline-flex items-center justify-center w-full">
+                    <hr class="w-64 h-px my-8 bg-gray-300 border-0">
+                    <span class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2">
+                        {{ __('or') }}
+                    </span>
+                </div>
+
+                <PrimaryButton @click.stop="google()" class="w-full mt-2 text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    <img src="/images/google.png" class="h-5 w-5 mr-2" />
+                    {{ __('Sign up with Google') }}
+                </PrimaryButton>
+
+                <PrimaryButton @click.stop="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    <img src="/images/github-mark-white.png" class="h-5 w-5 mr-2" />
+                    {{ __('Sign up with Github') }}
                 </PrimaryButton>
 
                 <div class="flex items-center justify-center mt-4">

@@ -29,6 +29,11 @@ const submit = () => {
     });
 };
 
+const google = () => {
+    form.processing = true;
+    Inertia.get(route('auth.google.redirect'));
+};
+
 const github = () => {
     form.processing = true;
     Inertia.get(route('auth.github.redirect'));
@@ -86,7 +91,20 @@ const github = () => {
                     {{ __('Log in') }}
                 </PrimaryButton>
 
-                <PrimaryButton @click.stop="github()" class="w-full mt-2 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <div class="inline-flex items-center justify-center w-full">
+                    <hr class="w-64 h-px my-8 bg-gray-300 border-0">
+                    <span class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2">
+                        {{ __('or') }}
+                    </span>
+                </div>
+
+                <PrimaryButton @click.stop="google()" class="w-full mt-2 text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    <img src="/images/google.png" class="h-5 w-5 mr-2" />
+                    {{ __('Log in with Google') }}
+                </PrimaryButton>
+
+                <PrimaryButton @click.stop="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/github-mark-white.png" class="h-5 w-5 mr-2" />
                     {{ __('Log in with Github') }}

@@ -4,6 +4,7 @@ use App\Http\Controllers\AutomatedProcessController;
 use App\Http\Controllers\ClosedAlertsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GithubController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\OrchestratorConnectionController;
 use App\Http\Controllers\PendingAlertsController;
 use App\Http\Controllers\PropertyKeyController;
@@ -104,6 +105,10 @@ Route::middleware([
 
 Route::name('auth.')->prefix('auth')->group(function () {
     Route::controller(GithubController::class)->name('github.')->prefix('github')->group(function () {
+        Route::get('', 'redirect')->name('redirect');
+        Route::get('callback', 'callback')->name('callback');
+    });
+    Route::controller(GoogleController::class)->name('google.')->prefix('google')->group(function () {
         Route::get('', 'redirect')->name('redirect');
         Route::get('callback', 'callback')->name('callback');
     });

@@ -6,18 +6,18 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class GithubController extends Controller
+class GoogleController extends Controller
 {
     public function redirect()
     {
-        $redirectUrl = Socialite::driver('github')->redirect()->getTargetUrl();
+        $redirectUrl = Socialite::driver('google')->redirect()->getTargetUrl();
         return response('', 409)->header('X-Inertia-Location', $redirectUrl);
     }
 
     public function callback()
     {
-        $user = Socialite::driver('github')->user();
-        $existingUser = User::where('github_id', $user->id)->first();
+        $user = Socialite::driver('google')->user();
+        $existingUser = User::where('google_id', $user->id)->first();
 
         if ($existingUser) {
             Auth::login($existingUser);
@@ -25,7 +25,7 @@ class GithubController extends Controller
         } else {
             $newUser = User::updateOrCreate(['email' => $user->email], [
                 'name' => $user->name,
-                'github_id' => $user->id,
+                'google_id' => $user->id,
                 'password' => encrypt('123456dummy')
             ]);
 
