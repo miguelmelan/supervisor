@@ -98,13 +98,13 @@ const github = () => {
                     </span>
                 </div>
 
-                <PrimaryButton @click.stop="google()" class="w-full mt-2 text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton @click.prevent="google()" class="w-full mt-2 text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/google.png" class="h-5 w-5 mr-2" />
                     {{ __('Log in with Google') }}
                 </PrimaryButton>
 
-                <PrimaryButton @click.stop="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton @click.prevent="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/github-mark-white.png" class="h-5 w-5 mr-2" />
                     {{ __('Log in with Github') }}
