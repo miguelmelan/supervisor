@@ -19,6 +19,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             'SocialiteProviders\\Microsoft\\MicrosoftExtendSocialite@handle',
+            'SocialiteProviders\\UiPath\\UiPathExtendSocialite@handle',
         ],
     ];
 

@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'github_id' => $this->github_id,
             'google_id' => $this->google_id,
             'microsoft_id' => $this->microsoft_id,
+            'uipath_id' => $this->uipath_id,
         ];
     }
 }

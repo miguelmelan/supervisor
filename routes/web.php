@@ -10,6 +10,7 @@ use App\Http\Controllers\OrchestratorConnectionController;
 use App\Http\Controllers\PendingAlertsController;
 use App\Http\Controllers\PropertyKeyController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\UiPathAutomationCloudController;
 use App\Http\Controllers\UiPathController;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
@@ -114,6 +115,10 @@ Route::name('auth.')->prefix('auth')->group(function () {
         Route::get('callback', 'callback')->name('callback');
     });
     Route::controller(MicrosoftController::class)->name('microsoft.')->prefix('microsoft')->group(function () {
+        Route::get('', 'redirect')->name('redirect');
+        Route::get('callback', 'callback')->name('callback');
+    });
+    Route::controller(UiPathAutomationCloudController::class)->name('uipath.')->prefix('uipath')->group(function () {
         Route::get('', 'redirect')->name('redirect');
         Route::get('callback', 'callback')->name('callback');
     });

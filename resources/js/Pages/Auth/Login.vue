@@ -29,6 +29,11 @@ const submit = () => {
     });
 };
 
+const uipath = () => {
+    form.processing = true;
+    Inertia.get(route('auth.uipath.redirect'));
+};
+
 const microsoft = () => {
     form.processing = true;
     Inertia.get(route('auth.microsoft.redirect'));
@@ -102,6 +107,12 @@ const github = () => {
                         {{ __('or') }}
                     </span>
                 </div>
+
+                <PrimaryButton @click.prevent="uipath()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    <img src="/images/uipath-corporate-logo-digital-rgb-white-preferred.png" class="h-5 mr-2" />
+                    {{ __('Log in with UiPath') }}
+                </PrimaryButton>
 
                 <PrimaryButton @click.prevent="microsoft()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">

@@ -46,4 +46,8 @@ return [
         'redirect' => '/auth/microsoft/callback',
         'tenant' => 'common',
     ],
+    'uipath' => [
+        'client_id' => env('UIPATH_CLIENT_ID'),
+        'redirect' => '/auth/uipath/callback',
+    ],
 ];

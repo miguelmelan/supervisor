@@ -20,6 +20,8 @@
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.7",
         "pusher/pusher-php-server": "^7.2",
+        "socialiteproviders/generators": "^4.6",
+        "socialiteproviders/manager": "^4.3",
         "socialiteproviders/microsoft": "^4.2",
         "socialiteproviders/microsoft-azure": "^5.1",
         "spatie/laravel-tags": "^4.3",
@@ -42,7 +44,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "SocialiteProviders\\UiPath\\": "SocialiteProviders/src/UiPath/"
         },
         "files": [
             "app/helpers.php"

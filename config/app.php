@@ -182,7 +182,8 @@ return [
         LaravelLang\JsonFallbackHotfix\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        \SocialiteProviders\Manager\ServiceProvider::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
+        SocialiteProviders\Generators\GeneratorsServiceProvider::class,
 
         /*
          * Package Service Providers...
