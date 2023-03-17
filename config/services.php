@@ -48,6 +48,7 @@ return [
     ],
     'uipath' => [
         'client_id' => env('UIPATH_CLIENT_ID'),
+        'client_secret' => '',
         'redirect' => '/auth/uipath/callback',
     ],
 ];
