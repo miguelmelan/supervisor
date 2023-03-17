@@ -34,6 +34,11 @@ const termsAndPrivacyPolicyText = computed(() => {
     });
 });
 
+const microsoft = () => {
+    form.processing = true;
+    Inertia.get(route('auth.microsoft.redirect'));
+};
+
 const google = () => {
     form.processing = true;
     Inertia.get(route('auth.google.redirect'));
@@ -110,6 +115,12 @@ const github = () => {
                         {{ __('or') }}
                     </span>
                 </div>
+
+                <PrimaryButton @click.prevent="microsoft()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    <img src="/images/microsoft.png" class="h-5 w-5 mr-2" />
+                    {{ __('Sign up with Microsoft') }}
+                </PrimaryButton>
 
                 <PrimaryButton @click.prevent="google()" class="w-full mt-2 text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">

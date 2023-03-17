@@ -372,6 +372,26 @@
     "Unlock a pending alert": "Unlock a pending alert",
     "Are you sure you want to unlock selected pending alerts (:number)?": "Are you sure you want to unlock selected pending alerts (:number)?",
     "Are you sure you want to unlock this pending alert?": "Are you sure you want to unlock this pending alert?",
-    "Unlock": "Unlock"
-
+    "Unlock": "Unlock",
+    "Locked by :username": "Locked by :username",
+    "you": "you",
+    "or": "or",
+    "Log in with Microsoft": "Log in with Microsoft",
+    "Log in with Google": "Log in with Google",
+    "Log in with Github": "Log in with Github",
+    "Sign up with Microsoft": "Sign up with Microsoft",
+    "Sign up with Google": "Sign up with Google",
+    "Sign up with Github": "Sign up with Github",
+    "Alert successfully read!": "Alert successfully read!",
+    "Alert successfully locked!": "Alert successfully locked!",
+    "Alert successfully unlocked!": "Alert successfully unlocked!",
+    "Alert already read by :username": "Alert already read by :username",
+    "Alert cannot be unlocked as it is not locked.": "Alert cannot be unlocked as it is not locked.",
+    "Alert cannot be unlocked as it is locked by :username": "Alert cannot be unlocked as it is locked by :username",
+    ":count / :total alert successfully read!": ":count / :total alert successfully read!",
+    ":count / :total alert successfully locked!": ":count / :total alert successfully locked!",
+    ":count / :total alert successfully unlocked!": ":count / :total alert successfully unlocked!",
+    ":count / :total alerts successfully read!": ":count / :total alerts successfully read!",
+    ":count / :total alerts successfully locked!": ":count / :total alerts successfully locked!",
+    ":count / :total alerts successfully unlocked!": ":count / :total alerts successfully unlocked!"
 }

@@ -28,6 +28,7 @@ class GithubController extends Controller
                 'github_id' => $user->id,
                 'password' => encrypt('123456dummy')
             ]);
+            $newUser->markEmailAsVerified();
 
             if (count($newUser->ownedTeams) === 0) {
                 $newUser->ownedTeams()->create([

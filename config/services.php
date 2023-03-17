@@ -40,5 +40,10 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => '/auth/google/callback',
     ],
-
+    'microsoft' => [
+        'client_id' => env('MICROSOFT_CLIENT_ID'),
+        'client_secret' => env('MICROSOFT_CLIENT_SECRET'),
+        'redirect' => '/auth/microsoft/callback',
+        'tenant' => 'common',
+    ],
 ];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AutomatedProcessController;
+use App\Http\Controllers\MicrosoftController;
 use App\Http\Controllers\ClosedAlertsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GithubController;
@@ -109,6 +110,10 @@ Route::name('auth.')->prefix('auth')->group(function () {
         Route::get('callback', 'callback')->name('callback');
     });
     Route::controller(GoogleController::class)->name('google.')->prefix('google')->group(function () {
+        Route::get('', 'redirect')->name('redirect');
+        Route::get('callback', 'callback')->name('callback');
+    });
+    Route::controller(MicrosoftController::class)->name('microsoft.')->prefix('microsoft')->group(function () {
         Route::get('', 'redirect')->name('redirect');
         Route::get('callback', 'callback')->name('callback');
     });

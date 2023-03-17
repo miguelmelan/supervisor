@@ -492,7 +492,9 @@ onMounted(() => {
                                     </SecondaryButton>
                                 </div>
                                 <div v-if="item.locked_at" class="flex justify-center mt-2">
-                                    {{ __('Locked by') }} {{ item.locked_by.id === $page.props.user.id ? __('you') : item.locked_by.name }}
+                                    {{ __('Locked by :username', {
+                                        'username': item.locked_by.id === $page.props.user.id ? __('you') : item.locked_by.name,
+                                    }) }}
                                 </div>
                             </td>
                         </tr>
