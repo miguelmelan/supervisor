@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { computed } from 'vue';
 
 defineProps({
     canResetPassword: Boolean,
@@ -28,6 +29,8 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const authEnabled = computed(() => usePage().props.value.auth);
 
 const uipath = () => {
     form.processing = true;
@@ -101,32 +104,33 @@ const github = () => {
                     {{ __('Log in') }}
                 </PrimaryButton>
 
-                <div class="inline-flex items-center justify-center w-full">
+                <div v-if="authEnabled.uipath || authEnabled.microsoft || authEnabled.google || authEnabled.github"
+                    class="inline-flex items-center justify-center w-full">
                     <hr class="w-64 h-px my-8 bg-gray-300 border-0">
                     <span class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2">
                         {{ __('or') }}
                     </span>
                 </div>
 
-                <PrimaryButton @click.prevent="uipath()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="authEnabled.uipath" @click.prevent="uipath()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/uipath-corporate-logo-digital-rgb-white-preferred.png" class="h-5 mr-2" />
                     {{ __('Log in with UiPath') }}
                 </PrimaryButton>
 
-                <PrimaryButton @click.prevent="microsoft()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="authEnabled.microsoft" @click.prevent="microsoft()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/microsoft.png" class="h-5 w-5 mr-2" />
                     {{ __('Log in with Microsoft') }}
                 </PrimaryButton>
 
-                <PrimaryButton @click.prevent="google()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="authEnabled.google" @click.prevent="google()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/google.png" class="h-5 w-5 mr-2" />
                     {{ __('Log in with Google') }}
                 </PrimaryButton>
 
-                <PrimaryButton @click.prevent="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="authEnabled.github" @click.prevent="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/github-mark-white.png" class="h-5 w-5 mr-2" />
                     {{ __('Log in with Github') }}

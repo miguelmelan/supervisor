@@ -60,6 +60,12 @@ class AppServiceProvider extends ServiceProvider
                     resource_path('../lang/' . app()->getLocale() . '.json')
                 );
             },
+            'auth' => [
+                'uipath' => env('AUTH_UIPATH_ENABLED'),
+                'github' => env('AUTH_GITHUB_ENABLED'),
+                'google' => env('AUTH_GOOGLE_ENABLED'),
+                'microsoft' => env('AUTH_MICROSOFT_ENABLED'),
+            ],
         ]);
 
         // Inside of the boot() method.

@@ -34,6 +34,13 @@ const termsAndPrivacyPolicyText = computed(() => {
     });
 });
 
+const authEnabled = computed(() => usePage().props.value.auth);
+
+const uipath = () => {
+    form.processing = true;
+    Inertia.get(route('auth.uipath.redirect'));
+};
+
 const microsoft = () => {
     form.processing = true;
     Inertia.get(route('auth.microsoft.redirect'));
@@ -109,26 +116,33 @@ const github = () => {
                     {{ __('Sign up') }}
                 </PrimaryButton>
 
-                <div class="inline-flex items-center justify-center w-full">
+                <div v-if="authEnabled.uipath || authEnabled.microsoft || authEnabled.google || authEnabled.github"
+                    class="inline-flex items-center justify-center w-full">
                     <hr class="w-64 h-px my-8 bg-gray-300 border-0">
                     <span class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2">
                         {{ __('or') }}
                     </span>
                 </div>
 
-                <PrimaryButton @click.prevent="microsoft()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="authEnabled.uipath" @click.prevent="uipath()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing">
+                    <img src="/images/uipath-corporate-logo-digital-rgb-white-preferred.png" class="h-5 mr-2" />
+                    {{ __('Sign up with UiPath') }}
+                </PrimaryButton>
+
+                <PrimaryButton v-if="authEnabled.microsoft" @click.prevent="microsoft()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/microsoft.png" class="h-5 w-5 mr-2" />
                     {{ __('Sign up with Microsoft') }}
                 </PrimaryButton>
 
-                <PrimaryButton @click.prevent="google()" class="w-full mt-2 text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="authEnabled.google" @click.prevent="google()" class="w-full mt-2 text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/google.png" class="h-5 w-5 mr-2" />
                     {{ __('Sign up with Google') }}
                 </PrimaryButton>
 
-                <PrimaryButton @click.prevent="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
+                <PrimaryButton v-if="authEnabled.github" @click.prevent="github()" class="w-full mt-2 text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300" :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing">
                     <img src="/images/github-mark-white.png" class="h-5 w-5 mr-2" />
                     {{ __('Sign up with Github') }}

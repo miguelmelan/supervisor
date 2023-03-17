@@ -106,20 +106,28 @@ Route::middleware([
 });
 
 Route::name('auth.')->prefix('auth')->group(function () {
-    Route::controller(GithubController::class)->name('github.')->prefix('github')->group(function () {
-        Route::get('', 'redirect')->name('redirect');
-        Route::get('callback', 'callback')->name('callback');
-    });
-    Route::controller(GoogleController::class)->name('google.')->prefix('google')->group(function () {
-        Route::get('', 'redirect')->name('redirect');
-        Route::get('callback', 'callback')->name('callback');
-    });
-    Route::controller(MicrosoftController::class)->name('microsoft.')->prefix('microsoft')->group(function () {
-        Route::get('', 'redirect')->name('redirect');
-        Route::get('callback', 'callback')->name('callback');
-    });
-    Route::controller(UiPathAutomationCloudController::class)->name('uipath.')->prefix('uipath')->group(function () {
-        Route::get('', 'redirect')->name('redirect');
-        Route::get('callback', 'callback')->name('callback');
-    });
+    if (env('AUTH_GITHUB_ENABLED', false)) {
+        Route::controller(GithubController::class)->name('github.')->prefix('github')->group(function () {
+            Route::get('', 'redirect')->name('redirect');
+            Route::get('callback', 'callback')->name('callback');
+        });
+    }
+    if (env('AUTH_GOOGLE_ENABLED', false)) {
+        Route::controller(GoogleController::class)->name('google.')->prefix('google')->group(function () {
+            Route::get('', 'redirect')->name('redirect');
+            Route::get('callback', 'callback')->name('callback');
+        });
+    }
+    if (env('AUTH_MICROSOFT_ENABLED', false)) {
+        Route::controller(MicrosoftController::class)->name('microsoft.')->prefix('microsoft')->group(function () {
+            Route::get('', 'redirect')->name('redirect');
+            Route::get('callback', 'callback')->name('callback');
+        });
+    }
+    if (env('AUTH_UIPATH_ENABLED', false)) {
+        Route::controller(UiPathAutomationCloudController::class)->name('uipath.')->prefix('uipath')->group(function () {
+            Route::get('', 'redirect')->name('redirect');
+            Route::get('callback', 'callback')->name('callback');
+        });
+    }
 });
