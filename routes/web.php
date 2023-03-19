@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GithubController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\OrchestratorConnectionController;
+use App\Http\Controllers\OrchestratorConnectionTenantAlertController;
 use App\Http\Controllers\PendingAlertsController;
 use App\Http\Controllers\PropertyKeyController;
 use App\Http\Controllers\TagController;
@@ -49,6 +50,9 @@ Route::middleware([
 
     Route::controller(PendingAlertsController::class)->name('pending-alerts.')->prefix('pending-alerts')->group(function () {
         Route::get('/', 'index')->name('index');
+    });
+
+    Route::controller(OrchestratorConnectionTenantAlertController::class)->name('alerts.')->prefix('alerts')->group(function () {
         Route::get('/{alert}/edit', 'edit')->name('edit');
         Route::post('/{alert}/read', 'read')->name('read');
         Route::post('/{alert}/lock', 'lock')->name('lock');

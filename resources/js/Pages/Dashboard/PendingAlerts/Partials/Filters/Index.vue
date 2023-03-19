@@ -4,7 +4,7 @@ import AlertCreationDateFilter from './Alert/CreationDate.vue';
 import SimpleFieldFilter from './SimpleField.vue';
 import OrchestratorConnectionFilter from './OrchestratorConnection/Self.vue';
 import OrchestratorConnectionTenantFilter from './OrchestratorConnection/Tenant.vue';
-import { onMounted, inject, computed, ref } from 'vue';
+import { onMounted, inject, computed } from 'vue';
 
 const props = defineProps({
     data: {

@@ -141,7 +141,7 @@ const sort = (field) => {
 };
 
 const edit = (item) => {
-    Inertia.get(route('pending-alerts.edit', {
+    Inertia.get(route('alerts.edit', {
         alert: item.id
     }));
 };
@@ -153,10 +153,12 @@ const triggerAction = (action, item) => {
 };
 
 const read = (callback) => {
-    Inertia.post(route('pending-alerts.read', {
+    form.processing = true;
+    Inertia.post(route('alerts.read', {
         alert: form.id,
     }), {}, {
         onSuccess: () => {
+            form.processing = false;
             callback();
         },
         preserveScroll: true,
@@ -165,10 +167,12 @@ const read = (callback) => {
 };
 
 const lock = (callback) => {
-    Inertia.post(route('pending-alerts.lock', {
+    form.processing = true;
+    Inertia.post(route('alerts.lock', {
         alert: form.id,
     }), {}, {
         onSuccess: () => {
+            form.processing = false;
             callback();
         },
         preserveScroll: true,
@@ -177,10 +181,12 @@ const lock = (callback) => {
 };
 
 const unlock = (callback) => {
-    Inertia.post(route('pending-alerts.unlock', {
+    form.processing = true;
+    Inertia.post(route('alerts.unlock', {
         alert: form.id,
     }), {}, {
         onSuccess: () => {
+            form.processing = false;
             callback();
         },
         preserveScroll: true,
@@ -227,7 +233,7 @@ const triggerBulkAction = (action) => {
 };
 
 const bulkRead = (callback) => {
-    Inertia.post(route('pending-alerts.bulk-read'), {
+    Inertia.post(route('alerts.bulk-read'), {
         selected: selected.value
     }, {
         onSuccess: () => {
@@ -239,7 +245,7 @@ const bulkRead = (callback) => {
 };
 
 const bulkLock = (callback) => {
-    Inertia.post(route('pending-alerts.bulk-lock'), {
+    Inertia.post(route('alerts.bulk-lock'), {
         selected: selected.value
     }, {
         onSuccess: () => {
@@ -251,7 +257,7 @@ const bulkLock = (callback) => {
 };
 
 const bulkUnlock = (callback) => {
-    Inertia.post(route('pending-alerts.bulk-unlock'), {
+    Inertia.post(route('alerts.bulk-unlock'), {
         selected: selected.value
     }, {
         onSuccess: () => {
