@@ -93,6 +93,7 @@ class PendingAlertsController extends Controller
         $alertsCollection = OrchestratorConnectionTenantAlertResource::collection(
             OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', null)
         );
+        $alertsByCategory = $this->getAlertsByCategory($alertsCollection);
         $alertsCount = $alertsCollection->count();
         $alertsSeverities = $alertsCollection->unique('severity')->pluck('severity');
         $alertsNotificationNames = $alertsCollection->unique('notification_name')->pluck('notification_name');
@@ -117,6 +118,7 @@ class PendingAlertsController extends Controller
 
         return Inertia::render('Dashboard/PendingAlerts/Index', [
             'alerts' => $alerts,
+            'alertsByCategory' => $alertsByCategory,
             'alertsCount' => $alertsCount,
             'closedAlertsCount' => $closedAlertsCount,
             'automatedProcessesCount' => $automatedProcessesCount,
@@ -179,5 +181,18 @@ class PendingAlertsController extends Controller
         }
 
         return null;
+    }
+
+    private function getAlertsByCategory($collection)
+    {
+        $severity = $collection->groupBy('severity');
+        $notificationName = $collection->groupBy('notification_name');
+        $component = $collection->groupBy('component');
+
+        return [
+            'severity' => $severity,
+            'notificationName' => $notificationName,
+            'component' => $component,
+        ];
     }
 }

@@ -9,42 +9,35 @@ const props = defineProps({
     pendingAlertsCount: Number,
     alertsAverageResolutionTimeEveryday: Object,
     alertsAverageResolutionTime: String,
+    alertsByCategory: Object,
 });
 
 const alertsAverageResolutionTime = computed(() => props.alertsAverageResolutionTime);
 
 const pendingAlertsCount = computed(() => props.pendingAlertsCount);
+const alertsByCategory = computed(() => props.alertsByCategory);
 
 const indicators = ref([{
     id: 'by-severity',
     type: 'doughnut',
-    alerts: {
-        'Error': ['', '', ''],
-        'Warn': ['', ''],
-    },
-    categories: ['Fatal', 'Error', 'Warn'],
+    alerts: alertsByCategory.value.severity,
+    categories: Object.keys(alertsByCategory.value.severity),
     title: translate('By severity'),
     backgroundColor: ['#7f1d1d', '#f5222d', '#faaf14'],
     icon: 'rectangle-group',
 }, {
     id: 'by-type',
     type: 'doughnut',
-    alerts: {
-        'Job faulted': ['', '', ''],
-        'Queue item failed (BE)': ['', ''],
-    },
-    categories: ['Job faulted', 'Queue item failed (AE)', 'Queue item failed (BE)'],
+    alerts: alertsByCategory.value.notificationName,
+    categories: Object.keys(alertsByCategory.value.notificationName),
     title: translate('By type'),
     backgroundColor: ['#a78bfa', '#38c6f4', '#f472b6'],
     icon: 'rectangle-stack',
 }, {
     id: 'by-component-type',
     type: 'doughnut',
-    alerts: {
-        'Jobs': ['', '', ''],
-        'Queues': ['', ''],
-    },
-    categories: ['Jobs', 'Queues', 'Schedules'],
+    alerts: alertsByCategory.value.component,
+    categories: Object.keys(alertsByCategory.value.component),
     title: translate('By component type'),
     backgroundColor: ['#a78bfa', '#38c6f4', '#f472b6'],
     icon: 'puzzle-piece',

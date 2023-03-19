@@ -16,6 +16,7 @@ import { Inertia } from '@inertiajs/inertia';
 
 const props = defineProps({
     alerts: Object,
+    alertsByCategory: Object,
     alertsCount: Number,
     closedAlertsCount: Number,
     automatedProcessesCount: Number,
@@ -332,7 +333,8 @@ onMounted(() => {
                     <!-- Tiles -->
                     <Tiles :pending-alerts-count="pendingAlertsCount"  
                         :alerts-average-resolution-time-everyday="alertsAverageResolutionTimeEveryday"
-                        :alerts-average-resolution-time="alertsAverageResolutionTime" />
+                        :alerts-average-resolution-time="alertsAverageResolutionTime"
+                        :alerts-by-category="alertsByCategory" />
                 </div>
 
                 <Filters :data="filtersData" 

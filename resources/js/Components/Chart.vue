@@ -214,79 +214,84 @@ const plugins = computed(() => {
 
 const getOrCreateLegendList = (chart, id) => {
     const legendContainer = document.getElementById(id);
-    let listContainer = legendContainer.querySelector('ul');
+    if (legendContainer) {
+        let listContainer = legendContainer.querySelector('ul');
 
-    if (!listContainer) {
-        listContainer = document.createElement('ul');
-        listContainer.style.display = 'flex';
-        listContainer.style.flexDirection = 'row';
-        listContainer.style.margin = 0;
-        listContainer.style.padding = 0;
+        if (!listContainer) {
+            listContainer = document.createElement('ul');
+            listContainer.style.display = 'flex';
+            listContainer.style.flexDirection = 'row';
+            listContainer.style.margin = 0;
+            listContainer.style.padding = 0;
 
-        legendContainer.appendChild(listContainer);
+            legendContainer.appendChild(listContainer);
+        }
+
+        return listContainer;
     }
 
-    return listContainer;
+    return false;
 };
 
 const htmlLegendPlugin = {
     id: 'htmlLegend',
     afterUpdate(chart, args, options) {
         const ul = getOrCreateLegendList(chart, options.containerID);
-
-        // Remove old legend items
-        while (ul.firstChild) {
-            ul.firstChild.remove();
-        }
-
-        // Reuse the built-in legendItems generator
-        const items = chart.options.plugins.legend.labels.generateLabels(chart);
-
-        items.forEach((item, index) => {
-            const li = document.createElement('li');
-
-            li.style.alignItems = 'center';
-            li.style.cursor = 'pointer';
-            li.style.display = 'flex';
-            li.style.flexDirection = 'row';
-            if (index > 0) {
-                li.classList.add('ml-2');
+        if (ul) {
+            // Remove old legend items
+            while (ul.firstChild) {
+                ul.firstChild.remove();
             }
 
-            li.onclick = () => {
-                const { type } = chart.config;
-                if (type === 'pie' || type === 'doughnut') {
-                    // Pie and doughnut charts only have a single dataset and visibility is per item
-                    chart.toggleDataVisibility(item.index);
-                } else {
-                    chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
+            // Reuse the built-in legendItems generator
+            const items = chart.options.plugins.legend.labels.generateLabels(chart);
+
+            items.forEach((item, index) => {
+                const li = document.createElement('li');
+
+                li.style.alignItems = 'center';
+                li.style.cursor = 'pointer';
+                li.style.display = 'flex';
+                li.style.flexDirection = 'row';
+                if (index > 0) {
+                    li.classList.add('ml-2');
                 }
-                chart.update();
-            };
 
-            // Color box
-            const boxSpan = document.createElement('span');
-            boxSpan.style.background = item.fillStyle;
-            boxSpan.style.borderColor = item.strokeStyle;
-            boxSpan.style.borderWidth = item.lineWidth + 'px';
-            boxSpan.style.display = 'inline-block';
-            boxSpan.classList.add('h-3.5', 'w-3.5', 'mr-2', 'rounded-full');
+                li.onclick = () => {
+                    const { type } = chart.config;
+                    if (type === 'pie' || type === 'doughnut') {
+                        // Pie and doughnut charts only have a single dataset and visibility is per item
+                        chart.toggleDataVisibility(item.index);
+                    } else {
+                        chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
+                    }
+                    chart.update();
+                };
 
-            // Text
-            const textContainer = document.createElement('p');
-            textContainer.style.color = item.fontColor;
-            textContainer.classList.add('text-xs');
-            textContainer.style.margin = 0;
-            textContainer.style.padding = 0;
-            textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
+                // Color box
+                const boxSpan = document.createElement('span');
+                boxSpan.style.background = item.fillStyle;
+                boxSpan.style.borderColor = item.strokeStyle;
+                boxSpan.style.borderWidth = item.lineWidth + 'px';
+                boxSpan.style.display = 'inline-block';
+                boxSpan.classList.add('h-3.5', 'w-3.5', 'mr-2', 'rounded-full');
 
-            const text = document.createTextNode(item.text);
-            textContainer.appendChild(text);
+                // Text
+                const textContainer = document.createElement('p');
+                textContainer.style.color = item.fontColor;
+                textContainer.classList.add('text-xs');
+                textContainer.style.margin = 0;
+                textContainer.style.padding = 0;
+                textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
 
-            li.appendChild(boxSpan);
-            li.appendChild(textContainer);
-            ul.appendChild(li);
-        });
+                const text = document.createTextNode(item.text);
+                textContainer.appendChild(text);
+
+                li.appendChild(boxSpan);
+                li.appendChild(textContainer);
+                ul.appendChild(li);
+            });
+        }
     },
 };
 

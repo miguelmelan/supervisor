@@ -54,7 +54,7 @@ const chart = ref({
         </div>
         <div class="flex-grow p-4 w-full h-full bg-white rounded-b-lg border border-blue-200 shadow-md hover:bg-blue-100">
             <Chart :id="chart.id" :type="chart.type"
-                :data="chart.data" width="24" />
+                :data="chart.data" width="48" :show-legend="false" />
         </div>
     </div>
 </template>
