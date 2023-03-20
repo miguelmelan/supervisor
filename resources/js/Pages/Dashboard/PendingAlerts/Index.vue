@@ -128,7 +128,7 @@ const filter = () => {
         },
     }, {
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
     });
 };
 
@@ -507,6 +507,67 @@ onMounted(() => {
                             </td>
                         </tr>
                     </tbody>
+                    <tfoot class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="p-4">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="rounded text-blue-50 shadow-sm focus:border-blue-50"
+                                        :class="{
+                                            'bg-gray-100 border-gray-300': alerts.data.length === 0,
+                                            'bg-white border-gray-400 hover:border-gray-neutral-55': alerts.data.length > 0,
+                                        }" v-model="selectAll" name="checkbox-all"
+                                        :disabled="alerts.data.length === 0">
+                                    <label for="checkbox-all" class="sr-only">{{ __('Select all items')}}</label>
+                                </div>
+                            </th>
+                            <th scope="col" class="py-3 px-6">
+                                <Link @click.prevent="sort('id')" class="flex items-center">
+                                    <span>{{ __('ID') }}</span>
+                                    <span class="ml-2">
+                                        <!-- up -->
+                                        <svg v-if="sorting.field == 'id' && sorting.direction == 'asc'"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                            stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                        <!-- down -->
+                                        <svg v-else-if="sorting.field == 'id' && sorting.direction == 'desc'"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                            stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                        <!-- up down -->
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                        </svg>
+                                    </span>
+                                </Link>
+                            </th>
+                            <th scope="col" class="py-3 px-6">
+                                <span>{{ __('Creation date') }}</span>
+                            </th>
+                            <th scope="col" class="py-3 px-6">
+                                <span>{{ __('Severity') }}</span>
+                            </th>
+                            <th scope="col" class="py-3 px-6">
+                                <span>{{ __('Type') }}</span>
+                            </th>
+                            <th scope="col" class="py-3 px-6">
+                                <span>{{ __('Component') }}</span>
+                            </th>
+                            <th scope="col" class="py-3 px-6">
+                                <span>{{ __('UiPath Orchestrator connection') }}</span>
+                            </th>
+                            <th v-if="automatedProcessesCount > 0" scope="col" class="py-3 px-6">
+                                <span>{{ __('Automated business process') }}</span>
+                            </th>
+                            <th scope="col" class="py-3 px-6 text-center">
+                                {{ __('Actions') }}
+                            </th>
+                        </tr>
+                    </tfoot>
                 </table>
 
                 <BulkButtons class="mt-4" :selected="selected"

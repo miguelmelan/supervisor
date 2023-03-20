@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, computed } from 'vue';
+import { ref, inject } from 'vue';
 import Chart from '@/Components/Chart.vue';
 
 const translate = inject('translate');
@@ -16,7 +16,7 @@ const chart = ref({
         datasets: [
             {
                 label: translate('Number of alerts'),
-                data: props.indicator.categories.map(category => props.indicator.alerts[category] ? props.indicator.alerts[category].length : 0),
+                data: props.indicator.categories.map(c => props.indicator.alerts.find(a => a[props.indicator.key] === c)?.count),
                 backgroundColor: props.indicator.backgroundColor,
             },
         ],

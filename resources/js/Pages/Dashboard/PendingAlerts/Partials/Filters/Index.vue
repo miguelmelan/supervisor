@@ -83,7 +83,7 @@ const selectedAlertSeverities = computed(() => props.data.alert.selectedSeveriti
 const selectedAlertNotificationNames = computed(() => props.data.alert.selectedNotificationNames);
 const selectedAlertComponents = computed(() => props.data.alert.selectedComponents);
 const resetAlertFilters = () => {
-    alertCreationDateRange.splice(0, alertCreationDateRange.length);
+    alertCreationDateRange.value.splice(0, alertCreationDateRange.value.length);
     props.data.alert.selectedSeverities = [];
     props.data.alert.selectedNotificationNames = [];
     props.data.alert.selectedComponents = [];

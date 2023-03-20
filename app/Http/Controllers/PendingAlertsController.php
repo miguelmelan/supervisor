@@ -29,43 +29,49 @@ class PendingAlertsController extends Controller
 
         $periods = 7;
 
-        $alerts = DB::table('orchestrator_connection_tenant_alerts')
-            ->join('orchestrator_connection_tenants', 'orchestrator_connection_tenant_alerts.tenant_id', '=', 'orchestrator_connection_tenants.id')
-            ->join('orchestrator_connections', 'orchestrator_connection_tenants.orchestrator_connection_id', '=', 'orchestrator_connections.id')
+        $baseQuery = DB::table('orchestrator_connection_tenant_alerts')
+        ->join('orchestrator_connection_tenants', 'orchestrator_connection_tenant_alerts.tenant_id', '=', 'orchestrator_connection_tenants.id')
+        ->join('orchestrator_connections', 'orchestrator_connection_tenants.orchestrator_connection_id', '=', 'orchestrator_connections.id')
+        ->when(request('data.alert.creationDateRange'), function ($query, $range) {
+            $query->where('creation_time', '>=', $range[0])
+                ->where('creation_time', '<=', $range[1]);
+        })
+        ->when(request('data.alert.selectedSeverities'), function ($query, $selected) {
+            $query->whereIn('severity', $selected);
+        })
+        ->when(request('data.alert.selectedNotificationNames'), function ($query, $selected) {
+            $query->whereIn('notification_name', $selected);
+        })
+        ->when(request('data.alert.selectedComponents'), function ($query, $selected) {
+            $query->whereIn('component', $selected);
+        })
+        ->when(request('data.orchestratorConnection.selected'), function ($query, $selected) {
+            $query->whereIn('orchestrator_connections.id', $selected);
+        })
+        ->when(request('data.orchestratorConnection.selectedTenants'), function ($query, $selected) {
+            $query->whereIn('orchestrator_connection_tenants.id', $selected);
+        })
+        ->when(request('data.orchestratorConnection.selectedHostingTypes'), function ($query, $selected) {
+            $query->whereIn('orchestrator_connections.hosting_type', $selected);
+        })
+        ->when(request('data.orchestratorConnection.selectedEnvironmentTypes'), function ($query, $selected) {
+            $query->whereIn('orchestrator_connections.environment_type', $selected);
+        })
+        ->where('read_at', null)
+        ->select('orchestrator_connection_tenant_alerts.*');
+        $alerts = (clone $baseQuery)
             ->when(request('sorting'), function ($query, $sorting) {
                 $query->orderBy($sorting['field'], $sorting['direction']);
             })
             ->when(!request('sorting'), function ($query) {
                 $query->orderBy('orchestrator_connection_tenant_alerts.id', 'desc');
-            })
-            ->when(request('data.alert.creationDateRange'), function ($query, $range) {
-                $query->where('creation_time', '>=', $range[0])
-                    ->where('creation_time', '<=', $range[1]);
-            })
-            ->when(request('data.alert.selectedSeverities'), function ($query, $selected) {
-                $query->whereIn('severity', $selected);
-            })
-            ->when(request('data.alert.selectedNotificationNames'), function ($query, $selected) {
-                $query->whereIn('notification_name', $selected);
-            })
-            ->when(request('data.alert.selectedComponents'), function ($query, $selected) {
-                $query->whereIn('component', $selected);
-            })
-            ->when(request('data.orchestratorConnection.selected'), function ($query, $selected) {
-                $query->whereIn('orchestrator_connections.id', $selected);
-            })
-            ->when(request('data.orchestratorConnection.selectedTenants'), function ($query, $selected) {
-                $query->whereIn('orchestrator_connection_tenants.id', $selected);
-            })
-            ->when(request('data.orchestratorConnection.selectedHostingTypes'), function ($query, $selected) {
-                $query->whereIn('orchestrator_connections.hosting_type', $selected);
-            })
-            ->when(request('data.orchestratorConnection.selectedEnvironmentTypes'), function ($query, $selected) {
-                $query->whereIn('orchestrator_connections.environment_type', $selected);
-            })
-            ->where('read_at', null)
-            ->select('orchestrator_connection_tenant_alerts.*')
-            ->paginate(config('constants.pagination.items_per_page'))
+            });
+
+        $alertsCount = $alerts->count();
+
+        $alertsByCategory = $this->getAlertsByCategory($baseQuery);
+
+        $alerts = $alerts->paginate(config('constants.pagination.items_per_page'))
             ->withQueryString()
             ->through(fn ($alert) => [
                 'id' => $alert->id,
@@ -93,11 +99,11 @@ class PendingAlertsController extends Controller
         $alertsCollection = OrchestratorConnectionTenantAlertResource::collection(
             OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', null)
         );
-        $alertsByCategory = $this->getAlertsByCategory($alertsCollection);
-        $alertsCount = $alertsCollection->count();
+
         $alertsSeverities = $alertsCollection->unique('severity')->pluck('severity');
         $alertsNotificationNames = $alertsCollection->unique('notification_name')->pluck('notification_name');
         $alertsComponents = $alertsCollection->unique('component')->pluck('component');
+
         $orchestratorConnectionTenants = OrchestratorConnectionTenantResource::collection(
             OrchestratorConnectionTenant::with('orchestratorConnection')->get()->sortBy('code')->whereIn('id', $alertsCollection->pluck('tenant.id')->unique())
         );
@@ -183,11 +189,11 @@ class PendingAlertsController extends Controller
         return null;
     }
 
-    private function getAlertsByCategory($collection)
+    private function getAlertsByCategory($query)
     {
-        $severity = $collection->groupBy('severity');
-        $notificationName = $collection->groupBy('notification_name');
-        $component = $collection->groupBy('component');
+        $severity = (clone $query)->select(DB::raw('severity, count(orchestrator_connection_tenant_alerts.id) as count'))->groupBy('severity')->get();
+        $notificationName = (clone $query)->select(DB::raw('notification_name, count(orchestrator_connection_tenant_alerts.id) as count'))->groupBy('notification_name')->get();
+        $component = (clone $query)->select(DB::raw('component, count(orchestrator_connection_tenant_alerts.id) as count'))->groupBy('component')->get();
 
         return [
             'severity' => $severity,
