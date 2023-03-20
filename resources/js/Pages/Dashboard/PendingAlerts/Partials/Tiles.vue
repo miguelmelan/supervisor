@@ -17,6 +17,23 @@ const alertsAverageResolutionTime = computed(() => props.alertsAverageResolution
 const pendingAlertsCount = computed(() => props.pendingAlertsCount);
 const alertsByCategory = computed(() => props.alertsByCategory);
 
+const selectColors = (number) => {
+    const hue = number * 137.508; // use golden angle approximation
+    return `hsl(${hue},50%,75%)`;
+}
+const generateColors = (count) => {
+    return Array.from({ length: count }, (element, index) => selectColors(index));
+}
+const indicatorsBackgroundColors = {
+    severity: {
+        warn: '#faaf14',
+        error: '#f5222d',
+        fatal: '#7f1d1d',
+    },
+    type: (count) => generateColors(count),
+    component: (count) => generateColors(count),
+};
+
 const indicators = ref([{
     id: 'by-severity',
     type: 'doughnut',
@@ -24,7 +41,7 @@ const indicators = ref([{
     categories: alertsByCategory.value.severity.map(i => i.severity),
     key: 'severity',
     title: translate('By severity'),
-    backgroundColor: ['#7f1d1d', '#f5222d', '#faaf14'],
+    backgroundColor: alertsByCategory.value.severity.map(i => indicatorsBackgroundColors.severity[i.severity.toLowerCase()]),
     icon: 'rectangle-group',
 }, {
     id: 'by-type',
@@ -33,7 +50,7 @@ const indicators = ref([{
     categories: alertsByCategory.value.notificationName.map(i => i.notification_name),
     key: 'notification_name',
     title: translate('By type'),
-    backgroundColor: ['#a78bfa', '#38c6f4', '#f472b6'],
+    backgroundColor: indicatorsBackgroundColors.type(alertsByCategory.value.notificationName.length),
     icon: 'rectangle-stack',
 }, {
     id: 'by-component-type',
