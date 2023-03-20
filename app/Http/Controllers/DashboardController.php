@@ -224,7 +224,6 @@ class DashboardController extends Controller
         $collection = OrchestratorConnectionTenantAlertResource::collection(
             OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
-        dd($collection);
         $data = $collection->groupBy(function ($alert) use ($format) {
             return ucfirst(Carbon::parse($alert->creation_time)
                 ->isoFormat($format));
