@@ -48,10 +48,10 @@ const goToIndexPage = () => {
 
 <template>
     <SectionBorder v-if="withTopBorder" />
-    <ActionMessage v-if="mode == 'edit'" :on="form.recentlySuccessful" class="mb-4 text-right">
+    <ActionMessage v-if="mode == 'edit'" :on="form.recentlySuccessful" class="text-right" :class="{ 'mb-4': form.recentlySuccessful }">
         {{ __('Saved.') }}
     </ActionMessage>
-    <ActionMessage :on="form.hasErrors" class="mb-4 text-right">
+    <ActionMessage :on="form.hasErrors" class="text-right" :class="{ 'mb-4': form.hasErrors }">
         {{ __('There are errors on the form. Please fix them before continuing.') }}
     </ActionMessage>
     <div class="flex items-center justify-end">

@@ -47,10 +47,10 @@ const automatedProcessesHealth = computed(() =>
                 }">
                 {{ automatedProcessesHealth }}%
             </h6>
-            <h3 v-else class="text-xl font-bold text-gray-neutral-55 mb-6">
+            <h3 v-else class="text-xl font-bold text-gray-neutral-55">
                 {{ __('No data') }}
             </h3>
-            <p v-if="automatedProcessesCount > 0" class="text-center text-xs text-gray-neutral-55">
+            <p v-if="automatedProcessesCount > 0" class="text-center text-xs text-gray-neutral-55 mt-6">
                 {{ __('This indicator helps to evaluate how much of your processes are currently affected by an alert.') }}
             </p>
         </div>

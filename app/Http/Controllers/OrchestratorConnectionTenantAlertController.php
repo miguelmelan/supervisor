@@ -2,74 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\OrchestratorConnectionTenantAlert;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request as HttpRequest;
+use Carbon\Carbon;
+use Inertia\Inertia;
 
 class OrchestratorConnectionTenantAlertController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreOrchestratorConnectionTenantAlertRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreOrchestratorConnectionTenantAlertRequest $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
-     * @param  \App\Models\OrchestratorConnectionTenantAlert  $orchestratorConnectionTenantAlert
+     * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
      * @return \Illuminate\Http\Response
      */
-    public function show(OrchestratorConnectionTenantAlert $orchestratorConnectionTenantAlert)
+    public function show(OrchestratorConnectionTenantAlert $alert)
     {
-        //
+        return Inertia::render('Dashboard/Alerts/Show', [
+            'alert' => $alert,
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\OrchestratorConnectionTenantAlert  $orchestratorConnectionTenantAlert
+     * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
      * @return \Illuminate\Http\Response
      */
-    public function edit(OrchestratorConnectionTenantAlert $orchestratorConnectionTenantAlert)
+    public function edit(OrchestratorConnectionTenantAlert $alert)
     {
-        //
+        //dd($alert);
+        return Inertia::render('Dashboard/Alerts/Edit', [
+            'alert' => new OrchestratorConnectionTenantAlertResource($alert),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateOrchestratorConnectionTenantAlertRequest  $request
-     * @param  \App\Models\OrchestratorConnectionTenantAlert  $orchestratorConnectionTenantAlert
+     * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOrchestratorConnectionTenantAlertRequest $request, OrchestratorConnectionTenantAlert $orchestratorConnectionTenantAlert)
+    public function update(UpdateOrchestratorConnectionTenantAlertRequest $request, OrchestratorConnectionTenantAlert $alert)
     {
         //
     }
@@ -77,10 +53,10 @@ class OrchestratorConnectionTenantAlertController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\OrchestratorConnectionTenantAlert  $orchestratorConnectionTenantAlert
+     * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OrchestratorConnectionTenantAlert $orchestratorConnectionTenantAlert)
+    public function destroy(OrchestratorConnectionTenantAlert $alert)
     {
         //
     }

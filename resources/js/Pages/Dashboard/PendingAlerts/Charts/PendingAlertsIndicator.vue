@@ -12,7 +12,7 @@ const chart = ref({
     id: props.indicator.id,
     type: props.indicator.type,
     data: {
-        labels: props.indicator.categories,
+        labels: props.indicator.categories.map(c => translate(c)),
         datasets: [
             {
                 label: translate('Number of alerts'),
