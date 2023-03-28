@@ -137,7 +137,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
         if ($done) {
             createToast(__('Alert successfully read!'), 'success');
         }
-        return redirect()->route('pending-alerts.index');
+        return redirect()->back();
     }
 
     public function lock(OrchestratorConnectionTenantAlert $alert)
@@ -146,7 +146,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
         if ($done) {
             createToast(__('Alert successfully locked!'), 'success');
         }
-        return redirect()->route('pending-alerts.index');
+        return redirect()->back();
     }
 
     public function unlock(OrchestratorConnectionTenantAlert $alert)
@@ -155,7 +155,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
         if ($done) {
             createToast(__('Alert successfully unlocked!'), 'success');
         }
-        return redirect()->route('pending-alerts.index');
+        return redirect()->back();
     }
 
     private function bulkAction(HttpRequest $request, $action, $verb)
@@ -193,7 +193,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             'total' => count($selected),
         ]), $style);
 
-        return redirect()->route('pending-alerts.index');
+        return redirect()->back();
     }
 
     public function bulkRead(HttpRequest $request)
