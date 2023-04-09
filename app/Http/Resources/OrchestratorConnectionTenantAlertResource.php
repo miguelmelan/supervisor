@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\OrchestratorConnectionTenant;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrchestratorConnectionTenantAlertResource extends JsonResource
@@ -16,6 +17,7 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'id_padded' => str_pad($this->id, 4, '0', STR_PAD_LEFT),
             'tenant_id' => $this->tenant_id,
             'automated_process_id' => $this->automated_process_id,
             'external_id' => $this->external_id,
@@ -28,6 +30,7 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'read_at' => $this->read_at,
             'resolution_time_in_seconds' => $this->resolution_time_in_seconds,
             'locked_at' => $this->locked_at,
+            'tenant' => new OrchestratorConnectionTenantResource(OrchestratorConnectionTenant::find($this->tenant_id)->load('orchestratorConnection')),
         ];
     }
 }

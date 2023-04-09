@@ -20,7 +20,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
     public function show(OrchestratorConnectionTenantAlert $alert)
     {
         return Inertia::render('Dashboard/Alerts/Show', [
-            'alert' => $alert,
+            'alert' => new OrchestratorConnectionTenantAlertResource($alert),
         ]);
     }
 

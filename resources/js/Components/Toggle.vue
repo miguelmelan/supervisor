@@ -38,7 +38,7 @@ const proxyChecked = computed({
 </script>
 
 <template>
-    <div>
+    <div class="flex items-center">
         <label :for="id" class="inline-flex relative items-center cursor-pointer">
             <input v-model="proxyChecked" type="checkbox" :value="value" :id="id" class="sr-only peer" :disabled="_disabled">
             <div

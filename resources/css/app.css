@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+textarea.not-resizable {
+  resize: none;
+}
+
 /************** TagsInput component */
 /* The input */
 .tags-input {

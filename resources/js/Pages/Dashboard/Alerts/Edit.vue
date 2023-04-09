@@ -1,11 +1,15 @@
 <script setup>
-import { inject } from 'vue';
+import { inject, computed } from 'vue';
 import { useForm } from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import FormStep from '@/Components/FormStep.vue';
+import Breadcrumb from '@/Components/Breadcrumb.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 import Actions from './Partials/Actions.vue';
+import Details from './Partials/Details.vue';
+import ResolutionDetails from './Partials/ResolutionDetails.vue';
+import Extensions from './Partials/Extensions.vue';
+import Timeline from './Partials/Timeline.vue';
 
 const translate = inject('translate');
 
@@ -14,79 +18,43 @@ const props = defineProps({
 });
 
 let form = useForm({
-    id: props.alert.id,
+    id: props.alert.id_padded,
+});
+
+const breadcrumb = computed(() => {
+    return [
+        { href: route('pending-alerts.index'), text: translate('Pending alerts') },
+        { text: translate('Edit alert #:id', {
+            id: form.id,
+        }) },
+    ];
 });
 
 </script>
 
 <template>
-    <AppLayout :title="__('Pending alerts') + ' > ' + __('Alert') + ` #${alert.id}`">        
+    <AppLayout :title="__('Pending alerts') + ' > ' + __('Alert') + ` #${alert.id}`">
+        <template #header>
+            <Breadcrumb :items="breadcrumb" />
+        </template>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-xl sm:rounded-lg">
                 <PageContentHeader :text="__('Edit alert #:id', {
-                    id: alert.id,
+                    id: form.id,
                 })" />
 
                 <div class="p-6 sm:px-20 bg-gray-200 bg-opacity-25">
                     <form @submit.prevent="submit">
-                        <FormStep>
-                            <template #title>
-                                {{ __('Details') }}
-                            </template>
-                            <template #description>
-                                <div class="text-sm">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt magni exercitationem, consequatur quia rerum quo iure. Architecto molestiae perferendis, debitis, nihil sequi molestias animi corrupti modi incidunt quas impedit quam?</p>
-                                </div>
-                            </template>
-                            <template #form>
-                                <div class="col-span-6 sm:col-span-4">Alert details ...</div>
-                            </template>
-                        </FormStep>
-
+                        <Details :alert="alert" :form="form" />
                         <SectionBorder />
-                        <FormStep>
-                            <template #title>
-                                {{ __('Resolution details') }}
-                            </template>
-                            <template #description>
-                                <div class="text-sm">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt magni exercitationem, consequatur quia rerum quo iure. Architecto molestiae perferendis, debitis, nihil sequi molestias animi corrupti modi incidunt quas impedit quam?</p>
-                                </div>
-                            </template>
-                            <template #form>
-                                <div class="col-span-6 sm:col-span-4">Resolution details ...</div>
-                            </template>
-                        </FormStep>
 
+                        <ResolutionDetails :alert="alert" :form="form" />
                         <SectionBorder />
-                        <FormStep>
-                            <template #title>
-                                {{ __('Extensions') }}
-                            </template>
-                            <template #description>
-                                <div class="text-sm">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt magni exercitationem, consequatur quia rerum quo iure. Architecto molestiae perferendis, debitis, nihil sequi molestias animi corrupti modi incidunt quas impedit quam?</p>
-                                </div>
-                            </template>
-                            <template #form>
-                                <div class="col-span-6 sm:col-span-4">Extensions ...</div>
-                            </template>
-                        </FormStep>
 
+                        <Extensions :alert="alert" :form="form" />
                         <SectionBorder />
-                        <FormStep>
-                            <template #title>
-                                {{ __('Timeline') }}
-                            </template>
-                            <template #description>
-                                <div class="text-sm">
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt magni exercitationem, consequatur quia rerum quo iure. Architecto molestiae perferendis, debitis, nihil sequi molestias animi corrupti modi incidunt quas impedit quam?</p>
-                                </div>
-                            </template>
-                            <template #form>
-                                <div class="col-span-6 sm:col-span-4">Timeline ...</div>
-                            </template>
-                        </FormStep>
+
+                        <Timeline :alert="alert" :form="form" />
 
                         <!-- actions -->
                         <Actions :form="form" mode="edit" />
