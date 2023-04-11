@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\OrchestratorConnectionTenant;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrchestratorConnectionTenantAlertResource extends JsonResource
@@ -30,6 +31,8 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'read_at' => $this->read_at,
             'resolution_time_in_seconds' => $this->resolution_time_in_seconds,
             'locked_at' => $this->locked_at,
+            'locked_by' => $this->locked_by ? new UserResource(User::find($this->locked_by)) : null,
+            'resolution_details' => $this->resolution_details,
             'tenant' => new OrchestratorConnectionTenantResource(OrchestratorConnectionTenant::find($this->tenant_id)->load('orchestratorConnection')),
         ];
     }

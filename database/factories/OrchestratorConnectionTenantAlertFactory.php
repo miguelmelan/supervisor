@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -35,7 +36,8 @@ class OrchestratorConnectionTenantAlertFactory extends Factory
                 ->diffInSeconds(Carbon::instance($attributes['creation_time']));
 
             return [
-                'read_by' => null,
+                'resolution_details' => fake(app()->getLocale())->paragraph(),
+                'read_by' => User::find(1),
                 'read_at' => $readAt,
                 'resolution_time_in_seconds' => $resolutionTimeInSeconds,
             ];

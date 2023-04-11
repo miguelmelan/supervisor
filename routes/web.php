@@ -4,6 +4,7 @@ use App\Http\Controllers\AutomatedProcessController;
 use App\Http\Controllers\MicrosoftController;
 use App\Http\Controllers\ClosedAlertsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\GithubController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\OrchestratorConnectionController;
@@ -46,6 +47,11 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::controller(FileUploadController::class)->name('file-uploads.')->prefix('file-uploads')->group(function () {
+        Route::post('/store/file', 'storeFile')->name('store.file');
+        Route::post('/store/image', 'storeImage')->name('store.image');
+    });
+
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::controller(PendingAlertsController::class)->name('pending-alerts.')->prefix('pending-alerts')->group(function () {
@@ -53,13 +59,14 @@ Route::middleware([
     });
 
     Route::resource('alerts', OrchestratorConnectionTenantAlertController::class, [
-        'except' => [ 'index', 'create', 'store' ],
+        'except' => [ 'index', 'create', 'store', 'update' ],
     ]);
     Route::controller(OrchestratorConnectionTenantAlertController::class)->name('alerts.')->prefix('alerts')->group(function () {
         Route::get('/{alert}/edit', 'edit')->name('edit');
         Route::post('/{alert}/read', 'read')->name('read');
         Route::post('/{alert}/lock', 'lock')->name('lock');
         Route::post('/{alert}/unlock', 'unlock')->name('unlock');
+        Route::post('/{alert}/updateResolutionDetails', 'updateResolutionDetails')->name('update.resolution-details');
         Route::post('/bulk-read', 'bulkRead')->name('bulk-read');
         Route::post('/bulk-lock', 'bulkLock')->name('bulk-lock');
         Route::post('/bulk-unlock', 'bulkUnlock')->name('bulk-unlock');

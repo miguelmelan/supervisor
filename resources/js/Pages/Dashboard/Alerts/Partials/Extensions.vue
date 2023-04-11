@@ -5,7 +5,6 @@ import FormStep from '@/Components/FormStep.vue';
 const translate = inject('translate');
 
 const props = defineProps({
-    alert: Object,
     form: Object,
 });
 </script>

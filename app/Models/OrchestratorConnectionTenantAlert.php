@@ -20,6 +20,7 @@ class OrchestratorConnectionTenantAlert extends Model
         'read_at',
         'resolution_time_in_seconds',
         'locked_at',
+        'resolution_details',
     ];
 
     public function tenant()

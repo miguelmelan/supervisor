@@ -1,6 +1,10 @@
 <script setup>
 defineProps({
     text: String,
+    subText: {
+        type: String,
+        default: null,
+    },
 });
 </script>
 
@@ -14,7 +18,12 @@ defineProps({
             <div v-if="$slots.icon" class="mr-4 -ml-1 w-10 h-10">
                 <slot name="icon" />
             </div>
-            <div class="text-2xl flex-grow">{{ text }}</div>
+            <div class="text-2xl flex-grow">
+                {{ text }}
+                <div v-if="subText" class="text-sm mt-2">
+                    {{ subText }}
+                </div>
+            </div>
         </div>
     </div>
 </template>

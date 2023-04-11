@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateOrchestratorConnectionTenantAlertRequest;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\OrchestratorConnectionTenantAlert;
 use App\Models\User;
@@ -32,22 +33,26 @@ class OrchestratorConnectionTenantAlertController extends Controller
      */
     public function edit(OrchestratorConnectionTenantAlert $alert)
     {
-        //dd($alert);
         return Inertia::render('Dashboard/Alerts/Edit', [
             'alert' => new OrchestratorConnectionTenantAlertResource($alert),
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the resolution details.
      *
-     * @param  \App\Http\Requests\UpdateOrchestratorConnectionTenantAlertRequest  $request
+     * @param  \App\Http\Requests\HttpRequest  $request
      * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOrchestratorConnectionTenantAlertRequest $request, OrchestratorConnectionTenantAlert $alert)
+    public function updateResolutionDetails(HttpRequest $request, OrchestratorConnectionTenantAlert $alert)
     {
-        //
+        $alert->resolution_details = $request->get('resolution_details');
+        $alert->save();
+        
+        return redirect()->route('alerts.edit', [
+            'alert' => $alert->id,
+        ]);
     }
 
     /**

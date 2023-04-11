@@ -31,6 +31,7 @@ class StoreOrchestratorConnectionTenantAlertRequest extends FormRequest
             'severity' => 'required',
             'creation_time' => 'required',
             'deep_link_relative_url' => 'nullable',
+            'resolution_details' => 'nullable',
         ];
 
         return $rules;

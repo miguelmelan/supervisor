@@ -5,7 +5,6 @@ import FormStep from '@/Components/FormStep.vue';
 const translate = inject('translate');
 
 const props = defineProps({
-    alert: Object,
     form: Object,
 });
 </script>
@@ -17,17 +16,46 @@ const props = defineProps({
         </template>
         <template #description>
             <div class="text-sm">
-                <p>{{ __('This section provides comprehensive information about the alert that is currently selected. It includes a unique identifier, the creation date of the alert, and its severity level.Additionally, it specifies the type of the alert, whether it is related to a faulted job, queue processing error, or other type of issue.The source component of the alert is also indicated, such as Jobs, Queues, Transactions, or Triggers.Finally, the source UiPath Orchestrator or tenant is identified, providing context for where the alert originated from. ') }}</p>
+                <p>{{ __('This section provides comprehensive information about the alert that is currently selected. It includes a unique identifier, the creation date of the alert, and its severity level.Additionally, it specifies the type of the alert, whether it is related to a faulted job, queue processing error, or other type of issue.The source component of the alert is also indicated, such as Jobs, Queues, Transactions, or Triggers. Eventually, the source UiPath Orchestrator or tenant is identified, providing context for where the alert originated from. ') }}</p>
             </div>
         </template>
         <template #form>
             <div class="col-span-6">
                 <div class="w-full bg-white">
-                    <div class="flex items-center justify-between mb-4">
-                        <h5 class="text-xl font-bold leading-none text-gray-900">{{ '#' + form.id }}</h5>
-                    </div>
                     <div class="flow-root">
                         <ul role="list" class="divide-y divide-gray-200">
+                            <li class="flex">
+                                <div class="flex items-center space-x-4 w-full p-4" :class="{
+                                    'bg-warning-50': form.severity === 'Warn',
+                                    'bg-error-50': form.severity === 'Error',
+                                    'bg-red-900': form.severity === 'Fatal',
+                                }">
+                                    <div class="flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-8 h-8" :class="{
+                                                'text-orange-900': form.severity === 'Warn',
+                                                'text-white': form.severity === 'Fatal' || form.severity === 'Error',
+                                            }">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate" :class="{
+                                            'text-orange-900': form.severity === 'Warn',
+                                            'text-white': form.severity === 'Fatal' || form.severity === 'Error',
+                                        }">
+                                            {{ __('Severity') }}
+                                        </p>
+                                        <p class="text-sm truncate font-semibold" :class="{
+                                            'text-orange-900': form.severity === 'Warn',
+                                            'text-white': form.severity === 'Fatal' || form.severity === 'Error',
+                                        }">
+                                            {{ __(form.severity) }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
                             <li class="flex">
                                 <div class="flex items-center space-x-4 w-1/2 p-4">
                                     <div class="flex-shrink-0">
@@ -42,37 +70,22 @@ const props = defineProps({
                                             {{ __('Creation date') }}
                                         </p>
                                         <p class="text-sm text-gray-500 truncate">
-                                            {{ alert.creation_time }}
+                                            {{ form.creation_time }}
                                         </p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-4 w-1/2 p-4" :class="{
-                                    'bg-warning-50': alert.severity === 'Warn',
-                                    'bg-error-50': alert.severity === 'Error',
-                                    'bg-red-900': alert.severity === 'Fatal',
-                                }">
+                                <div class="flex items-center space-x-4 w-1/2 p-4">
                                     <div class="flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-8 h-8" :class="{
-                                                'text-orange-900': alert.severity === 'Warn',
-                                                'text-white': alert.severity === 'Fatal' || alert.severity === 'Error',
-                                            }">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium truncate" :class="{
-                                            'text-orange-900': alert.severity === 'Warn',
-                                            'text-white': alert.severity === 'Fatal' || alert.severity === 'Error',
-                                        }">
-                                            {{ __('Severity') }}
+                                        <p class="text-sm font-medium text-gray-900 truncate">
+                                            {{ __('Locking date') }}
                                         </p>
-                                        <p class="text-sm truncate font-semibold" :class="{
-                                            'text-orange-900': alert.severity === 'Warn',
-                                            'text-white': alert.severity === 'Fatal' || alert.severity === 'Error',
-                                        }">
-                                            {{ __(alert.severity) }}
+                                        <p class="text-sm text-gray-500 truncate">
+                                            {{ form.locked_at ? form.locked_at : __('Alert is unlocked') }}
                                         </p>
                                     </div>
                                 </div>
@@ -92,7 +105,7 @@ const props = defineProps({
                                             {{ __('Type') }}
                                         </p>
                                         <p class="text-sm text-gray-500 truncate">
-                                            {{ __(alert.notification_name) }}
+                                            {{ __(form.notification_name) }}
                                         </p>
                                     </div>
                                 </div>
@@ -109,13 +122,13 @@ const props = defineProps({
                                             {{ __('Component') }}
                                         </p>
                                         <p class="text-sm text-gray-500 truncate">
-                                            {{ __(alert.component) }}
+                                            {{ __(form.component) }}
                                         </p>
                                     </div>
                                 </div>
                             </li>
                             <li class="flex">
-                                <div class="flex items-center space-x-4 w-1/2 p-4">
+                                <div class="flex space-x-4 w-1/2 p-4">
                                     <div class="flex-shrink-0">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
@@ -129,19 +142,19 @@ const props = defineProps({
                                             <div class="flex flex-col pb-3">
                                                 <dt class="mb-1 text-gray-500">{{ __('UiPath Orchestrator') }}</dt>
                                                 <dd class="font-semibold">
-                                                    {{ alert.tenant.orchestrator_connection.code }} -
-                                                    {{ alert.tenant.orchestrator_connection.name }}
+                                                    {{ form.tenant.orchestrator_connection.code }} -
+                                                    {{ form.tenant.orchestrator_connection.name }}
                                                 </dd>
                                             </div>
                                             <div class="flex flex-col pt-3">
                                                 <dt class="mb-1 text-gray-500">{{ __('Tenant') }}</dt>
-                                                <dd class="font-semibold">{{ alert.tenant.name }}</dd>
+                                                <dd class="font-semibold">{{ form.tenant.name }}</dd>
                                             </div>
                                         </dl>
                                         </p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-4 w-1/2 p-4">
+                                <div class="flex space-x-4 w-1/2 p-4">
                                     <div class="flex-shrink-0">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
@@ -154,9 +167,9 @@ const props = defineProps({
                                             {{ __('Automated business process') }}
                                         </p>
                                         <p class="text-sm text-gray-500 truncate">
-                                            <span v-if="alert.automated_process">
-                                                {{ alert.automated_process.code }} -
-                                                {{ alert.automated_process.name }}
+                                            <span v-if="form.automated_process">
+                                                {{ form.automated_process.code }} -
+                                                {{ form.automated_process.name }}
                                             </span>
                                             <span v-else>{{ ('None') }}</span>
                                     </p>

@@ -32,6 +32,7 @@ return new class extends Migration
             $table->timestamp('read_at')->nullable();
             $table->integer('resolution_time_in_seconds')->nullable();
             $table->timestamp('locked_at')->nullable();
+            $table->text('resolution_details')->nullable();
             $table->timestamps();
             $table
                 ->foreign('tenant_id', 'octa_t_id_foreign')

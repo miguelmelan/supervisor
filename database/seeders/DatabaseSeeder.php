@@ -81,6 +81,25 @@ class DatabaseSeeder extends Seeder
                 env('MAX_NUMBER_OF_ALERTS_PER_TYPE')
             )
         )
+            ->becauseOfJobFaulted()
+            ->read()->create();
+
+        OrchestratorConnectionTenantAlert::factory()->for($tenant, 'tenant')->count(
+            rand(
+                env('MIN_NUMBER_OF_ALERTS_PER_TYPE'),
+                env('MAX_NUMBER_OF_ALERTS_PER_TYPE')
+            )
+        )
+            ->becauseOfQueueItemTransactionFailedAppException()
+            ->read()->create();
+
+        OrchestratorConnectionTenantAlert::factory()->for($tenant, 'tenant')->count(
+            rand(
+                env('MIN_NUMBER_OF_ALERTS_PER_TYPE'),
+                env('MAX_NUMBER_OF_ALERTS_PER_TYPE')
+            )
+        )
+            ->becauseOfQueueItemTransactionFailedBizException()
             ->read()->create();
         OrchestratorConnectionTenantAlert::factory()->for($tenant, 'tenant')->count(
             rand(

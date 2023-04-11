@@ -13,7 +13,7 @@ const props = defineProps({
 <template>
     <SectionBorder />
     <div class="flex items-center justify-end">
-        <PrimaryButton class="mr-3">
+        <PrimaryButton v-if="form.locked_at && form.owned" @click.prevent="true" class="mr-3">
             {{ __('Read') }}
             <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -21,7 +21,7 @@ const props = defineProps({
                 </svg>
             </template>
         </PrimaryButton>
-        <PrimaryButton class="mr-3">
+        <PrimaryButton v-if="!form.locked_at" @click.prevent="true" class="mr-3">
             {{ __('Lock') }}
             <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -29,7 +29,7 @@ const props = defineProps({
                 </svg>
             </template>
         </PrimaryButton>
-        <PrimaryButton class="mr-3">
+        <PrimaryButton v-if="form.locked_at && form.owned" @click.prevent="true" class="mr-3">
             {{ __('Unlock') }}
             <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -37,15 +37,15 @@ const props = defineProps({
                 </svg>
             </template>
         </PrimaryButton>
-        <PrimaryButton class="mr-3">
+        <!-- <PrimaryButton @click.prevent="true" class="mr-3">
             {{ __('Save') }}
             <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                 </svg>
             </template>
-        </PrimaryButton>
-        <SecondaryButton as="button" @click="" class="mr-3">
+        </PrimaryButton> -->
+        <SecondaryButton @click.prevent="true" as="button" @click="" class="mr-3">
             {{ __('Close') }}
             <template #icon>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

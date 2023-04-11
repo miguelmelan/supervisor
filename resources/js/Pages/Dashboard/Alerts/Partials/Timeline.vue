@@ -6,7 +6,6 @@ import Comment from './Comment.vue';
 const translate = inject('translate');
 
 const props = defineProps({
-    alert: Object,
     form: Object,
 });
 </script>
@@ -64,7 +63,7 @@ const props = defineProps({
                     </li>
                 </ol>
                 
-                <Comment :alert="alert" :form="form" />
+                <Comment :form="form" />
             </div>
         </template>
     </FormStep>
