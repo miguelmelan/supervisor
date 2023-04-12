@@ -59,7 +59,7 @@ Route::middleware([
     });
 
     Route::resource('alerts', OrchestratorConnectionTenantAlertController::class, [
-        'except' => [ 'index', 'create', 'store', 'update' ],
+        'except' => [ 'index', 'show', 'create', 'store', 'update', 'destroy' ],
     ]);
     Route::controller(OrchestratorConnectionTenantAlertController::class)->name('alerts.')->prefix('alerts')->group(function () {
         Route::get('/{alert}/edit', 'edit')->name('edit');

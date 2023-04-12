@@ -13,19 +13,6 @@ use Inertia\Inertia;
 class OrchestratorConnectionTenantAlertController extends Controller
 {
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
-     * @return \Illuminate\Http\Response
-     */
-    public function show(OrchestratorConnectionTenantAlert $alert)
-    {
-        return Inertia::render('Dashboard/Alerts/Show', [
-            'alert' => new OrchestratorConnectionTenantAlertResource($alert),
-        ]);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
@@ -54,17 +41,6 @@ class OrchestratorConnectionTenantAlertController extends Controller
         return redirect()->route('alerts.edit', [
             'alert' => $alert->id,
         ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\OrchestratorConnectionTenantAlert  $alert
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(OrchestratorConnectionTenantAlert $alert)
-    {
-        //
     }
 
     private function doRead(OrchestratorConnectionTenantAlert $alert, $loop = false)
