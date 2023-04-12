@@ -21,6 +21,7 @@ class OrchestratorConnectionTenantAlert extends Model
         'resolution_time_in_seconds',
         'locked_at',
         'resolution_details',
+        'false_positive',
     ];
 
     public function tenant()
@@ -56,5 +57,12 @@ class OrchestratorConnectionTenantAlert extends Model
     public function lockedBy()
     {
         return $this->belongsTo(User::class, 'locked_by');
+    }
+    
+    public function falsePositive(): Attribute
+    {
+        return Attribute::get(function ($original) {
+            return $original === 1;
+        });
     }
 }

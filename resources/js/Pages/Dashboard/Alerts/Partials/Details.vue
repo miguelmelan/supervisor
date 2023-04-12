@@ -26,32 +26,41 @@ const props = defineProps({
                         <ul role="list" class="divide-y divide-gray-200">
                             <li class="flex">
                                 <div class="flex items-center space-x-4 w-full p-4" :class="{
+                                    'w-1/2': form.read_at,
                                     'bg-warning-50': form.severity === 'Warn',
                                     'bg-error-50': form.severity === 'Error',
                                     'bg-red-900': form.severity === 'Fatal',
+                                    'text-orange-900': form.severity === 'Warn',
+                                    'text-white': form.severity === 'Fatal' || form.severity === 'Error',
                                 }">
                                     <div class="flex-shrink-0">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-8 h-8" :class="{
-                                                'text-orange-900': form.severity === 'Warn',
-                                                'text-white': form.severity === 'Fatal' || form.severity === 'Error',
-                                            }">
+                                            stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium truncate" :class="{
-                                            'text-orange-900': form.severity === 'Warn',
-                                            'text-white': form.severity === 'Fatal' || form.severity === 'Error',
-                                        }">
+                                        <p class="text-sm font-medium truncate">
                                             {{ __('Severity') }}
                                         </p>
-                                        <p class="text-sm truncate font-semibold" :class="{
-                                            'text-orange-900': form.severity === 'Warn',
-                                            'text-white': form.severity === 'Fatal' || form.severity === 'Error',
-                                        }">
+                                        <p class="text-sm truncate font-semibold">
                                             {{ __(form.severity) }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div v-if="form.read_at" class="flex items-center space-x-4 w-1/2 p-4 text-green-900">
+                                    <div class="flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate">
+                                            {{ __('Read date') }}
+                                        </p>
+                                        <p class="text-sm truncate">
+                                            {{ form.read_at }}
                                         </p>
                                     </div>
                                 </div>

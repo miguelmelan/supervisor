@@ -31,8 +31,9 @@ let form = useForm({
     severity: props.alert.severity,
     creation_time: props.alert.creation_time,
     deep_link_relative_url: props.alert.deep_link_relative_url,
+    false_positive: props.alert.false_positive === 1,
     tenant: props.alert.tenant,
-    owned: props.alert.locked_at && props.alert.locked_by.id === usePage().props.value.user.id,
+    owned: props.alert.locked_by?.id === usePage().props.value.user.id,
 });
 
 const breadcrumb = computed(() => {
@@ -42,6 +43,18 @@ const breadcrumb = computed(() => {
             id: form.id_padded,
         }) },
     ];
+});
+
+const headerSubText = computed(() => {
+    let text = form.read_at ? translate('Read by :username', {
+        'username': form.owned ? translate('you') : form.read_by.name,
+    }) : null;
+    if (text) {
+        return text;
+    }
+    return form.locked_at ? translate('Locked by :username', {
+        'username': form.owned ? translate('you') : form.locked_by.name,
+    }) : ''
 });
 </script>
 
@@ -54,11 +67,10 @@ const breadcrumb = computed(() => {
             <div class="bg-white shadow-xl sm:rounded-lg">
                 <PageContentHeader :text="__('Edit alert #:id', {
                     id: form.id_padded,
-                })" :sub-text="form.locked_at ? __('Locked by :username', {
-                        'username': form.owned ? __('you') : form.locked_by.name,
-                }) : ''" :class="{
-                    'bg-yellow-100 text-yellow-900': form.owned,
-                    'bg-red-100 text-red-900': form.locked_at && !form.owned,
+                })" :sub-text="headerSubText" :class="{
+                    'bg-green-100 text-green-900': form.read_at,
+                    'bg-yellow-100 text-yellow-900': !form.read_at && form.owned,
+                    'bg-red-100 text-red-900': !form.read_at && form.locked_at && !form.owned,
                 }" />
 
                 <div class="p-6 sm:px-20 bg-gray-200 bg-opacity-25">
@@ -66,7 +78,8 @@ const breadcrumb = computed(() => {
                         <Details :form="form" />
                         <SectionBorder />
 
-                        <ResolutionDetails :form="form" :original="alert.resolution_details" />
+                        <ResolutionDetails :form="form" :original-resolution-details="alert.resolution_details"
+                            :original-false-positive="alert.false_positive === 1" />
                         <!-- <SectionBorder />
 
                         <Extensions :form="form" />

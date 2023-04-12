@@ -29,10 +29,12 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'creation_time' => $this->creation_time,
             'deep_link_relative_url' => $this->deep_link_relative_url,
             'read_at' => $this->read_at,
+            'read_by' => $this->read_by ? new UserResource(User::find($this->read_by)) : null,
             'resolution_time_in_seconds' => $this->resolution_time_in_seconds,
             'locked_at' => $this->locked_at,
             'locked_by' => $this->locked_by ? new UserResource(User::find($this->locked_by)) : null,
             'resolution_details' => $this->resolution_details,
+            'false_positive' => $this->false_positive,
             'tenant' => new OrchestratorConnectionTenantResource(OrchestratorConnectionTenant::find($this->tenant_id)->load('orchestratorConnection')),
         ];
     }

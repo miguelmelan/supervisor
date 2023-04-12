@@ -48,6 +48,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
     public function updateResolutionDetails(HttpRequest $request, OrchestratorConnectionTenantAlert $alert)
     {
         $alert->resolution_details = $request->get('resolution_details');
+        $alert->false_positive = $request->get('false_positive');
         $alert->save();
         
         return redirect()->route('alerts.edit', [

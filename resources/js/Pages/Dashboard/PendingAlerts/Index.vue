@@ -142,7 +142,10 @@ const sort = (field) => {
 };
 
 const open = (item) => {
-    if (!item.locked_at || item.locked_by.id === usePage().props.value.user.id) {
+    Inertia.get(route('alerts.edit', {
+        alert: item.id,
+    }));
+    /* if (!item.locked_at || item.locked_by.id === usePage().props.value.user.id) {
         Inertia.get(route('alerts.edit', {
             alert: item.id,
         }));
@@ -150,7 +153,7 @@ const open = (item) => {
         Inertia.get(route('alerts.show', {
             alert: item.id,
         }));
-    }
+    } */
 };
 
 const triggerAction = (action, item) => {
@@ -343,7 +346,7 @@ onMounted(() => {
                         :alerts-by-category="alertsByCategory" />
                 </div>
 
-                <Filters :data="filtersData" 
+                <Filters v-if="alerts.data.length > 0" :data="filtersData" 
                     :alerts-properties="alertsProperties"
                     :orchestrator-connections-properties="orchestratorConnectionsProperties"
                     @property-updated="filter"
@@ -513,7 +516,7 @@ onMounted(() => {
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot class="text-xs text-gray-700 uppercase bg-gray-100">
+                    <tfoot v-if="alerts.data.length > 0" class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
                             <th scope="col" class="p-4">
                                 <div class="flex items-center">

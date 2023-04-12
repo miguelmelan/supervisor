@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <Dropdown align="right" width="full" height="96" :contentClasses="['py-0', 'bg-white']">
+    <Dropdown align="right" width="full" height="full" :contentClasses="['py-0', 'bg-white']">
         <template #trigger>
             <span class="inline-flex rounded-md">
                 <button type="button"

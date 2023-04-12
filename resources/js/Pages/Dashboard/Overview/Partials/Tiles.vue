@@ -49,7 +49,7 @@ const pendingAlertsCount = ref(props.pendingAlertsCount);
         </Link>
     </div>
     <div class="h-32 overflow-auto">
-        <div
+        <Link :href="route('pending-alerts.index')"
             class="flex items-stretch justify-between p-4 w-full h-full bg-white rounded-lg border border-blue-200 shadow-md hover:bg-blue-100">
             <span class="font-bold self-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -62,7 +62,7 @@ const pendingAlertsCount = ref(props.pendingAlertsCount);
                 <span class="text-sm text-right text-gray-neutral-55">{{ __('Pending alerts') }}</span>
                 <span class="text-xl text-blue-50 font-bold">{{ abbr(pendingAlertsCount, 2) }}</span>
             </div>
-        </div>
+        </Link>
     </div>
     <div class="h-32 overflow-auto">
         <div

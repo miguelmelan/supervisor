@@ -19,6 +19,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.7",
+        "openai-php/laravel": "^0.4.1",
         "pusher/pusher-php-server": "^7.2",
         "socialiteproviders/generators": "^4.6",
         "socialiteproviders/manager": "^4.3",
@@ -81,7 +82,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "dev",
