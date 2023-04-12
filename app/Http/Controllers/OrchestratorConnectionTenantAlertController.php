@@ -20,6 +20,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
      */
     public function edit(OrchestratorConnectionTenantAlert $alert)
     {
+        $alert->load('comments');
         return Inertia::render('Dashboard/Alerts/Edit', [
             'alert' => new OrchestratorConnectionTenantAlertResource($alert),
         ]);
@@ -34,10 +35,32 @@ class OrchestratorConnectionTenantAlertController extends Controller
      */
     public function updateResolutionDetails(HttpRequest $request, OrchestratorConnectionTenantAlert $alert)
     {
+        $previousResolutionDetails = $alert->resolution_details;
+        $previousFalsePositive = $alert->false_positive;
+
         $alert->resolution_details = $request->get('resolution_details');
         $alert->false_positive = $request->get('false_positive');
         $alert->save();
         
+        if ($previousResolutionDetails !== $alert->resolution_details) {
+            $alert->comment('Resolution details updated. '
+                . ($alert->resolution_details ? 'New value: ' . $alert->resolution_details : 'Made empty.'));
+        }
+
+        if (!$previousFalsePositive || !$alert->false_positive) {
+            $alert->comment('False positive flag updated. New value: ' . ($alert->false_positive ? 'Yes' : 'No'));
+        }
+        
+        return redirect()->route('alerts.edit', [
+            'alert' => $alert->id,
+        ]);
+    }
+
+    public function comment(HttpRequest $request, OrchestratorConnectionTenantAlert $alert)
+    {
+        $alert->comment($request->get('comment'));
+        createToast(__('Comment successfully added!'), 'success');
+
         return redirect()->route('alerts.edit', [
             'alert' => $alert->id,
         ]);
@@ -56,6 +79,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             $alert->read_at = Carbon::now();
             $alert->readBy()->associate(auth()->user());
             $alert->save();
+            $alert->comment('Alert read');
         }
         return true;
     }
@@ -80,6 +104,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             $alert->locked_at = Carbon::now();
             $alert->lockedBy()->associate(auth()->user());
             $alert->save();
+            $alert->comment('Alert locked');
         }
         return true;
     }
@@ -109,6 +134,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             $alert->locked_at = null;
             $alert->lockedBy()->dissociate();
             $alert->save();
+            $alert->comment('Alert unlocked');
         }
         return true;
     }

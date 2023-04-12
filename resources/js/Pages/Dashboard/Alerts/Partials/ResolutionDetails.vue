@@ -27,11 +27,13 @@ const dirty = computed(() => {
 
 const recentlyUpdated = ref(false);
 const update = () => {
+    props.form.processing = true;
     Inertia.post(route('alerts.update.resolution-details', props.form.id), props.form, {
-        preserveState: true,
+        preserveState: false,
         preserveScroll: true,
         replace: true,
         onFinish: () => {
+            props.form.processing = false;
             recentlyUpdated.value = true;
             setTimeout(() => {
                 recentlyUpdated.value = false;
@@ -66,7 +68,11 @@ const prepareFile = (e) => {
             <div v-if="!form.read_at && form.locked_at && form.owned" class="col-span-6">
                 <div>
                     <label for="comment" class="sr-only">Describe all actions taken to resolve the alert</label>
-                    <textarea v-model="form.resolution_details" id="comment" rows="10" class="w-full p-0 text-sm text-gray-900 bg-white border-0 not-resizable ring-0 focus:ring-0" placeholder="Write actions taken ..." required></textarea>
+                    <textarea v-model="form.resolution_details" id="comment"
+                        rows="10" class="w-full p-0 text-sm text-gray-900 bg-white border-0 not-resizable ring-0 focus:ring-0"
+                        placeholder="Write actions taken ..." required
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"></textarea>
                 </div>
                 <ActionMessage :on="recentlyUpdated" :class="{ 'mb-4': recentlyUpdated }">
                     {{ __('Saved.') }}

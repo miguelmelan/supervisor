@@ -1,22 +1,44 @@
 <script setup>
-import { inject } from 'vue';
+import { inject, ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Inertia } from '@inertiajs/inertia';
 
 const translate = inject('translate');
 
 const props = defineProps({
     form: Object,
 });
+
+const text = ref(null);
+
+const comment = (e) => {
+    props.form.processing = true;
+    Inertia.post(route('alerts.comment', props.form.id), {
+        comment: text.value,
+    }, {
+        preserveState: false,
+        preserveScroll: true,
+        replace: true,
+        onFinish: () => {
+            props.form.processing = false;
+            text.value = null;
+        },
+    });
+};
 </script>
 
 <template>
     <div class="w-full mt-8 border-t">
         <div class="py-2 bg-white">
-            <label for="comment" class="sr-only">Your comment</label>
-            <textarea id="comment" rows="4" class="w-full px-0 text-sm text-gray-900 bg-white border-0 not-resizable focus:ring-0" placeholder="Write a comment..." required></textarea>
+            <label for="comment" class="sr-only">{{ __('Your comment') }}</label>
+            <textarea v-model="text" rows="4"
+                class="w-full px-0 text-sm text-gray-900 bg-white border-0 not-resizable focus:ring-0"
+                :placeholder="__('Write a comment...')" required></textarea>
         </div>
         <div class="flex items-center justify-between pt-4 border-t">
-            <PrimaryButton @click.prevent="true">
+            <PrimaryButton @click.prevent="comment"
+                :class="{ 'opacity-25': form.processing || !text }"
+                :disabled="form.processing || !text">
                 {{ __('Post comment') }}
                 <template #icon>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -24,7 +46,7 @@ const props = defineProps({
                     </svg>
                 </template>
             </PrimaryButton>
-            <div class="flex">
+            <!-- <div class="flex">
                 <button @click.prevent="true" type="button" class="inline-flex justify-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100">
                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path></svg>
                     <span class="sr-only">{{ __('Attach file') }}</span>
@@ -33,7 +55,7 @@ const props = defineProps({
                     <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>
                     <span class="sr-only">{{ __('Upload image') }}</span>
                 </button>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

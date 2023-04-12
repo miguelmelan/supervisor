@@ -34,6 +34,7 @@ let form = useForm({
     false_positive: props.alert.false_positive === 1,
     tenant: props.alert.tenant,
     owned: props.alert.locked_by?.id === usePage().props.value.user.id,
+    comments: props.alert.comments,
 });
 
 const breadcrumb = computed(() => {
@@ -80,12 +81,12 @@ const headerSubText = computed(() => {
 
                         <ResolutionDetails :form="form" :original-resolution-details="alert.resolution_details"
                             :original-false-positive="alert.false_positive === 1" />
-                        <!-- <SectionBorder />
-
-                        <Extensions :form="form" />
                         <SectionBorder />
 
-                        <Timeline :form="form" /> -->
+                        <!-- <Extensions :form="form" />
+                        <SectionBorder /> -->
+
+                        <Timeline :form="form" />
 
                         <!-- actions -->
                         <Actions :form="form" mode="edit" />

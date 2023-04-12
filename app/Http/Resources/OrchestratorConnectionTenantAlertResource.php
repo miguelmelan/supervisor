@@ -36,6 +36,7 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'resolution_details' => $this->resolution_details,
             'false_positive' => $this->false_positive,
             'tenant' => new OrchestratorConnectionTenantResource(OrchestratorConnectionTenant::find($this->tenant_id)->load('orchestratorConnection')),
+            'comments' => $this->whenLoaded('comments', CommentResource::collection($this->comments()->approved()->orderBy('id', 'desc')->get())),
         ];
     }
 }

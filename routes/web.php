@@ -67,6 +67,7 @@ Route::middleware([
         Route::post('/{alert}/lock', 'lock')->name('lock');
         Route::post('/{alert}/unlock', 'unlock')->name('unlock');
         Route::post('/{alert}/updateResolutionDetails', 'updateResolutionDetails')->name('update.resolution-details');
+        Route::post('/{alert}/comment', 'comment')->name('comment');
         Route::post('/bulk-read', 'bulkRead')->name('bulk-read');
         Route::post('/bulk-lock', 'bulkLock')->name('bulk-lock');
         Route::post('/bulk-unlock', 'bulkUnlock')->name('bulk-unlock');

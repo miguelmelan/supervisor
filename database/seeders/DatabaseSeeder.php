@@ -21,6 +21,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::factory()->withPersonalTeam()->create([
+            'name' => 'system',
+            'email' => 'system',
+            'password' => Hash::make(fake()->uuid()),
+        ]);
+
+        User::factory()->withPersonalTeam()->create([
             'name' => env('APP_ADMIN_NAME', 'Admin User'),
             'email' => env('APP_ADMIN_EMAIL', 'admin@example.com'),
             'password' => Hash::make(env('APP_ADMIN_PASSWORD', 'password')),

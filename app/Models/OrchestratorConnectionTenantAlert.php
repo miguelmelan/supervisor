@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use BeyondCode\Comments\Traits\HasComments;
 
 class OrchestratorConnectionTenantAlert extends Model
 {
-    use HasFactory;
+    use HasFactory, HasComments;
 
     protected $fillable = [
         'external_id',
@@ -23,6 +24,17 @@ class OrchestratorConnectionTenantAlert extends Model
         'resolution_details',
         'false_positive',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::created(function (OrchestratorConnectionTenantAlert $alert) {
+            $user = User::find(1);
+            $alert->commentAsUser($user, 'Alert created');
+        });
+    }
 
     public function tenant()
     {
