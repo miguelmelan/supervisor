@@ -70,7 +70,7 @@ const prepareFile = (e) => {
                     <label for="comment" class="sr-only">Describe all actions taken to resolve the alert</label>
                     <textarea v-model="form.resolution_details" id="comment"
                         rows="10" class="w-full p-0 text-sm text-gray-900 bg-white border-0 not-resizable ring-0 focus:ring-0"
-                        placeholder="Write actions taken ..." required
+                        :placeholder="__('Write actions taken...')" required
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"></textarea>
                 </div>

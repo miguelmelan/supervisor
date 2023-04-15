@@ -94,6 +94,7 @@ watch(sorting, function (value) {
 });
 
 const filter = () => {
+    form.processing = true;
     const alertFilters = filtersData.value.alert;
     let alertAttributes = alertFilters.creationDateRange ? { creationDateRange: alertFilters.creationDateRange } : {};
     if (alertFilters.selectedSeverities) {
@@ -129,6 +130,9 @@ const filter = () => {
     }, {
         preserveScroll: true,
         preserveState: false,
+        onFinish: () => {
+            form.processing = false;
+        },
     });
 };
 

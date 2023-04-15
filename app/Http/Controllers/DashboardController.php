@@ -29,12 +29,13 @@ class DashboardController extends Controller
             AutomatedProcess::withCount('alerts')->get()->sortBy('code')
         );
 
+        $all = OrchestratorConnectionTenantAlert::all();
         $pendingAlertsCount = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->sortBy('creation_time')->where('read_at', null)
+            $all->sortBy('creation_time')->where('read_at', null)
         )->count();
 
         $closedAlertsCount = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', !null)
+            $all->sortBy('read_at')->where('read_at', !null)
         )->count();
 
         $mostAlertingAutomatedProcesses = AutomatedProcessResource::collection(
@@ -42,7 +43,7 @@ class DashboardController extends Controller
         );
 
         $alertsOverTime = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', Carbon::now()->subDays(9))
+            $all->where('creation_time', '>=', Carbon::now()->subDays(9))
         )->collection->sortBy('creation_time')->groupBy([
             function ($alert) {
                 return Carbon::parse($alert->creation_time)->format('d/m/Y');
@@ -54,12 +55,12 @@ class DashboardController extends Controller
 
         $periods = 7;
 
-        $alertsEveryFifteenMinutes = $this->getAlertsEveryFifteenMinutes($periods);
-        $alertsEveryHour = $this->getAlertsEveryHour($periods);
-        $alertsEveryFourHours = $this->getAlertsEveryFourHours($periods);
-        $alertsEveryday = $this->getAlertsEveryday($periods);
-        $alertsEveryWeek = $this->getAlertsEveryWeek($periods);
-        $alertsEveryMonth = $this->getAlertsEveryMonth($periods);
+        $alertsEveryFifteenMinutes = $this->getAlertsEveryFifteenMinutes($periods, $all);
+        $alertsEveryHour = $this->getAlertsEveryHour($periods, $all);
+        $alertsEveryFourHours = $this->getAlertsEveryFourHours($periods, $all);
+        $alertsEveryday = $this->getAlertsEveryday($periods, $all);
+        $alertsEveryWeek = $this->getAlertsEveryWeek($periods, $all);
+        $alertsEveryMonth = $this->getAlertsEveryMonth($periods, $all);
 
         return Inertia::render('Dashboard/Overview/Index', [
             'orchestratorConnections' => $orchestratorConnections,
@@ -98,7 +99,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function getAlertsEveryFifteenMinutes($periods)
+    private function getAlertsEveryFifteenMinutes($periods, $all)
     {
         $interval = 15;
         $format = 'H:i';
@@ -106,7 +107,7 @@ class DashboardController extends Controller
         $currentDateRounded = roundToNearestMinuteInterval(Carbon::now());
         $lowerLimitDate = $currentDateRounded->subMinutes($interval * $periods);
         $collection = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', $lowerLimitDate)
+            $all->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
         $data = $collection->groupBy(function ($alert) use ($format) {
             return roundToNearestMinuteInterval(Carbon::parse($alert->creation_time))
@@ -122,14 +123,14 @@ class DashboardController extends Controller
         ];
     }
 
-    private function getAlertsEveryHour($periods)
+    private function getAlertsEveryHour($periods, $all)
     {
         $format = 'H:00';
 
         $currentDateRounded = roundToNearestMinuteInterval(Carbon::now(), 60);
         $lowerLimitDate = $currentDateRounded->subHours($periods);
         $collection = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', $lowerLimitDate)
+            $all->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
         $data = $collection->groupBy(function ($alert) use ($format) {
             return Carbon::parse($alert->creation_time)
@@ -145,7 +146,7 @@ class DashboardController extends Controller
         ];
     }
 
-    private function getAlertsEveryFourHours($periods)
+    private function getAlertsEveryFourHours($periods, $all)
     {
         $interval = 4;
         $format = 'd/m H:00';
@@ -153,7 +154,7 @@ class DashboardController extends Controller
         $currentDateRounded = roundToNearestMinuteInterval(Carbon::now(), 60);
         $lowerLimitDate = $currentDateRounded->subHours($interval * $periods);
         $collection = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', $lowerLimitDate)
+            $all->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
         $data = $collection->groupBy(function ($alert) use ($format) {
             return roundToNearestMinuteInterval(Carbon::parse($alert->creation_time), 60)
@@ -169,14 +170,14 @@ class DashboardController extends Controller
         ];
     }
 
-    private function getAlertsEveryday($periods)
+    private function getAlertsEveryday($periods, $all)
     {
         $format = 'd/m';
 
         $currentDate = Carbon::now();
         $lowerLimitDate = $currentDate->setHours(0)->setMinutes(0)->setSeconds(0)->subDays($periods);
         $collection = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', $lowerLimitDate)
+            $all->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
         $data = $collection->groupBy(function ($alert) use ($format) {
             return Carbon::parse($alert->creation_time)
@@ -192,14 +193,14 @@ class DashboardController extends Controller
         ];
     }
 
-    private function getAlertsEveryWeek($periods)
+    private function getAlertsEveryWeek($periods, $all)
     {
         $format = 'd/m - W';
 
         $currentDate = Carbon::now()->startOfWeek();
         $lowerLimitDate = $currentDate->subWeeks($periods);
         $collection = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', $lowerLimitDate)
+            $all->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
         $data = $collection->groupBy(function ($alert) use ($format) {
             return Carbon::parse($alert->creation_time)
@@ -215,14 +216,14 @@ class DashboardController extends Controller
         ];
     }
 
-    private function getAlertsEveryMonth($periods)
+    private function getAlertsEveryMonth($periods, $all)
     {
         $format = 'MMM';
 
         $currentDate = Carbon::now()->startOfMonth();
         $lowerLimitDate = $currentDate->subMonths($periods);
         $collection = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->where('creation_time', '>=', $lowerLimitDate)
+            $all->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
         $data = $collection->groupBy(function ($alert) use ($format) {
             return ucfirst(Carbon::parse($alert->creation_time)
