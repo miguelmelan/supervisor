@@ -90,10 +90,12 @@ const prepareFile = (e) => {
                             </template>
                         </PrimaryButton>
                         <div class="flex flex-col ml-4">
-                            <!-- <Toggle class="mb-2" :checked="false" :label="__('Mark the alert as read?')"
+                            <Toggle class="mb-2" v-model:checked="form.mark_as_read" :label="__('Mark the alert as read?')"
                                 :class="{ 'opacity-25': form.processing || !dirty }"
-                                :_disabled="form.processing || !dirty" /> -->
-                            <Toggle v-model:checked="form.false_positive" :label="__('False positive?')" />
+                                :_disabled="form.processing || !dirty" />
+                            <Toggle v-model:checked="form.false_positive" :label="__('False positive?')"
+                                :class="{ 'opacity-25': form.processing }"
+                                :_disabled="form.processing" />
                         </div>
                     </div>
                     <!-- <div class="flex items-center">

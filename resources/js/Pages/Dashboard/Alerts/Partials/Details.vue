@@ -180,7 +180,7 @@ const props = defineProps({
                                                 {{ form.automated_process.code }} -
                                                 {{ form.automated_process.name }}
                                             </span>
-                                            <span v-else>{{ ('None') }}</span>
+                                            <span v-else>{{ __('None') }}</span>
                                     </p>
                                 </div>
                             </div>

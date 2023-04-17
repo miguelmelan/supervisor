@@ -23,6 +23,7 @@ let form = useForm({
     locked_at: props.alert.locked_at,
     locked_by: props.alert.locked_by,
     read_at: props.alert.read_at,
+    read_by: props.alert.read_by,
     resolution_details: props.alert.resolution_details,
     automated_process_id: props.alert.automated_process_id,
     notification_name: props.alert.notification_name,
@@ -35,6 +36,7 @@ let form = useForm({
     tenant: props.alert.tenant,
     owned: props.alert.locked_by?.id === usePage().props.value.user.id,
     comments: props.alert.comments,
+    mark_as_read: false,
 });
 
 const breadcrumb = computed(() => {

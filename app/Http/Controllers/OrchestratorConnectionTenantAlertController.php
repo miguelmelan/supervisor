@@ -43,12 +43,24 @@ class OrchestratorConnectionTenantAlertController extends Controller
         $alert->save();
         
         if ($previousResolutionDetails !== $alert->resolution_details) {
-            $alert->comment('Resolution details updated. '
-                . ($alert->resolution_details ? 'New value: ' . $alert->resolution_details : 'Made empty.'));
+            $comment = 'Resolution details updated. Made empty.';
+            if ($alert->resolution_details) {
+                $comment = 'Resolution details updated. New value: ' . $alert->resolution_details;
+            }
+            $alert->comment($comment);
         }
 
         if (!$previousFalsePositive || !$alert->false_positive) {
-            $alert->comment('False positive flag updated. New value: ' . ($alert->false_positive ? 'Yes' : 'No'));
+            $alert->comment(
+                'False positive flag updated. New value: '
+                . ($alert->false_positive ? 'enabled.' : 'disabled.')
+            );
+        }
+
+        if ($request->get('mark_as_read')) {
+            if ($this->doRead($alert)) {
+                createToast(__('Alert successfully read!'), 'success');
+            }
         }
         
         return redirect()->route('alerts.edit', [

@@ -350,7 +350,7 @@ onMounted(() => {
                         :alerts-by-category="alertsByCategory" />
                 </div>
 
-                <Filters v-if="alerts.data.length > 0" :data="filtersData" 
+                <Filters :data="filtersData" 
                     :alerts-properties="alertsProperties"
                     :orchestrator-connections-properties="orchestratorConnectionsProperties"
                     @property-updated="filter"
