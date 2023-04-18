@@ -1,6 +1,6 @@
 <script setup>
 import 'flowbite';
-import { inject, onMounted } from 'vue';
+import { inject } from 'vue';
 import FormStep from '@/Components/FormStep.vue';
 import Comment from './Comment.vue';
 
@@ -19,15 +19,6 @@ const manageComment = (comment) => {
     }
     return comment;
 };
-
-onMounted(() => {
-    document.querySelectorAll('[data-tooltip-target^="tooltip"]').forEach(trigger => {
-        const target = document.getElementById(trigger.getAttribute('data-tooltip-target'));
-        new Tooltip(target, trigger, {
-            placement: 'left',
-        });
-    });
-});
 </script>
 
 <template>
@@ -92,7 +83,7 @@ onMounted(() => {
                                 {{ __(manageComment(comment.comment)) }}
                             </div>
                         </div>
-                        <div :id="'tooltip-default-' + comment.id" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        <div :id="'tooltip-default-' + comment.id" role="tooltip" data-position="left" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                             {{ comment.user.name }}
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>

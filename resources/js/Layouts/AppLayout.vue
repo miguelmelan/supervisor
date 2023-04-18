@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
@@ -28,6 +28,15 @@ const switchToTeam = (team) => {
 const logout = () => {
     Inertia.post(route('logout'));
 };
+
+onMounted(() => {
+    document.querySelectorAll('[data-tooltip-target^="tooltip"]').forEach(trigger => {
+        const target = document.getElementById(trigger.getAttribute('data-tooltip-target'));
+        new Tooltip(target, trigger, {
+            placement: target.getAttribute('data-position') ?? 'bottom',
+        });
+    });
+});
 </script>
 
 <template>

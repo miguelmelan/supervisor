@@ -37,10 +37,12 @@ const sorting = reactive(props.filters.sorting ?? {
     field: 'id',
     direction: 'desc',
 });
+const pendingAlertsFiltersSelected = ref(false);
 const filtersData = computed(() => {
     const data = props.filters.data;
 
     if (data) {
+        pendingAlertsFiltersSelected.value = data.alert || data.orchestratorConnection;
         return {
             alert: {
                 creationDateRange: data.alert ? data.alert.creationDateRange ?? [] : [],
@@ -93,8 +95,9 @@ watch(sorting, function (value) {
     });
 });
 
-const filter = () => {
+const filter = (event) => {
     form.processing = true;
+    pendingAlertsFiltersSelected.value = event > 0;
     const alertFilters = filtersData.value.alert;
     let alertAttributes = alertFilters.creationDateRange ? { creationDateRange: alertFilters.creationDateRange } : {};
     if (alertFilters.selectedSeverities) {
@@ -176,7 +179,7 @@ const read = (callback) => {
             callback();
         },
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
     });
 };
 
@@ -190,7 +193,7 @@ const lock = (callback) => {
             callback();
         },
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
     });
 };
 
@@ -204,7 +207,7 @@ const unlock = (callback) => {
             callback();
         },
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
     });
 };
 
@@ -254,7 +257,7 @@ const bulkRead = (callback) => {
             callback();
         },
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
     });
 };
 
@@ -266,7 +269,7 @@ const bulkLock = (callback) => {
             callback();
         },
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
     });
 };
 
@@ -278,7 +281,7 @@ const bulkUnlock = (callback) => {
             callback();
         },
         preserveScroll: true,
-        preserveState: true,
+        preserveState: false,
     });
 };
 
@@ -337,7 +340,8 @@ onMounted(() => {
             <!-- Navbar -->
             <div class="p-6 sm:px-20 bg-gray-200 bg-opacity-25">
                 <Navbar :pending-alerts-count="pendingAlertsCount"
-                    :closed-alerts-count="closedAlertsCount" />
+                    :closed-alerts-count="closedAlertsCount"
+                    :pending-alerts-filters-selected="pendingAlertsFiltersSelected" />
             </div>
 
             <!-- Main content -->
@@ -449,7 +453,13 @@ onMounted(() => {
                                 {{ item.id_padded }}
                             </th>
                             <td class="py-4 px-6">
-                                {{ item.creation_time_for_humans }}
+                                <span class="underline decoration-dashed cursor-pointer" :data-tooltip-target="'tooltip-default-' + item.id">
+                                    {{ item.creation_time_for_humans }}
+                                </span>
+                                <div :id="'tooltip-default-' + item.id" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                    {{ item.creation_time }}
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
                             </td>
                             <td class="py-4 px-6">
                                 {{ __(item.severity) }}

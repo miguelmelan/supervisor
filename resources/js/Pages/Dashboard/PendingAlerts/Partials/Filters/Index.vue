@@ -71,13 +71,17 @@ const orchestratorConnectionFiltersCount = computed(() => {
     return count;
 });
 
+const sendPropertyUpdatedEvent = () => {
+    emit('property-updated', filtersCount.value);
+};
+
 const alertCreationDateRange = computed(() => props.data.alert.creationDateRange);
 const updateAlertCreationDateRange = (data) => {
     alertCreationDateRange.value.splice(0, alertCreationDateRange.value.length);
     if (data) {
         alertCreationDateRange.value.push(...data);
     }
-    emit('property-updated');
+    sendPropertyUpdatedEvent();
 };
 const selectedAlertSeverities = computed(() => props.data.alert.selectedSeverities);
 const selectedAlertNotificationNames = computed(() => props.data.alert.selectedNotificationNames);
@@ -87,7 +91,7 @@ const resetAlertFilters = () => {
     props.data.alert.selectedSeverities = [];
     props.data.alert.selectedNotificationNames = [];
     props.data.alert.selectedComponents = [];
-    emit('property-updated');
+    sendPropertyUpdatedEvent();
 };
 
 const selectedOrchestratorConnections = computed(() => props.data.orchestratorConnection.selected);
@@ -99,7 +103,7 @@ const resetOrchestratorConnectionFilters = () => {
     props.data.orchestratorConnection.selectedTenants = [];
     props.data.orchestratorConnection.selectedHostingTypes = [];
     props.data.orchestratorConnection.selectedEnvironmentTypes = [];
-    emit('property-updated');
+    sendPropertyUpdatedEvent();
 };
 
 onMounted(() => {    
@@ -186,15 +190,15 @@ onMounted(() => {
                         <SimpleFieldFilter :values="alertsProperties.severity"
                             :selected-values="selectedAlertSeverities"
                             :label="__('Severity')" :placeholder="__('Select severity levels')"
-                            @updated="emit('property-updated')" />
+                            @updated="sendPropertyUpdatedEvent" />
                         <SimpleFieldFilter :values="alertsProperties.notificationName"
                             :selected-values="selectedAlertNotificationNames"
                             :label="__('Type')" :placeholder="__('Select types')"
-                            @updated="emit('property-updated')" />
+                            @updated="sendPropertyUpdatedEvent" />
                         <SimpleFieldFilter :values="alertsProperties.component"
                             :selected-values="selectedAlertComponents"
                             :label="__('Component')" :placeholder="__('Select components')"
-                            @updated="emit('property-updated')" />
+                            @updated="sendPropertyUpdatedEvent" />
                     </div>
                 </div>
             </div>
@@ -226,21 +230,21 @@ onMounted(() => {
                     <div class="grid grid-cols-4 gap-4">
                         <OrchestratorConnectionFilter :values="orchestratorConnectionsProperties.self"
                             :selected-values="selectedOrchestratorConnections"
-                            @updated="emit('property-updated')" />
+                            @updated="sendPropertyUpdatedEvent" />
                         <OrchestratorConnectionTenantFilter :values="orchestratorConnectionsProperties.tenants"
                             :selected-values="selectedOrchestratorConnectionTenants"
-                            @updated="emit('property-updated')" />
+                            @updated="sendPropertyUpdatedEvent" />
                         <SimpleFieldFilter :values="orchestratorConnectionsProperties.hostingType"
                             :labels="orchestratorConnectionsProperties.hostingType.map(ht => ht === 'cloud' ? translate('Cloud') : translate('On-Premise'))"
                             :selected-values="selectedOrchestratorConnectionHostingTypes"
                             :label="__('Hosting type')" :placeholder="__('Select hosting types')"
-                            @updated="emit('property-updated')" />
+                            @updated="sendPropertyUpdatedEvent" />
                         <SimpleFieldFilter :values="orchestratorConnectionsProperties.environmentType"
                             :labels="orchestratorConnectionsProperties.environmentType
                                 .map(ht => ht.charAt(0).toUpperCase() + ht.slice(1))"
                             :selected-values="selectedOrchestratorConnectionEnvironmentTypes"
                             :label="__('Environment type')" :placeholder="__('Select environment types')"
-                            @updated="emit('property-updated')" />
+                            @updated="sendPropertyUpdatedEvent" />
                     </div>
                 </div>
             </div>
