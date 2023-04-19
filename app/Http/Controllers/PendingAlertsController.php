@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\AutomatedProcessResource;
 use App\Http\Resources\OrchestratorConnectionResource;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Http\Resources\OrchestratorConnectionTenantResource;
-use App\Http\Resources\UserResource;
 use App\Models\AutomatedProcess;
 use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
 use App\Models\OrchestratorConnectionTenantAlert;
-use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
@@ -73,28 +70,7 @@ class PendingAlertsController extends Controller
 
         $alerts = $alerts->paginate(config('constants.pagination.items_per_page'))
             ->withQueryString()
-            ->through(fn ($alert) => [
-                'id' => $alert->id,
-                'id_padded' => str_pad($alert->id, 4, '0', STR_PAD_LEFT),
-                'tenant' => new OrchestratorConnectionTenantResource(
-                    OrchestratorConnectionTenant::with('orchestratorConnection')->find($alert->tenant_id)
-                ),
-                'automated_process' => $alert->automated_process_id ? new AutomatedProcessResource(
-                    AutomatedProcess::find($alert->automated_process_id)
-                ) : null,
-                'external_id' => $alert->external_id,
-                'notification_name' => $alert->notification_name,
-                '_data' => $alert->data,
-                'component' => $alert->component,
-                'severity' => $alert->severity,
-                'creation_time' => $alert->creation_time,
-                'creation_time_for_humans' => Carbon::parse($alert->creation_time)->diffForHumans(Carbon::now()),
-                'deep_link_relative_url' => $alert->deep_link_relative_url,
-                'read_at' => $alert->read_at,
-                'resolution_time_in_seconds' => $alert->resolution_time_in_seconds,
-                'locked_at' => $alert->locked_at,
-                'locked_by' => $alert->locked_by ? new UserResource(User::find($alert->locked_by)) : null,
-            ]);
+            ->through(fn ($alert) => new OrchestratorConnectionTenantAlertResource($alert));
 
         $alertsCollection = OrchestratorConnectionTenantAlertResource::collection(
             OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', null)

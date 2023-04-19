@@ -28,7 +28,7 @@ const startTime = ref([
         <InputLabel :value="__('Creation date')" />
         <Datepicker v-model="range" :range="true" :placeholder="__('Select date range')"
             :max-date="Date()" :start-time="startTime" :month-change-on-scroll="false"
-            :locale="$page.props.locale.code" :format="`${$page.props.locale.dateFormat} ${$page.props.locale.timeFormat}`"
+            :locale="$page.props.locale.code" :format="`${$page.props.locale.dateFormats.js} ${$page.props.locale.timeFormats.js}`"
             :cancel-text="__('Cancel')" :select-text="__('Select')" @update:modelValue="setRange"
             class="mt-1" />
     </div>

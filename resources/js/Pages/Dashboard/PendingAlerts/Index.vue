@@ -42,7 +42,7 @@ const filtersData = computed(() => {
     const data = props.filters.data;
 
     if (data) {
-        pendingAlertsFiltersSelected.value = data.alert || data.orchestratorConnection;
+        pendingAlertsFiltersSelected.value = 'alert' in data || 'orchestratorConnection' in data;
         return {
             alert: {
                 creationDateRange: data.alert ? data.alert.creationDateRange ?? [] : [],

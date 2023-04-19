@@ -51,8 +51,8 @@ class AppServiceProvider extends ServiceProvider
                     'code' => $locale,
                     'lang' => $language['lang'],
                     'flag' => $language['flag'],
-                    'dateFormat' => $language['dateFormat'],
-                    'timeFormat' => $language['timeFormat'],
+                    'dateFormats' => $language['dateFormats'],
+                    'timeFormats' => $language['timeFormats'],
                 ];
             },
             'translations' => function () {

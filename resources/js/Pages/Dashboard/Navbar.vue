@@ -9,7 +9,7 @@ const props = defineProps({
     closedAlertsCount: Number,
     pendingAlertsFiltersSelected: {
         type: Boolean,
-        default: true,
+        default: false,
     },
 });
 

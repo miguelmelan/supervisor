@@ -120,13 +120,13 @@ const prepareFile = (e) => {
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium truncate">
+                                        <p class="text-sm font-medium text-gray-900 truncate">
                                             {{ __('Resolution details') }}
                                         </p>
-                                        <p v-if="form.resolution_details" class="text-sm truncate font-semibold">
+                                        <p v-if="form.resolution_details" class="text-sm text-gray-500 truncate">
                                             {{ __(form.resolution_details) }}
                                         </p>
-                                        <p v-else class="text-sm truncate font-semibold">{{ __('Empty') }}</p>
+                                        <p v-else class="text-sm text-gray-500 truncate">{{ __('Empty') }}</p>
                                     </div>
                                 </div>
                             </li>
@@ -138,10 +138,10 @@ const prepareFile = (e) => {
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium truncate">
+                                        <p class="text-sm font-medium text-gray-900 truncate">
                                             {{ __('False positive?') }}
                                         </p>
-                                        <p class="text-sm truncate font-semibold">
+                                        <p class="text-sm text-gray-500 truncate">
                                             {{ __(form.false_positive ? 'Yes' : 'No') }}
                                         </p>
                                     </div>

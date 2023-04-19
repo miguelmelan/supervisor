@@ -146,20 +146,20 @@ const props = defineProps({
                                         </svg>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm text-gray-500 truncate">
-                                        <dl class="max-w-md text-gray-900">
-                                            <div class="flex flex-col pb-3">
-                                                <dt class="mb-1 text-gray-500">{{ __('UiPath Orchestrator') }}</dt>
-                                                <dd class="font-semibold">
-                                                    {{ form.tenant.orchestrator_connection.code }} -
-                                                    {{ form.tenant.orchestrator_connection.name }}
-                                                </dd>
-                                            </div>
-                                            <div class="flex flex-col pt-3">
-                                                <dt class="mb-1 text-gray-500">{{ __('Tenant') }}</dt>
-                                                <dd class="font-semibold">{{ form.tenant.name }}</dd>
-                                            </div>
-                                        </dl>
+                                        <p class="text-sm text-gray-900 truncate">
+                                            <dl class="max-w-md">
+                                                <div class="flex flex-col pb-3">
+                                                    <dt class="mb-1 font-medium">{{ __('UiPath Orchestrator') }}</dt>
+                                                    <dd class="text-gray-500">
+                                                        {{ form.tenant.orchestrator_connection.code }} -
+                                                        {{ form.tenant.orchestrator_connection.name }}
+                                                    </dd>
+                                                </div>
+                                                <div class="flex flex-col pt-3">
+                                                    <dt class="mb-1 font-medium">{{ __('Tenant') }}</dt>
+                                                    <dd class="text-gray-500">{{ form.tenant.name }}</dd>
+                                                </div>
+                                            </dl>
                                         </p>
                                     </div>
                                 </div>

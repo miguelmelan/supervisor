@@ -4,19 +4,37 @@ return [
     'en' => [
         'lang' => 'English',
         'flag' => 'gb',
-        'dateFormat' => 'MM/dd/yyyy',
-        'timeFormat' => 'hh:mm aa',
+        'dateFormats' => [
+            'php' => 'm/d/Y',
+            'js' => 'MM/dd/yyyy',
+        ],
+        'timeFormats' => [
+            'php' => 'h:i a',
+            'js' => 'hh:mm aa',
+        ],
     ],
     'fr' => [
         'lang' => 'Français',
         'flag' => 'fr',
-        'dateFormat' => 'dd/MM/yyyy',
-        'timeFormat' => 'HH:mm',
+        'dateFormats' => [
+            'php' => 'd/m/Y',
+            'js' => 'dd/MM/yyyy',
+        ],
+        'timeFormats' => [
+            'php' => 'H:i',
+            'js' => 'HH:mm',
+        ],
     ],
     'ro' => [
         'lang' => 'Română',
         'flag' => 'ro',
-        'dateFormat' => 'dd/MM/yyyy',
-        'timeFormat' => 'HH:mm',
+        'dateFormats' => [
+            'php' => 'd/m/Y',
+            'js' => 'dd/MM/yyyy',
+        ],
+        'timeFormats' => [
+            'php' => 'H:i',
+            'js' => 'HH:mm',
+        ],
     ]
 ];
