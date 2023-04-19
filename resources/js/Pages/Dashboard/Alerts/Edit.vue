@@ -53,7 +53,9 @@ const headerSubText = computed(() => {
 </script>
 
 <template>
-    <AppLayout :title="__('Pending alerts') + ' > ' + __('Alert') + ` #${form.id_padded}`">
+    <AppLayout :title="__('Edit alert #:id', {
+            id: form.id_padded,
+        })">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-xl sm:rounded-lg">
                 <PageContentHeader :text="__('Edit alert #:id', {

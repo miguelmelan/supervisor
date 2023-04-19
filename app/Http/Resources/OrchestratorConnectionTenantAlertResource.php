@@ -28,7 +28,7 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'automated_process_id' => $this->automated_process_id,
             'external_id' => $this->external_id,
             'notification_name' => $this->notification_name,
-            'data' => $this->data,
+            '_data' => $this->data,
             'component' => $this->component,
             'severity' => $this->severity,
             'creation_time' => Carbon::parse($this->creation_time)->format(config("languages.{$locale}.dateFormats.php"). ' ' . config("languages.{$locale}.timeFormats.php")),
