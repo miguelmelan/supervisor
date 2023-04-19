@@ -11,6 +11,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    closedAlertsFiltersSelected: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const pendingAlertsCount = computed(() => props.pendingAlertsCount);
@@ -75,8 +79,13 @@ const newClosedAlertsCount = ref(0);
                         d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
                 </svg>
                 {{ __('Closed alerts') }}
-                <span class="bg-blue-300 text-blue-800 text-xs font-semibold ml-2 px-2.5 py-0.5 rounded">
+                <span class="flex bg-blue-300 text-blue-800 text-xs font-semibold ml-2 px-2.5 py-0.5 rounded">
                     {{ abbr(closedAlertsCount, 1) }}
+                    <svg v-if="closedAlertsFiltersSelected" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="ml-2 w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                    </svg>
                 </span>
                 <span v-if="newClosedAlertsCount > 0"
                     class="inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white">

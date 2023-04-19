@@ -307,7 +307,7 @@
     "Tags": "Etiquettes",
     "Overview": "Vue d'ensemble",
     "Pending alerts": "Alertes en attente",
-    "Closed alerts": "Alertes fermées",
+    "Closed alerts": "Alertes clôturées",
     "Analysis": "Analyse",
     "Coming soon": "Bientôt disponible",
     "Most alerting orchestrator connections": "Connexions à UiPath Orchestrator avec le plus d'alertes",
@@ -424,5 +424,9 @@
     "False positive flag updated. New value: disabled.": "Indicateur de faux positif mis à jour. Nouvelle valeur : désactivé.",
     "No": "Non",
     "Yes": "Oui",
-    "None": "Aucun"
+    "None": "Aucun",
+    "Closed alerts count": "Nombre d'alertes clôturées",
+    "Closing date": "Date de clôture",
+    "Closed by": "Clôturée par",
+    "Select users": "Sélectionnez les utilisateurs"
 }

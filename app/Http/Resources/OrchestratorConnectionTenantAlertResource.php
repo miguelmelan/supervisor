@@ -35,6 +35,7 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'creation_time_for_humans' => Carbon::parse($this->creation_time)->diffForHumans(Carbon::now()),
             'deep_link_relative_url' => $this->deep_link_relative_url,
             'read_at' => $this->read_at ? Carbon::parse($this->read_at)->format(config("languages.{$locale}.dateFormats.php"). ' ' . config("languages.{$locale}.timeFormats.php")) : null,
+            'read_at_for_humans' => $this->read_at ? Carbon::parse($this->read_at)->diffForHumans(Carbon::now()) : null,
             'read_by' => $this->read_by ? new UserResource(User::find($this->read_by)) : null,
             'resolution_time_in_seconds' => $this->resolution_time_in_seconds,
             'locked_at' => $this->locked_at ? Carbon::parse($this->locked_at)->format(config("languages.{$locale}.dateFormats.php"). ' ' . config("languages.{$locale}.timeFormats.php")) : null,

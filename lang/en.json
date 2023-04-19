@@ -424,5 +424,9 @@
     "False positive flag updated. New value: disabled.": "False positive flag updated. New value: disabled.",
     "No": "No",
     "Yes": "Yes",
-    "None": "None"
+    "None": "None",
+    "Closed alerts count": "Closed alerts count",
+    "Closing date": "Closing date",
+    "Closed by": "Closed by",
+    "Select users": "Select users"
 }

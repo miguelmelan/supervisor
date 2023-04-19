@@ -2,7 +2,6 @@
 import { inject, computed, ref } from 'vue';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Breadcrumb from '@/Components/Breadcrumb.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 import Actions from './Partials/Actions.vue';
@@ -15,6 +14,7 @@ const translate = inject('translate');
 
 const props = defineProps({
     alert: Object,
+    referer: String,
 });
 
 let form = useForm({
@@ -39,15 +39,6 @@ let form = useForm({
     mark_as_read: false,
 });
 
-const breadcrumb = computed(() => {
-    return [
-        { href: route('pending-alerts.index'), text: translate('Pending alerts') },
-        { text: translate('Edit alert #:id', {
-            id: form.id_padded,
-        }) },
-    ];
-});
-
 const headerSubText = computed(() => {
     let text = form.read_at ? translate('Read by :username', {
         'username': form.owned ? translate('you') : form.read_by.name,
@@ -63,9 +54,6 @@ const headerSubText = computed(() => {
 
 <template>
     <AppLayout :title="__('Pending alerts') + ' > ' + __('Alert') + ` #${form.id_padded}`">
-        <template #header>
-            <Breadcrumb :items="breadcrumb" />
-        </template>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-xl sm:rounded-lg">
                 <PageContentHeader :text="__('Edit alert #:id', {
@@ -91,7 +79,7 @@ const headerSubText = computed(() => {
                         <Timeline :form="form" />
 
                         <!-- actions -->
-                        <Actions :form="form" mode="edit" />
+                        <Actions :form="form" mode="edit" :back-location="referer" />
                     </form>
                 </div>
             </div>

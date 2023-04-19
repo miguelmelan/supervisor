@@ -123,7 +123,7 @@ const prepareFile = (e) => {
                                         <p class="text-sm font-medium text-gray-900 truncate">
                                             {{ __('Resolution details') }}
                                         </p>
-                                        <p v-if="form.resolution_details" class="text-sm text-gray-500 truncate">
+                                        <p v-if="form.resolution_details" class="text-sm text-gray-500">
                                             {{ __(form.resolution_details) }}
                                         </p>
                                         <p v-else class="text-sm text-gray-500 truncate">{{ __('Empty') }}</p>

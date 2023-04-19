@@ -54,7 +54,7 @@ class PendingAlertsController extends Controller
         ->when(request('data.orchestratorConnection.selectedEnvironmentTypes'), function ($query, $selected) {
             $query->whereIn('orchestrator_connections.environment_type', $selected);
         })
-        ->where('read_at', null)
+        ->whereNull('read_at')
         ->select('orchestrator_connection_tenant_alerts.*');
         $alerts = (clone $baseQuery)
             ->when(request('sorting'), function ($query, $sorting) {
@@ -73,7 +73,7 @@ class PendingAlertsController extends Controller
             ->through(fn ($alert) => new OrchestratorConnectionTenantAlertResource($alert));
 
         $alertsCollection = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', null)
+            OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->whereNull('read_at')
         );
 
         $alertsSeverities = $alertsCollection->unique('severity')->pluck('severity');
@@ -90,7 +90,7 @@ class PendingAlertsController extends Controller
         $orchestratorConnectionsEnvironmentTypes = $orchestratorConnections->pluck('environment_type')->unique();
 
         $closedAlerts = OrchestratorConnectionTenantAlertResource::collection(
-            OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->where('read_at', !null)
+            OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->whereNotNull('read_at')
         );
         $closedAlertsCount = $closedAlerts->count();
 
@@ -129,7 +129,7 @@ class PendingAlertsController extends Controller
         $lowerLimitDate = $currentDate->setHours(0)->setMinutes(0)->setSeconds(0)->subDays($periods);
         $collection = OrchestratorConnectionTenantAlertResource::collection(
             OrchestratorConnectionTenantAlert::all()
-                ->where('read_at', !null)
+                ->whereNotNull('read_at')
                 ->where('creation_time', '>=', $lowerLimitDate)
         )->collection->sortBy('creation_time');
         $data = $collection
@@ -155,7 +155,7 @@ class PendingAlertsController extends Controller
     private function getAlertsAverageResolutionTime()
     {
         $average = OrchestratorConnectionTenantAlert::all()
-            ->where('read_at', !null)
+            ->whereNotNull('read_at')
             ->avg('resolution_time_in_seconds');
 
         if ($average) {

@@ -9,13 +9,16 @@ import { computed, ref } from 'vue';
 const props = defineProps({
     form: Object,
     mode: String,
+    backLocation: String,
 });
 
 const singleAction = ref('');
 const confirmingAction = ref(false);
 
 const back = () => {
-    Inertia.get(route('pending-alerts.index'));
+    Inertia.visit(props.backLocation, {
+        preserveScroll: true,
+    });
 };
 
 const triggerAction = (action) => {

@@ -23,6 +23,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
         $alert->load('comments');
         return Inertia::render('Dashboard/Alerts/Edit', [
             'alert' => new OrchestratorConnectionTenantAlertResource($alert),
+            'referer' => request()->headers->get('referer'),
         ]);
     }
 

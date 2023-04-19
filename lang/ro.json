@@ -424,5 +424,9 @@
     "False positive flag updated. New value: disabled.": "Indicatorul de fals pozitiv a fost actualizat. Noua valoare: dezactivat.",
     "No": "Nu",
     "Yes": "Da",
-    "None": "Niciunul"
+    "None": "Niciunul",
+    "Closed alerts count": "Numărul alertelor închise",
+    "Closing date": "Data de închidere",
+    "Closed by": "Închis de",
+    "Select users": "Selectați utilizatorii"
 }

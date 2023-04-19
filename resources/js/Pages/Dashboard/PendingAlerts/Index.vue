@@ -37,12 +37,12 @@ const sorting = reactive(props.filters.sorting ?? {
     field: 'id',
     direction: 'desc',
 });
-const pendingAlertsFiltersSelected = ref(false);
+const filtersSelected = ref(false);
 const filtersData = computed(() => {
     const data = props.filters.data;
 
     if (data) {
-        pendingAlertsFiltersSelected.value = 'alert' in data || 'orchestratorConnection' in data;
+        filtersSelected.value = 'alert' in data || 'orchestratorConnection' in data;
         return {
             alert: {
                 creationDateRange: data.alert ? data.alert.creationDateRange ?? [] : [],
@@ -97,7 +97,7 @@ watch(sorting, function (value) {
 
 const filter = (event) => {
     form.processing = true;
-    pendingAlertsFiltersSelected.value = event > 0;
+    filtersSelected.value = event > 0;
     const alertFilters = filtersData.value.alert;
     let alertAttributes = alertFilters.creationDateRange ? { creationDateRange: alertFilters.creationDateRange } : {};
     if (alertFilters.selectedSeverities) {
@@ -152,15 +152,6 @@ const open = (item) => {
     Inertia.get(route('alerts.edit', {
         alert: item.id,
     }));
-    /* if (!item.locked_at || item.locked_by.id === usePage().props.value.user.id) {
-        Inertia.get(route('alerts.edit', {
-            alert: item.id,
-        }));
-    } else {
-        Inertia.get(route('alerts.show', {
-            alert: item.id,
-        }));
-    } */
 };
 
 const triggerAction = (action, item) => {
@@ -341,7 +332,7 @@ onMounted(() => {
             <div class="p-6 sm:px-20 bg-gray-200 bg-opacity-25">
                 <Navbar :pending-alerts-count="pendingAlertsCount"
                     :closed-alerts-count="closedAlertsCount"
-                    :pending-alerts-filters-selected="pendingAlertsFiltersSelected" />
+                    :pending-alerts-filters-selected="filtersSelected" />
             </div>
 
             <!-- Main content -->
