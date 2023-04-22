@@ -18,7 +18,10 @@ const props = defineProps({
         <div class="h-full overflow-auto">
             <div
                 class="flex items-stretch justify-between p-4 w-full h-full rounded-lg border shadow-md "
-                :class="`bg-${color}-50 border-${color}-900 hover:bg-${color}-700`">
+                :class="{
+                    'bg-blue-600 border-blue-900 hover:bg-blue-700': color === 'blue',
+                    'bg-red-600 border-red-900 hover:bg-red-700': color === 'red'
+                }">
                 <div class="flex flex-col justify-between w-full text-right">
                     <span class="text-md text-gray-100">{{ title }}</span>
                     <span class="text-white font-bold"

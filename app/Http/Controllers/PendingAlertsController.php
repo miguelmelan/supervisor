@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OrchestratorConnectionResource;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Http\Resources\OrchestratorConnectionTenantResource;
+use App\Http\Resources\UserResource;
 use App\Models\AutomatedProcess;
 use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
 use App\Models\OrchestratorConnectionTenantAlert;
+use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
@@ -17,12 +19,21 @@ use Inertia\Inertia;
 
 class PendingAlertsController extends Controller
 {
-    public function index()
+    public function index($loadSavedSearch = false)
     {
         request()->validate([
             'sorting.direction' => ['in:asc,desc'],
             'sorting.field' => ['in:id'],
         ]);
+
+        $data = request()->all();
+        if ($loadSavedSearch) {
+            $data = request()->session()->get('pending-alerts.filters');
+            if ($data) {
+                request()->merge($data);
+            }
+        }
+        request()->session()->put('pending-alerts.filters', $data);
 
         $periods = 7;
 
@@ -32,6 +43,13 @@ class PendingAlertsController extends Controller
         ->when(request('data.alert.creationDateRange'), function ($query, $range) {
             $query->where('creation_time', '>=', $range[0])
                 ->where('creation_time', '<=', $range[1]);
+        })
+        ->when(request('data.alert.lockingDateRange'), function ($query, $range) {
+            $query->where('locked_at', '>=', $range[0])
+                ->where('locked_at', '<=', $range[1]);
+        })
+        ->when(request('data.alert.selectedLockingUsers'), function ($query, $selected) {
+            $query->whereIn('locked_by', $selected);
         })
         ->when(request('data.alert.selectedSeverities'), function ($query, $selected) {
             $query->whereIn('severity', $selected);
@@ -76,6 +94,9 @@ class PendingAlertsController extends Controller
             OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->whereNull('read_at')
         );
 
+        $alertsLockingUsers = UserResource::collection(
+            User::all()->sortBy('name')->whereIn('id', $alertsCollection->unique('locked_by')->pluck('locked_by'))
+        );
         $alertsSeverities = $alertsCollection->unique('severity')->pluck('severity');
         $alertsNotificationNames = $alertsCollection->unique('notification_name')->pluck('notification_name');
         $alertsComponents = $alertsCollection->unique('component')->pluck('component');
@@ -108,6 +129,7 @@ class PendingAlertsController extends Controller
             'alertsAverageResolutionTime' => $this->getAlertsAverageResolutionTime(),
             'filters' => Request::only(['data', 'sorting']),
             'alertsProperties' => [
+                'lockingUser' => $alertsLockingUsers,
                 'severity' => $alertsSeverities,
                 'notificationName' => $alertsNotificationNames,
                 'component' => $alertsComponents,

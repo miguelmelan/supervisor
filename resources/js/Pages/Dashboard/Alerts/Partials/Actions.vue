@@ -16,9 +16,7 @@ const singleAction = ref('');
 const confirmingAction = ref(false);
 
 const back = () => {
-    Inertia.visit(props.backLocation, {
-        preserveScroll: true,
-    });
+    Inertia.visit(props.backLocation);
 };
 
 const triggerAction = (action) => {

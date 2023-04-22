@@ -20,10 +20,19 @@ class OrchestratorConnectionTenantAlertController extends Controller
      */
     public function edit(OrchestratorConnectionTenantAlert $alert)
     {
+        $from = request()->headers->get('referer');
+        if ($from) {
+            $from = app('router')->getRoutes()->match(
+                request()->create($from)
+            )->getName();
+        }
+        if ($from !== 'pending-alerts.index' && $from !== 'closed-alerts.index') {
+            $from = 'pending-alerts.index';
+        }
         $alert->load('comments');
         return Inertia::render('Dashboard/Alerts/Edit', [
             'alert' => new OrchestratorConnectionTenantAlertResource($alert),
-            'referer' => request()->headers->get('referer'),
+            'from' => $from,
         ]);
     }
 

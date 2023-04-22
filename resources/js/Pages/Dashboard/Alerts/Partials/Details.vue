@@ -25,8 +25,9 @@ const props = defineProps({
                     <div class="flow-root">
                         <ul role="list" class="divide-y divide-gray-200">
                             <li class="flex">
-                                <div class="flex items-center space-x-4 w-full p-4" :class="{
+                                <div class="flex items-center space-x-4 p-4" :class="{
                                     'w-1/2': form.read_at,
+                                    'w-full': !form.read_at,
                                     'bg-warning-50': form.severity === 'Warn',
                                     'bg-error-50': form.severity === 'Error',
                                     'bg-red-900': form.severity === 'Fatal',

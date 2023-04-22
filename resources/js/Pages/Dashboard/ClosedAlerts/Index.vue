@@ -9,6 +9,7 @@ import Tiles from './Partials/Tiles.vue';
 import Navbar from '../Navbar.vue';
 import { Link, useForm } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
+import QueryString from 'qs';
 
 const props = defineProps({
     alerts: Object,
@@ -38,7 +39,7 @@ const filtersData = computed(() => {
     const data = props.filters.data;
 
     if (data) {
-        filtersSelected.value = 'alert' in data || 'orchestratorConnection' in data;
+        filtersSelected.value = ('alert' in data || 'orchestratorConnection' in data);
         return {
             alert: {
                 creationDateRange: data.alert ? data.alert.creationDateRange ?? [] : [],
@@ -155,6 +156,19 @@ const open = (item) => {
 };
 
 onMounted(() => {
+    setTimeout(() => {
+        if (window.location.href.endsWith('/true')) {
+            let qs = QueryString.stringify({
+                data: filtersData.value,
+            });
+            if (qs) {
+                window.history.replaceState(null, '', `/closed-alerts?${qs}`);
+            } else {
+                window.history.replaceState(null, '', '/closed-alerts');
+            }
+        }
+    }, 500);
+
     Echo.channel('orchestrator-connection-tenant-alert')
         .listen('.new', (data) => {
             console.log(data);

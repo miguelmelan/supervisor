@@ -1,6 +1,8 @@
 <script setup>
 import 'flowbite';
 import AlertCreationDateFilter from './Alert/CreationDate.vue';
+import AlertLockingDateFilter from './Alert/LockingDate.vue';
+import AlertLockingUserFilter from './Alert/LockingUser.vue';
 import SimpleFieldFilter from './SimpleField.vue';
 import OrchestratorConnectionFilter from './OrchestratorConnection/Self.vue';
 import OrchestratorConnectionTenantFilter from './OrchestratorConnection/Tenant.vue';
@@ -12,6 +14,8 @@ const props = defineProps({
         default: {
             alert: {
                 creationDateRange: null,
+                lockingDateRange: null,
+                selectedLockingUsers: null,
                 selectedSeverities: null,
                 selectedNotificationNames: null,
                 selectedComponents: null,
@@ -39,6 +43,12 @@ const filtersCount = computed(() => alertFiltersCount.value + orchestratorConnec
 const alertFiltersCount = computed(() => {
     let count = 0;
     if (alertCreationDateRange.value && alertCreationDateRange.value.length === 2) {
+        count++;
+    }
+    if (alertLockingDateRange.value && alertLockingDateRange.value.length === 2) {
+        count++;
+    }
+    if (selectedLockingUsers.value && selectedLockingUsers.value.length > 0) {
         count++;
     }
     if (selectedAlertSeverities.value && selectedAlertSeverities.value.length > 0) {
@@ -83,6 +93,15 @@ const updateAlertCreationDateRange = (data) => {
     }
     sendPropertyUpdatedEvent();
 };
+const alertLockingDateRange = computed(() => props.data.alert.lockingDateRange);
+const updateAlertLockingDateRange = (data) => {
+    alertLockingDateRange.value.splice(0, alertLockingDateRange.value.length);
+    if (data) {
+        alertLockingDateRange.value.push(...data);
+    }
+    sendPropertyUpdatedEvent();
+};
+const selectedLockingUsers = computed(() => props.data.alert.selectedLockingUsers);
 const selectedAlertSeverities = computed(() => props.data.alert.selectedSeverities);
 const selectedAlertNotificationNames = computed(() => props.data.alert.selectedNotificationNames);
 const selectedAlertComponents = computed(() => props.data.alert.selectedComponents);
@@ -198,6 +217,10 @@ onMounted(() => {
                         <SimpleFieldFilter :values="alertsProperties.component"
                             :selected-values="selectedAlertComponents"
                             :label="__('Component')" :placeholder="__('Select components')"
+                            @updated="sendPropertyUpdatedEvent" />
+                        <AlertLockingDateFilter :range="alertLockingDateRange" @updated="updateAlertLockingDateRange" />
+                        <AlertLockingUserFilter :values="alertsProperties.lockingUser"
+                            :selected-values="selectedLockingUsers"
                             @updated="sendPropertyUpdatedEvent" />
                     </div>
                 </div>

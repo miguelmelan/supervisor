@@ -1,7 +1,7 @@
 <script setup>
 import { ref, inject, computed } from 'vue';
-import PendingAlertsAggregatedIndicator from '../Charts/PendingAlertsAggregatedIndicator.vue';
-import PendingAlertsIndicator from '../Charts/PendingAlertsIndicator.vue';
+import PendingAlertsAggregatedIndicator from '../Charts/ClosedAlertsAggregatedIndicator.vue';
+import PendingAlertsIndicator from '../Charts/ClosedAlertsIndicator.vue';
 
 const translate = inject('translate');
 
@@ -65,7 +65,7 @@ const indicators = ref([{
 </script>
 
 <template>
-    <PendingAlertsAggregatedIndicator :value="closedAlertsCount.toString()" :title="__('Closed alerts count')" />
+    <PendingAlertsAggregatedIndicator :value="closedAlertsCount.toString()" :title="__('Closed alerts count')" color="green" />
 
     <PendingAlertsAggregatedIndicator :value="alertsAverageResolutionTime" value-size="2xl"
         :title="__('Average resolution time')" color="blue" />

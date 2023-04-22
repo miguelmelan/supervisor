@@ -33,6 +33,7 @@
         "flowbite": "^1.5.3",
         "flowbite-vue": "^0.0.5",
         "number-abbreviate": "^2.0.0",
+        "qs": "^6.11.1",
         "vue3-apexcharts": "^1.4.1",
         "vue3-treeview": "^0.4.0"
     }

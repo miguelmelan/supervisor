@@ -97,7 +97,7 @@ const alertClosingDateRange = computed(() => props.data.alert.closingDateRange);
 const updateAlertClosingDateRange = (data) => {
     alertClosingDateRange.value.splice(0, alertClosingDateRange.value.length);
     if (data) {
-        alertCreationDateRange.value.push(...data);
+        alertClosingDateRange.value.push(...data);
     }
     sendPropertyUpdatedEvent();
 };

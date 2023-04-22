@@ -428,5 +428,6 @@
     "Closed alerts count": "Nombre d'alertes clôturées",
     "Closing date": "Date de clôture",
     "Closed by": "Clôturée par",
-    "Select users": "Sélectionnez les utilisateurs"
+    "Select users": "Sélectionnez les utilisateurs",
+    "Locked by": "Verrouillée par"
 }

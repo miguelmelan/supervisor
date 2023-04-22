@@ -55,7 +55,7 @@ Route::middleware([
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::controller(PendingAlertsController::class)->name('pending-alerts.')->prefix('pending-alerts')->group(function () {
-        Route::get('/', 'index')->name('index');
+        Route::get('/{loadSavedSearch?}', 'index')->name('index');
     });
 
     Route::resource('alerts', OrchestratorConnectionTenantAlertController::class, [
@@ -74,7 +74,7 @@ Route::middleware([
     });
     
     Route::name('closed-alerts.')->prefix('closed-alerts')->group(function () {
-        Route::get('/', [ClosedAlertsController::class, 'index'])->name('index');
+        Route::get('/{loadSavedSearch?}', [ClosedAlertsController::class, 'index'])->name('index');
     });
 
     Route::get('/tags', [TagController::class, 'getTags'])

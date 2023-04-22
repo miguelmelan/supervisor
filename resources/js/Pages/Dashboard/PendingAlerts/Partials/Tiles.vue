@@ -65,7 +65,8 @@ const indicators = ref([{
 </script>
 
 <template>
-    <PendingAlertsAggregatedIndicator :value="pendingAlertsCount.toString()" :title="__('Pending alerts count')" />
+    <PendingAlertsAggregatedIndicator :value="pendingAlertsCount.toString()" :title="__('Pending alerts count')"
+        :color="pendingAlertsCount > 0 ? 'red' : 'blue'" />
 
     <PendingAlertsAggregatedIndicator :value="alertsAverageResolutionTime" value-size="2xl"
         :title="__('Average resolution time')" color="blue" />

@@ -14,7 +14,7 @@ const translate = inject('translate');
 
 const props = defineProps({
     alert: Object,
-    referer: String,
+    from: String,
 });
 
 let form = useForm({
@@ -50,6 +50,10 @@ const headerSubText = computed(() => {
         'username': form.owned ? translate('you') : form.locked_by.name,
     }) : ''
 });
+
+const backLocation = route(props.from, {
+    loadSavedSearch: true,
+});
 </script>
 
 <template>
@@ -81,7 +85,7 @@ const headerSubText = computed(() => {
                         <Timeline :form="form" />
 
                         <!-- actions -->
-                        <Actions :form="form" mode="edit" :back-location="referer" />
+                        <Actions :form="form" mode="edit" :back-location="backLocation" />
                     </form>
                 </div>
             </div>

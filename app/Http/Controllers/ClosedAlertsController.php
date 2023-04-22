@@ -19,12 +19,21 @@ use Inertia\Inertia;
 
 class ClosedAlertsController extends Controller
 {
-    public function index()
+    public function index($loadSavedSearch = false)
     {
         request()->validate([
             'sorting.direction' => ['in:asc,desc'],
             'sorting.field' => ['in:id,read_at'],
         ]);
+
+        $data = request()->all();
+        if ($loadSavedSearch) {
+            $data = request()->session()->get('closed-alerts.filters');
+            if ($data) {
+                request()->merge($data);
+            }
+        }
+        request()->session()->put('closed-alerts.filters', $data);
 
         $periods = 7;
 

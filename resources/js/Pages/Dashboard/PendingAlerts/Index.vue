@@ -13,6 +13,7 @@ import Tiles from './Partials/Tiles.vue';
 import Navbar from '../Navbar.vue';
 import { Link, useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
+import QueryString from 'qs';
 
 const props = defineProps({
     alerts: Object,
@@ -46,6 +47,8 @@ const filtersData = computed(() => {
         return {
             alert: {
                 creationDateRange: data.alert ? data.alert.creationDateRange ?? [] : [],
+                lockingDateRange: data.alert ? data.alert.lockingDateRange ?? [] : [],
+                selectedLockingUsers: data.alert ? data.alert.selectedLockingUsers ?? [] : [],
                 selectedSeverities: data.alert ? data.alert.selectedSeverities ?? [] : [],
                 selectedNotificationNames: data.alert ? data.alert.selectedNotificationNames ?? [] : [],
                 selectedComponents: data.alert ? data.alert.selectedComponents ?? [] : [],
@@ -62,6 +65,8 @@ const filtersData = computed(() => {
     return {
         alert: {
             creationDateRange: [],
+            lockingDateRange: [],
+            selectedLockingUsers: [],
             selectedSeverities: [],
             selectedNotificationNames: [],
             selectedComponents: [],
@@ -100,6 +105,12 @@ const filter = (event) => {
     filtersSelected.value = event > 0;
     const alertFilters = filtersData.value.alert;
     let alertAttributes = alertFilters.creationDateRange ? { creationDateRange: alertFilters.creationDateRange } : {};
+    if (alertFilters.lockingDateRange) {
+        alertAttributes.lockingDateRange = alertFilters.lockingDateRange;
+    }
+    if (alertFilters.selectedLockingUsers) {
+        alertAttributes.selectedLockingUsers = alertFilters.selectedLockingUsers;
+    }
     if (alertFilters.selectedSeverities) {
         alertAttributes.selectedSeverities = alertFilters.selectedSeverities;
     }
@@ -297,6 +308,17 @@ const alertsLockedByOtherUsers = computed(() => props.alerts.data.filter(a => a.
 const alertsUnlocked = computed(() => props.alerts.data.filter(a => !a.locked_at).map(a => a.id));
 
 onMounted(() => {
+    setTimeout(() => {
+        if (window.location.href.endsWith('/true')) {
+            let qs = QueryString.stringify({
+                data: filtersData.value,
+            });
+            if (qs) {
+                window.history.replaceState('', '', `/pending-alerts?${qs}`);
+            }
+        }
+    }, 500);
+
     Echo.channel('orchestrator-connection-tenant-alert')
         .listen('.new', (data) => {
             console.log(data);
@@ -312,6 +334,8 @@ onMounted(() => {
             newClosedAlertsCount.value++;
         });
 });
+
+
 </script>
 
 <template>
