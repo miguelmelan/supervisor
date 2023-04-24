@@ -17,7 +17,7 @@ const props = defineProps({
                 <div class="flex items-center">
                     <input type="checkbox"
                         class="rounded border-gray-400 hover:border-gray-neutral-55 text-blue-50 shadow-sm focus:border-blue-50"
-                        v-model="selected" :name="'checkbox-' + item.id" :value="item.id" number>
+                        v-bind="selected" :name="'checkbox-' + item.id" :value="item.id" number>
                     <label :for="'checkbox-' + item.id" class="sr-only">{{ __('Select item') }}</label>
                 </div>
             </td>

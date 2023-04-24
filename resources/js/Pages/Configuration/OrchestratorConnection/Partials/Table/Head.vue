@@ -15,7 +15,7 @@ const props = defineProps({
                     <input type="checkbox" class="rounded text-blue-50 shadow-sm focus:border-blue-50" :class="{
                         'bg-gray-100 border-gray-300 hover:border-gray-400': orchestratorConnections.data.length == 0,
                         'bg-white border-gray-400 hover:border-gray-neutral-55': orchestratorConnections.data.length > 0
-                    }" v-model="selectAll" name="checkbox-all"
+                    }" v-bind="selectAll" name="checkbox-all"
                         :disabled="orchestratorConnections.data.length == 0">
                     <label for="checkbox-all" class="sr-only">{{ __('Select all items')}}</label>
                 </div>

@@ -1,8 +1,13 @@
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
     selection: Object,
     selectAll: Boolean,
 });
+
+const selectAll = computed(() => props.selectAll);
+const selection = computed(() => props.selection);
 </script>
 
 <template>
