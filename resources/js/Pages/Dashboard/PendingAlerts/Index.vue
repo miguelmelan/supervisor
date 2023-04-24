@@ -315,6 +315,8 @@ onMounted(() => {
             });
             if (qs) {
                 window.history.replaceState('', '', `/pending-alerts?${qs}`);
+            } else {
+                window.history.replaceState('', '', '/pending-alerts');
             }
         }
     }, 500);

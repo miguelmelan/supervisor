@@ -2,6 +2,7 @@ import './bootstrap';
 import '@vuepic/vue-datepicker/dist/main.css';
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 import '/node_modules/vue3-treeview/dist/style.css';
+import 'vue-json-pretty/lib/styles.css';
 import '../css/app.css';
 
 import { createApp, h } from 'vue';
@@ -17,6 +18,7 @@ import Vue3ChartJs from '@j-t-mcc/vue3-chartjs';
 import VueApexCharts from "vue3-apexcharts";
 import NumberAbbreviate from 'number-abbreviate';
 import Datepicker from '@vuepic/vue-datepicker';
+import VueJsonPretty from 'vue-json-pretty';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -32,7 +34,8 @@ createInertiaApp({
             .component('BaseTagsInput', TagsInput)
             .component('Treeview', Tree)
             .component('ChartJs', Vue3ChartJs)
-            .component('Datepicker', Datepicker);
+            .component('Datepicker', Datepicker)
+            .component('JsonPretty', VueJsonPretty);
 
         myApp.provide('abbr', NumberAbbreviate)
 

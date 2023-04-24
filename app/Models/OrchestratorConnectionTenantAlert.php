@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use BeyondCode\Comments\Traits\HasComments;
+use Laravel\Scout\Searchable;
 
 class OrchestratorConnectionTenantAlert extends Model
 {
-    use HasFactory, HasComments;
+    use HasFactory, HasComments, Searchable;
 
     protected $fillable = [
         'external_id',
@@ -76,5 +77,10 @@ class OrchestratorConnectionTenantAlert extends Model
         return Attribute::get(function ($original) {
             return $original === 1;
         });
+    }
+
+    public function shouldBeSearchable(): bool
+    {
+        return $this->read_at !== null;
     }
 }

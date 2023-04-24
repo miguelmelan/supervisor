@@ -7,6 +7,7 @@ import SectionBorder from '@/Components/SectionBorder.vue';
 import Actions from './Partials/Actions.vue';
 import Details from './Partials/Details.vue';
 import ResolutionDetails from './Partials/ResolutionDetails.vue';
+import Siblings from './Partials/Siblings.vue';
 import Extensions from './Partials/Extensions.vue';
 import Timeline from './Partials/Timeline.vue';
 
@@ -15,6 +16,7 @@ const translate = inject('translate');
 const props = defineProps({
     alert: Object,
     from: String,
+    siblings: Array,
 });
 
 let form = useForm({
@@ -27,7 +29,7 @@ let form = useForm({
     resolution_details: props.alert.resolution_details,
     automated_process_id: props.alert.automated_process_id,
     notification_name: props.alert.notification_name,
-    data_: props.alert.data,
+    _data: props.alert._data,
     component: props.alert.component,
     severity: props.alert.severity,
     creation_time: props.alert.creation_time,
@@ -77,6 +79,9 @@ const backLocation = route(props.from, {
 
                         <ResolutionDetails :form="form" :original-resolution-details="alert.resolution_details"
                             :original-false-positive="alert.false_positive === 1" />
+                        <SectionBorder />
+
+                        <Siblings v-if="siblings.length > 0" :siblings="siblings" />
                         <SectionBorder />
 
                         <!-- <Extensions :form="form" />

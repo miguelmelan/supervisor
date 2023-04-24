@@ -125,7 +125,7 @@ const resetOrchestratorConnectionFilters = () => {
     sendPropertyUpdatedEvent();
 };
 
-onMounted(() => {    
+onMounted(() => {
     const accordionConfiguration = {
         items: [
             {
