@@ -6,6 +6,7 @@ import PageContentHeader from '@/Components/PageContentHeader.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
 import Actions from './Partials/Actions.vue';
 import Details from './Partials/Details.vue';
+import RecommendedActions from './Partials/RecommendedActions.vue';
 import ResolutionDetails from './Partials/ResolutionDetails.vue';
 import Siblings from './Partials/Siblings.vue';
 import Extensions from './Partials/Extensions.vue';
@@ -18,6 +19,8 @@ const props = defineProps({
     from: String,
     siblings: Array,
 });
+
+const openaiEnabled = import.meta.env.VITE_OPENAI_ENABLED;
 
 let form = useForm({
     id: props.alert.id,
@@ -81,8 +84,11 @@ const backLocation = route(props.from, {
                             :original-false-positive="alert.false_positive === 1" />
                         <SectionBorder />
 
+                            <RecommendedActions v-if="openaiEnabled" />
+                        <SectionBorder v-if="openaiEnabled" />
+
                         <Siblings v-if="siblings.length > 0" :siblings="siblings" />
-                        <SectionBorder />
+                        <SectionBorder v-if="siblings.length > 0" />
 
                         <!-- <Extensions :form="form" />
                         <SectionBorder /> -->

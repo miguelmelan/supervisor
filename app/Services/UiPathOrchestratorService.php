@@ -352,6 +352,8 @@ class UiPathOrchestratorService
                 $result['webhook'] = Http::withoutVerifying()
                     ->withToken($token)
                     ->post($endpoint, [
+                        'Name' => 'supervisor-' . $tenant->uuid,
+                        'Description' => 'Created by supervisor external application to trap alerts',
                         'Url' => route('configuration.orchestrator-connections.tenants.webhook-handler', [
                             'uuid' => $tenant->uuid,
                         ]),

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateOrchestratorConnectionTenantAlertRequest;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\OrchestratorConnectionTenantAlert;
 use App\Models\User;
@@ -39,6 +38,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             ->get()->take(5)
             ->sortByDesc('read_at')
             ->where('id', '!=', $alert->id);
+
         return Inertia::render('Dashboard/Alerts/Edit', [
             'alert' => new OrchestratorConnectionTenantAlertResource($alert),
             'from' => $from,

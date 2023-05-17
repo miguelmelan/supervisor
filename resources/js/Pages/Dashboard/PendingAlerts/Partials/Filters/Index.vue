@@ -218,8 +218,8 @@ onMounted(() => {
                             :selected-values="selectedAlertComponents"
                             :label="__('Component')" :placeholder="__('Select components')"
                             @updated="sendPropertyUpdatedEvent" />
-                        <AlertLockingDateFilter :range="alertLockingDateRange" @updated="updateAlertLockingDateRange" />
-                        <AlertLockingUserFilter :values="alertsProperties.lockingUser"
+                        <AlertLockingDateFilter v-if="alertsProperties.lockingUser.length > 0" :range="alertLockingDateRange" @updated="updateAlertLockingDateRange" />
+                        <AlertLockingUserFilter v-if="alertsProperties.lockingUser.length > 0" :values="alertsProperties.lockingUser"
                             :selected-values="selectedLockingUsers"
                             @updated="sendPropertyUpdatedEvent" />
                     </div>
