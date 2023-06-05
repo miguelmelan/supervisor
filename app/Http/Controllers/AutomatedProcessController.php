@@ -79,7 +79,7 @@ class AutomatedProcessController extends Controller
     public function store(StoreAutomatedProcessRequest $request)
     {
         $attributes = $request->validated();
-        //dd($attributes);
+        
         $automatedProcess = AutomatedProcess::create($attributes);
         $automatedProcess->save();
         $automatedProcess->attachTags(array_column($attributes['tags'], 'name'));
@@ -116,34 +116,37 @@ class AutomatedProcessController extends Controller
                     $queues = $tenant['selected_queues'];
                     $tenantModel = OrchestratorConnectionTenant::find($tenant['id']);
 
-                    foreach ($releases as $releaseId) {
-                        $release = OrchestratorConnectionTenantRelease::where('external_id', $releaseId)
+                    foreach ($releases as $release) {
+                        $release = OrchestratorConnectionTenantRelease::where('external_id', $release['id'])
                             ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $releaseId) {
+                            ->firstOr(function () use ($tenantModel, $release) {
                                 return $tenantModel->releases()->create([
-                                    'external_id' => $releaseId,
+                                    'external_id' => $release['id'],
+                                    'external_folder_id' => $release['folder'],
                                 ]);
                             });
                         $automatedProcess->releases()->attach($release->id);
                     }
 
-                    foreach ($machines as $machineId) {
-                        $machine = OrchestratorConnectionTenantMachine::where('external_id', $machineId)
+                    foreach ($machines as $machine) {
+                        $machine = OrchestratorConnectionTenantMachine::where('external_id', $machine['id'])
                             ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $machineId) {
+                            ->firstOr(function () use ($tenantModel, $machine) {
                                 return $tenantModel->machines()->create([
-                                    'external_id' => $machineId,
+                                    'external_id' => $machine['id'],
+                                    'external_folder_id' => $machine['folder'],
                                 ]);
                             });
                         $automatedProcess->machines()->attach($machine->id);
                     }
 
-                    foreach ($queues as $queueId) {
-                        $queue = OrchestratorConnectionTenantQueue::where('external_id', $queueId)
+                    foreach ($queues as $queue) {
+                        $queue = OrchestratorConnectionTenantQueue::where('external_id', $queue['id'])
                             ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $queueId) {
+                            ->firstOr(function () use ($tenantModel, $queue) {
                                 return $tenantModel->queues()->create([
-                                    'external_id' => $queueId,
+                                    'external_id' => $queue['id'],
+                                    'external_folder_id' => $queue['folder'],
                                 ]);
                             });
                         $automatedProcess->queues()->attach($queue->id);
@@ -232,44 +235,55 @@ class AutomatedProcessController extends Controller
 
                     $orchestratorConnectionsTenantsToSync[$tenant['id']] = $pivot;
 
-                    foreach ($selectedReleases as $releaseId) {
-                        OrchestratorConnectionTenantRelease::where('external_id', $releaseId)
+                    $selectedReleasesIds = array();
+                    foreach ($selectedReleases as $release) {
+                        array_push($selectedReleasesIds, $release['id']);
+                        OrchestratorConnectionTenantRelease::where('external_id', $release['id'])
                             ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $releaseId) {
+                            ->firstOr(function () use ($tenantModel, $release) {
                                 return $tenantModel->releases()->create([
-                                    'external_id' => $releaseId,
+                                    'external_id' => $release['id'],
+                                    'external_folder_id' => $release['folder'],
                                 ]);
                             });
                     }
-                    foreach ($selectedMachines as $machineId) {
-                        OrchestratorConnectionTenantMachine::where('external_id', $machineId)
+                    
+                    $selectedMachinesIds = array();
+                    foreach ($selectedMachines as $machine) {
+                        array_push($selectedMachinesIds, $machine['id']);
+                        OrchestratorConnectionTenantMachine::where('external_id', $machine['id'])
                             ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $machineId) {
+                            ->firstOr(function () use ($tenantModel, $machine) {
                                 return $tenantModel->machines()->create([
-                                    'external_id' => $machineId,
+                                    'external_id' => $machine['id'],
+                                    'external_folder_id' => $machine['folder'],
                                 ]);
                             });
                     }
-                    foreach ($selectedQueues as $queueId) {
-                        OrchestratorConnectionTenantQueue::where('external_id', $queueId)
+                    
+                    $selectedQueuesIds = array();
+                    foreach ($selectedQueues as $queue) {
+                        array_push($selectedQueuesIds, $queue['id']);
+                        OrchestratorConnectionTenantQueue::where('external_id', $queue['id'])
                             ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $queueId) {
+                            ->firstOr(function () use ($tenantModel, $queue) {
                                 return $tenantModel->queues()->create([
-                                    'external_id' => $queueId,
+                                    'external_id' => $queue['id'],
+                                    'external_folder_id' => $queue['folder'],
                                 ]);
                             });
                     }
 
                     $releases = OrchestratorConnectionTenantRelease::where('tenant_id', $tenant['id'])
-                        ->whereIn('external_id', $selectedReleases)->get()->pluck('id')->toArray();
+                        ->whereIn('external_id', $selectedReleasesIds)->get()->pluck('id')->toArray();
                     $releasesToSync = array_merge($releasesToSync, $releases);
 
                     $machines = OrchestratorConnectionTenantMachine::where('tenant_id', $tenant['id'])
-                        ->whereIn('external_id', $selectedMachines)->get()->pluck('id')->toArray();
+                        ->whereIn('external_id', $selectedMachinesIds)->get()->pluck('id')->toArray();
                     $machinesToSync = array_merge($machinesToSync, $machines);
 
                     $queues = OrchestratorConnectionTenantQueue::where('tenant_id', $tenant['id'])
-                        ->whereIn('external_id', $selectedQueues)->get()->pluck('id')->toArray();
+                        ->whereIn('external_id', $selectedQueuesIds)->get()->pluck('id')->toArray();
                     $queuesToSync = array_merge($queuesToSync, $queues);
                 }
             }

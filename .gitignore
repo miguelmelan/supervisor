@@ -4,6 +4,10 @@
 /public/storage
 /storage/*.key
 /vendor
+/python/.env
+/python/archive
+/python/data
+/python/__pycache__
 .env
 .env.backup
 .phpunit.result.cache

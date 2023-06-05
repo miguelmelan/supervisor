@@ -60,10 +60,9 @@ function getAcronym($string, $minlength = 2, $maxlength = 5)
             break;
         }
     }
-
     // if the acronym's length is < $minlength, add the following character of first word in original string
-    while (strlen($acronym) < $minlength && strlen($cleanedName[0]) > strlen($acronym)) {
-        $acronym .= strtoupper(substr($cleanedName[0], strlen($acronym), 1));
+    while (strlen($acronym) < $minlength && strlen($cleanedName[array_key_first($cleanedName)]) > strlen($acronym)) {
+        $acronym .= strtoupper(substr($cleanedName[array_key_first($cleanedName)], strlen($acronym), 1));
     }
 
     return $acronym;

@@ -28,7 +28,11 @@ return [
                             'all' => '/%s/orchestrator_/odata/Machines/UiPath.Server.Configuration.OData.GetAssignedMachines(folderId=%s)',
                         ],
                         'queue_definitions' => [
+                            'single' => '/%s/orchestrator_/queues/transactions/%s',
                             'all' => '/%s/orchestrator_/odata/QueueDefinitions',
+                        ],
+                        'queue_items' => [
+                            'all' => '/%s/orchestrator_/odata/QueueItems',
                         ],
                         'sessions' => [
                             'all' => '/%s/orchestrator_/odata/Sessions',
@@ -39,6 +43,16 @@ return [
                         'webhooks' => [
                             'all' => '/%s/orchestrator_/odata/Webhooks',
                             'remove' => '/%s/orchestrator_/odata/Webhooks(%s)',
+                        ],
+                        'logs' => [
+                            'all' => '/%s/orchestrator_/odata/RobotLogs',
+                        ],
+                        'jobs' => [
+                            'single' => '/%s/orchestrator_/jobs/%s/logs',
+                            'all' => '/%s/orchestrator_/odata/Jobs',
+                        ],
+                        'machine_session_runtimes' => [
+                            'all' => '/%s/orchestrator_/odata/Sessions/UiPath.Server.Configuration.OData.GetMachineSessionRuntimesByFolderId(folderId=%s)',
                         ],
                     ],
                     'on_premise' => [
@@ -52,7 +66,11 @@ return [
                             'all' => '/odata/Machines/UiPath.Server.Configuration.OData.GetAssignedMachines(folderId=%s)',
                         ],
                         'queue_definitions' => [
+                            'single' => '/queues/transactions/%s',
                             'all' => '/odata/QueueDefinitions',
+                        ],
+                        'queue_items' => [
+                            'all' => '/odata/QueueItems',
                         ],
                         'sessions' => [
                             'all' => '/odata/Sessions',
@@ -63,6 +81,13 @@ return [
                         'webhooks' => [
                             'all' => '/odata/Webhooks',
                             'remove' => '/odata/Webhooks(%s)',
+                        ],
+                        'logs' => [
+                            'all' => '/odata/RobotLogs',
+                        ],
+                        'jobs' => [
+                            'single' => '/jobs/%s/logs',
+                            'all' => '/odata/Jobs',
                         ],
                     ]
                 ]

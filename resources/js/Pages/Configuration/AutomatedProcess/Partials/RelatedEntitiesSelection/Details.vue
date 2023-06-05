@@ -101,7 +101,6 @@ const selectTenant = (orchestratorConnectionId, id) => {
                 const folders = res.data.folders;
                 if (folders) {
                     selectedTenant.value.treeviews = buildTreeviews(folders);
-                    console.log(selectedTenant.value.treeviews);
                     selectedOrchestratorConnectionVerificationState.message = '';
                     selectedOrchestratorConnectionVerificationState.tenantsMessages = [];
                 }
@@ -193,6 +192,7 @@ const buildTreeviews = folders => {
         const folderNode = {
             text: folderName,
             children: folderChildren,
+            id: folderNodeId,
         };
         
         releasesNodes[folderNodeId] = JSON.parse(JSON.stringify(folderNode));
@@ -388,19 +388,19 @@ const addReleaseToSelectedTenant = (node) => {
     addEntityToSelectedTenant(node.id, node, 'release', selectedTenant.value.selected_releases, selectedTenant.value.treeviews.releases);
 };
 const removeReleaseFromSelectedTenant = (node) => {
-    removeEntityFromSelectedTenant(node, 'release', selectedTenant.value.selected_releases);
+    removeEntityFromSelectedTenant(node.id, node, 'release', selectedTenant.value.selected_releases, selectedTenant.value.treeviews.releases);
 };
 const addMachineToSelectedTenant = (node) => {
     addEntityToSelectedTenant(node.id, node, 'machine', selectedTenant.value.selected_machines, selectedTenant.value.treeviews.machines);
 };
 const removeMachineFromSelectedTenant = (node) => {
-    removeEntityFromSelectedTenant(node, 'machine', selectedTenant.value.selected_machines);
+    removeEntityFromSelectedTenant(node.id, node, 'machine', selectedTenant.value.selected_machines, selectedTenant.value.treeviews.machines);
 };
 const addQueueToSelectedTenant = (node) => {
     addEntityToSelectedTenant(node.id, node, 'queue-definition', selectedTenant.value.selected_queues, selectedTenant.value.treeviews.queueDefinitions);
 };
 const removeQueueFromSelectedTenant = (node) => {
-    removeEntityFromSelectedTenant(node, 'queue-definition', selectedTenant.value.selected_queues);
+    removeEntityFromSelectedTenant(node.id, node, 'queue-definition', selectedTenant.value.selected_queues, selectedTenant.value.treeviews.queueDefinitions);
 };
 
 const addEntityToSelectedTenant = (id, node, type, selected, treeview) => {
@@ -408,8 +408,11 @@ const addEntityToSelectedTenant = (id, node, type, selected, treeview) => {
 
     if (nodeType === 'folder') {
         node.children.filter(child => child.startsWith(type)).map(child => child.replace(`${type}-`, '')).forEach(id => {
-            if (!selected.includes(id)) {
-                selected.push(id);
+            if (!selected.map(item => item.id).includes(id)) {
+                selected.push({
+                    id: id,
+                    folder: node.id.replace('folder-', ''),
+                });
             }
         });
         node.children.filter(child => child.startsWith('folder')).forEach(child => {
@@ -420,21 +423,31 @@ const addEntityToSelectedTenant = (id, node, type, selected, treeview) => {
         });
     } else {
         const cleanedId = id.replace(`${type}-`, '');
-        if (!selected.includes(cleanedId)) {
-            selected.push(cleanedId);
+        if (!selected.map(item => item.id).includes(cleanedId)) {
+            selected.push({
+                id: cleanedId,
+                folder: node.parent.replace('folder-', ''),
+            });
         }
     }
 };
 
-const removeEntityFromSelectedTenant = (node, type, selected) => {
-    const nodeType = node.id.startsWith('folder') ? 'folder' : type;
+const removeEntityFromSelectedTenant = (id, node, type, selected, treeview) => {
+    const nodeType = id.startsWith('folder') ? 'folder' : type;
 
     if (nodeType === 'folder') {
         node.children.forEach(child => {
-            selected.splice(selected.indexOf(child.replace(`${type}-`, '')), 1);
+            if (child.startsWith('folder')) {
+                // search for node in treeview
+                const n = Object.entries(treeview.nodes).find(([key, value]) => key == child)[1];
+                // call remove entity (recursively)
+                removeEntityFromSelectedTenant(child, n, type, selected, treeview);
+            } else {
+                selected.splice(selected.map(item => item.id).indexOf(child.replace(`${type}-`, '')), 1);
+            }
         });
     } else {
-        selected.splice(selected.indexOf(node.id.replace(`${type}-`, '')), 1);
+        selected.splice(selected.map(item => item.id).indexOf(node.id.replace(`${type}-`, '')), 1);
     }
 };
 

@@ -16,7 +16,7 @@ import PageContentHeader from '@/Components/PageContentHeader.vue';
             </PageContentHeader>
 
             <div class="bg-gray-200 bg-opacity-25 grid grid-cols-1 md:grid-cols-2">
-                <div class="p-6">
+                <div class="p-6 border-gray-200 md:border-r">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                             class="w-8 h-8 text-gray-400">
@@ -50,7 +50,7 @@ import PageContentHeader from '@/Components/PageContentHeader.vue';
                     </div>
                 </div>
 
-                <div class="p-6 border-t border-gray-200 md:border-t-0 md:border-l">
+                <div class="p-6 border-t border-gray-200 md:border-t-0">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                             class="w-8 h-8 text-gray-400">
@@ -84,23 +84,24 @@ import PageContentHeader from '@/Components/PageContentHeader.vue';
                     </div>
                 </div>
 
-                <div class="p-6 border-t border-gray-200">
+                <div class="p-6 border-t border-gray-200 md:border-r">
                     <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                            class="w-8 h-8 text-gray-400">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
                         </svg>
                         <div class="ml-4 text-lg text-gray-600 leading-7 font-semibold">
-                            <a href="#">{{ __('Rule-based alert triggers') }}</a>
+                            <Link :href="route('configuration.ai-based-alert-triggers.index')">
+                                {{ __('AI based alert triggers') }}
+                            </Link>
                         </div>
                     </div>
 
                     <div class="ml-12">
                         <div class="mt-2 text-sm text-gray-500">
-                            {{ __("Set up rules to detect uncommon behaviours in your digital workforce.") }}
+                            {{ __("Use AI to set up rules detecting uncommon behaviors in your digital workforce.") }}
                         </div>
 
-                        <a href="#">
+                        <Link :href="route('configuration.ai-based-alert-triggers.index')">
                             <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
                                 <div>{{ __('Configure') }}</div>
 
@@ -112,11 +113,11 @@ import PageContentHeader from '@/Components/PageContentHeader.vue';
                                     </svg>
                                 </div>
                             </div>
-                        </a>
+                        </Link>
                     </div>
                 </div>
 
-                <div class="p-6 border-t border-gray-200 md:border-l">
+                <!-- <div class="p-6 border-t border-gray-200 md:border-t-0">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                             class="w-8 h-8 text-gray-400">
@@ -146,7 +147,7 @@ import PageContentHeader from '@/Components/PageContentHeader.vue';
                             </div>
                         </a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </AppLayout>

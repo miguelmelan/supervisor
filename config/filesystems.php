@@ -44,6 +44,12 @@ return [
             'throw' => false,
         ],
 
+        'python' => [
+            'driver' => 'local',
+            'root' => base_path('/python'),
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

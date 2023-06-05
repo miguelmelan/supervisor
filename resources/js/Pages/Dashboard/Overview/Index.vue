@@ -30,16 +30,16 @@ const chartConfiguration = {
         ],
         mostAlertingEntities: {
             orchestratorConnections: {
-                bar: '#a78bfa', // violet-400
-                text: '#4c1d95', // violet-900
+                bar: '#77397c', // violet-400
+                text: '#ffffff', // violet-900
             },
             orchestratorConnectionTenants: {
-                bar: '#38c6f4', // cyan-50
-                text: '#164e63', // cyan-900
+                bar: '#078e9e', // cyan-50
+                text: '#ffffff', // cyan-900
             },
             automatedProcesses: {
-                bar: '#f472b6', // pink-400
-                text: '#831843', // pink-900
+                bar: '#c62157', // pink-400
+                text: '#ffffff', // pink-900
             },
         },
     },

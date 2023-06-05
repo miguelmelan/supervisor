@@ -44,6 +44,6 @@ createInertiaApp({
     },
 });
 
-InertiaProgress.init({ color: '#FA4616' });
+InertiaProgress.init({ color: '#fa4616' });
 
 // Pusher.log = function (message) { window.console.log(message); }

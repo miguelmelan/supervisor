@@ -107,6 +107,10 @@ textarea.not-resizable {
   left: -2px;
 }
 
+.tree .checkbox-wrapper input {
+  display: none;
+}
+
 
 /************** Datepicker */
 .dp__main, .dp__menu, .dp__calendar_wrap {

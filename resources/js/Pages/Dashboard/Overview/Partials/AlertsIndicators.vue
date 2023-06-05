@@ -21,12 +21,12 @@ const props = defineProps({
 });
 
 const backgroundColors = {
-    everyFifteenMinutes: '#a78bfa',
-    everyHour: '#38c6f4',
-    everyFourHours: '#f472b6',
-    everyday: '#fb7185',
-    everyWeek: '#818cf8',
-    everyMonth: '#2dd4bf',
+    everyFifteenMinutes: '#8b3d8a',
+    everyHour: '#0ba2b3',
+    everyFourHours: '#dc2560',
+    everyday: '#77397c',
+    everyWeek: '#078e9e',
+    everyMonth: '#c62157',
 };
 
 const indicators = ref([{
@@ -55,7 +55,7 @@ const indicators = ref([{
     alerts: props.alertsEveryday,
     categories: props.alertsEverydayCategories,
     title: translate('Today'),
-    backgroundColor: backgroundColors.everyHour,
+    backgroundColor: backgroundColors.everyday,
     icon: 'calendar',
 }, {
     id: 'every-week-bar-chart',

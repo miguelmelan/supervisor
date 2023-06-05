@@ -21,7 +21,7 @@ const props = defineProps({
     height: String,
     innerHorizontalBarTextColor: {
         type: String,
-        default: '#595a5c',
+        default: '#595959',
     },
     heatmap: {
         type: Object,

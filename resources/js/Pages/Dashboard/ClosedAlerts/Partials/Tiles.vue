@@ -59,7 +59,7 @@ const indicators = ref([{
     categories: alertsByCategory.value.component.map(i => i.component),
     key: 'component',
     title: translate('By component type'),
-    backgroundColor: ['#a78bfa', '#38c6f4', '#f472b6'],
+    backgroundColor: indicatorsBackgroundColors.component(alertsByCategory.value.notificationName.length),
     icon: 'puzzle-piece',
 }]);
 </script>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('tenant_id');
             $table->string('external_id');
+            $table->string('external_folder_id');
             $table->timestamps();
             $table
                 ->foreign('tenant_id', 'octr_t_id_foreign')

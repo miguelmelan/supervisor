@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AIBasedAlertTriggerController;
 use App\Http\Controllers\AutomatedProcessController;
 use App\Http\Controllers\MicrosoftController;
 use App\Http\Controllers\ClosedAlertsController;
@@ -109,6 +110,14 @@ Route::middleware([
         Route::resource('automated-processes', AutomatedProcessController::class);
         Route::name('automated-processes.')->prefix('automated-processes')->group(function () {
             Route::post('/bulk-destroy', [AutomatedProcessController::class, 'bulkDestroy'])->name('bulk-destroy');
+        });
+
+        // ai based alert triggers
+        Route::resource('ai-based-alert-triggers', AIBasedAlertTriggerController::class);
+        Route::name('ai-based-alert-triggers.')->prefix('ai-based-alert-triggers')->group(function () {
+            Route::post('/bulk-destroy', [AIBasedAlertTriggerController::class, 'bulkDestroy'])->name('bulk-destroy');
+            Route::post('/check-conditions', [AIBasedAlertTriggerController::class, 'checkConditions'])->name('check-conditions');
+            Route::post('/compute-scheduling', [AIBasedAlertTriggerController::class, 'computeScheduling'])->name('compute-scheduling');
         });
 
         // property keys

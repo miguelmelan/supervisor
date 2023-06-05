@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "feaac9a3afc3521519e01755f3d97636",
+    "content-hash": "233092660540c950347d8e52966fb2b3",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -3599,6 +3599,60 @@
                 }
             ],
             "time": "2023-04-13T13:20:16+00:00"
+        },
+        {
+            "name": "ozdemirburak/json-csv",
+            "version": "0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ozdemirburak/json-csv.git",
+                "reference": "2fa2698c6f100c32cb9bfe6b705594bb37cec4d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ozdemirburak/json-csv/zipball/2fa2698c6f100c32cb9bfe6b705594bb37cec4d7",
+                "reference": "2fa2698c6f100c32cb9bfe6b705594bb37cec4d7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~8.0|~9.0",
+                "squizlabs/php_codesniffer": "~3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OzdemirBurak\\JsonCsv\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Burak Özdemir",
+                    "homepage": "https://ozdemirburak.com"
+                }
+            ],
+            "description": "JSON to CSV and CSV to JSON converters in PHP.",
+            "homepage": "https://github.com/ozdemirburak/json-csv",
+            "keywords": [
+                "csv",
+                "csv to json",
+                "csv2json",
+                "json",
+                "json to csv",
+                "json2csv"
+            ],
+            "support": {
+                "issues": "https://github.com/ozdemirburak/json-csv/issues",
+                "source": "https://github.com/ozdemirburak/json-csv/tree/0.4.0"
+            },
+            "time": "2020-12-06T17:01:04+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",

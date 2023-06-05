@@ -18,9 +18,8 @@ const props = defineProps({
     alert: Object,
     from: String,
     siblings: Array,
+    recommendedActions: Array,
 });
-
-const openaiEnabled = import.meta.env.VITE_OPENAI_ENABLED;
 
 let form = useForm({
     id: props.alert.id,
@@ -84,8 +83,8 @@ const backLocation = route(props.from, {
                             :original-false-positive="alert.false_positive === 1" />
                         <SectionBorder />
 
-                            <RecommendedActions v-if="openaiEnabled" />
-                        <SectionBorder v-if="openaiEnabled" />
+                        <RecommendedActions v-if="recommendedActions.length > 0" />
+                        <SectionBorder v-if="recommendedActions.length > 0" />
 
                         <Siblings v-if="siblings.length > 0" :siblings="siblings" />
                         <SectionBorder v-if="siblings.length > 0" />

@@ -58,13 +58,10 @@ const submit = () => {
                         <!-- orchestrator connections selection -->
                         <OrchestratorConnectionsSelectionDetails :form="form" :orchestratorConnections="orchestratorConnections" mode="create" />
 
-                        <!-- uipath processes selection -->
+                        <!-- uipath entities selection -->
                         <div v-show="form.orchestrator_connections.length > 0">
                             <RelatedEntitiesSelectionDetails :form="form" mode="create" />
                         </div>
-                        
-                        <!-- uipath robots selection -->
-                        <!-- uipath queues selection -->
 
                         <!-- actions -->
                         <Actions :form="form" mode="create" :cancelling="cancelling" />

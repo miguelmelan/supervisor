@@ -17,6 +17,7 @@ class OrchestratorConnectionTenantMachineResource extends JsonResource
         return [
             'id' => $this->id,
             'external_id' => $this->external_id,
+            'external_folder_id' => $this->external_folder_id,
             'tenant_id' => $this->tenant_id,
         ];
     }

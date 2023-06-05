@@ -10,7 +10,7 @@ class OrchestratorConnectionTenantMachine extends Model
     use HasFactory;
 
     protected $fillable = [
-        'external_id',
+        'external_id', 'external_folder_id',
     ];
 
     public function tenant()

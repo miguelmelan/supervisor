@@ -43,6 +43,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             'alert' => new OrchestratorConnectionTenantAlertResource($alert),
             'from' => $from,
             'siblings' => OrchestratorConnectionTenantAlertResource::collection($siblings),
+            'recommendedActions' => array(),
         ]);
     }
 

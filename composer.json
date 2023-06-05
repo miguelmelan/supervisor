@@ -24,6 +24,7 @@
         "laravel/tinker": "^2.7",
         "meilisearch/meilisearch-php": "^1.1",
         "openai-php/laravel": "^0.4.1",
+        "ozdemirburak/json-csv": "^0.4.0",
         "pusher/pusher-php-server": "^7.2",
         "socialiteproviders/generators": "^4.6",
         "socialiteproviders/manager": "^4.3",

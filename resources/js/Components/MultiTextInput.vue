@@ -23,6 +23,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    fieldsDisabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const inputs = ref([]);
@@ -54,6 +58,8 @@ onBeforeMount(() => {
         <div class="mt-2 flex items-center">
             <TextInput :id="id + '[' + index + ']'" v-model="item[_key]" type="text"
                 class="block w-full flex-grow" :autocomplete="id + '[' + index + ']'" 
+                :class="{ 'opacity-25': fieldsDisabled }"
+                :disabled="fieldsDisabled"
                 :required="_required" @blur="updateValue()" />
             <DangerButton type="button" @click="deleteValue(index)" class="ml-2"
                 :class="{ 'opacity-25': buttonsDisabled }"

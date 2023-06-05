@@ -29,15 +29,30 @@ const form = useForm({
 
                 tenant.selected_releases = props.automatedProcess.releases
                     .filter(release => release.tenant_id === tenant.id)
-                    .map(release => release.external_id);
+                    .map(release => {
+                        return {
+                            id: release.external_id,
+                            folder: release.external_folder_id,
+                        };
+                    });
 
                 tenant.selected_machines = props.automatedProcess.machines
                     .filter(machine => machine.tenant_id === tenant.id)
-                    .map(machine => machine.external_id);
+                    .map(machine => {
+                        return {
+                            id: machine.external_id,
+                            folder: machine.external_folder_id,
+                        };
+                    });
 
                 tenant.selected_queues = props.automatedProcess.queues
                     .filter(queue => queue.tenant_id === tenant.id)
-                    .map(queue => queue.external_id);
+                    .map(queue => {
+                        return {
+                            id: queue.external_id,
+                            folder: queue.external_folder_id,
+                        };
+                    });
 
                 orchestratorConnection.tenants[index] = tenant;
             }
@@ -93,14 +108,11 @@ const submit = () => {
                         <OrchestratorConnectionsSelectionDetails :form="form"
                             :orchestratorConnections="orchestratorConnections" mode="edit" />
 
-                        <!-- uipath processes selection -->
+                        <!-- uipath entities selection -->
                         <div v-show="form.orchestrator_connections.length > 0">
                             <RelatedEntitiesSelectionDetails :form="form" mode="edit"
                                 :automated-process="automatedProcess" />
                         </div>
-
-                        <!-- uipath robots selection -->
-                        <!-- uipath queues selection -->
 
                         <!-- actions -->
                         <Actions :form="form" mode="edit" :cancelling="cancelling" />
