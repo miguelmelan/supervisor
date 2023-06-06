@@ -28,11 +28,11 @@ const props = defineProps({
     orchestratorConnectionsProperties: Object,
 });
 
-const pendingAlertsCount = computed(() => props.alertsCount);
+const pendingAlertsCount = ref(props.alertsCount);
 const newPendingAlertsCount = ref(0);
-const closedAlertsCount = computed(() => props.closedAlertsCount);
+const closedAlertsCount = ref(props.closedAlertsCount);
 const newClosedAlertsCount = ref(0);
-const automatedProcessesCount = computed(() => props.automatedProcessesCount);
+const automatedProcessesCount = ref(props.automatedProcessesCount);
 
 const sorting = reactive(props.filters.sorting ?? {
     field: 'id',
@@ -324,15 +324,15 @@ onMounted(() => {
     Echo.channel('orchestrator-connection-tenant-alert')
         .listen('.new', (data) => {
             console.log(data);
-            pendingAlertsCount.value++;
+            //pendingAlertsCount.value++;
             newPendingAlertsCount.value++;
         });
     Echo.channel('orchestrator-connection-tenant-alert')
         .listen('.closed', (data) => {
             console.log(data);
-            pendingAlertsCount.value--;
+            //pendingAlertsCount.value--;
             newPendingAlertsCount.value--;
-            closedAlertsCount.value++;
+            //closedAlertsCount.value++;
             newClosedAlertsCount.value++;
         });
 });

@@ -6,6 +6,7 @@ use App\Http\Resources\AutomatedProcessResource;
 use App\Http\Resources\OrchestratorConnectionResource;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Http\Resources\OrchestratorConnectionTenantResource;
+use App\Models\AIBasedAlertTrigger;
 use App\Models\AutomatedProcess;
 use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
@@ -38,6 +39,8 @@ class DashboardController extends Controller
             $all->sortBy('read_at')->where('read_at', !null)
         )->count();
 
+        $aiBasedAlertTriggersCount = AIBasedAlertTrigger::all()->count();
+
         $mostAlertingAutomatedProcesses = AutomatedProcessResource::collection(
             AutomatedProcess::withCount('alerts')->orderBy('alerts_count', 'desc')->get()
         );
@@ -68,6 +71,7 @@ class DashboardController extends Controller
             'automatedProcesses' => $automatedProcesses,
             'pendingAlertsCount' => $pendingAlertsCount,
             'closedAlertsCount' => $closedAlertsCount,
+            'aiBasedAlertTriggersCount' => $aiBasedAlertTriggersCount,
             'mostAlertingAutomatedProcesses' => $mostAlertingAutomatedProcesses,
             'alerts' => [
                 'overTime' => $alertsOverTime,

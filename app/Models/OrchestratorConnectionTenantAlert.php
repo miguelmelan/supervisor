@@ -24,6 +24,7 @@ class OrchestratorConnectionTenantAlert extends Model
         'locked_at',
         'resolution_details',
         'false_positive',
+        'trigger_id',
     ];
 
     /**
@@ -77,10 +78,5 @@ class OrchestratorConnectionTenantAlert extends Model
         return Attribute::get(function ($original) {
             return $original === 1;
         });
-    }
-
-    public function shouldBeSearchable(): bool
-    {
-        return $this->read_at !== null;
     }
 }

@@ -25,7 +25,6 @@ const form = useForm({
     conditions: '',
     recurrence: '',
     crons: [],
-    classifications: [],
     verifications: [],
 });
 

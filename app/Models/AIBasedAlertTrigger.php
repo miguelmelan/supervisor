@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,10 +18,12 @@ class AIBasedAlertTrigger extends Model
         'conditions',
         'recurrence',
         'crons',
+        'verifications',
     ];
 
     protected $casts = [
         'crons' => 'array',
+        'verifications' => AsArrayObject::class,
     ];
 
     public function code(): Attribute
@@ -84,5 +87,10 @@ class AIBasedAlertTrigger extends Model
     public function conditions()
     {
         return $this->hasMany(AIBasedAlertTriggerCondition::class, 'a_i_based_alert_trigger_id');
+    }
+
+    public function alerts()
+    {
+        return $this->hasMany(OrchestratorConnectionTenantAlert::class, 'a_i_based_alert_trigger_id');
     }
 }

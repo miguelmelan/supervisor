@@ -3,8 +3,10 @@
 namespace App\Console;
 
 //use App\Jobs\RetrieveUiPathOrchestratorAlerts;
+use App\Models\AIBasedAlertTrigger;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
 {
@@ -18,6 +20,18 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('horizon:snapshot')->everyMinute();
         //$schedule->job(new RetrieveUiPathOrchestratorAlerts)->everyMinute();
+
+        $triggers = AIBasedAlertTrigger::all();
+        foreach($triggers as $trigger) {
+            foreach ($trigger->crons as $cron) {
+                //$schedule->command('trigger:manage', [$trigger->id])->cron($cron['cron']);
+                $schedule->call(function () use ($trigger) {
+                    Artisan::queue('trigger:manage', [
+                        'id' => $trigger->id,
+                    ]);
+                })->cron($cron['cron']);
+            }
+        }
     }
 
     /**

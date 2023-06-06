@@ -35,6 +35,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             ->where('notification_name', $alert->notification_name)
             ->where('component', $alert->component)
             ->where('severity', $alert->severity)
+            ->where('read_at', !null)
             ->get()->take(5)
             ->sortByDesc('read_at')
             ->where('id', '!=', $alert->id);

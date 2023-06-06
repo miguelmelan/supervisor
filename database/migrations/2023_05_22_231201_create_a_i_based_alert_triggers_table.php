@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('conditions');
             $table->text('recurrence');
             $table->json('crons');
+            $table->json('verifications');
             $table->timestamps();
         });
     }

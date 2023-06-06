@@ -7,6 +7,8 @@ const abbr = inject('abbr');
 const props = defineProps({
     pendingAlertsCount: Number,
     closedAlertsCount: Number,
+    newPendingAlertsCount: Number,
+    newClosedAlertsCount: Number,
     pendingAlertsFiltersSelected: {
         type: Boolean,
         default: false,
@@ -18,9 +20,9 @@ const props = defineProps({
 });
 
 const pendingAlertsCount = computed(() => props.pendingAlertsCount);
-const newPendingAlertsCount = ref(0);
+const newPendingAlertsCount = computed(() => props.newPendingAlertsCount);
 const closedAlertsCount = computed(() => props.closedAlertsCount);
-const newClosedAlertsCount = ref(0);
+const newClosedAlertsCount = computed(() => props.newClosedAlertsCount);
 </script>
 
 <template>

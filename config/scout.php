@@ -136,7 +136,7 @@ return [
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
             OrchestratorConnectionTenantAlert::class => [
-                'filterableAttributes'=> [ 'id', 'tenant_id', 'notification_name', 'component', 'severity' ],
+                'filterableAttributes'=> [ 'id', 'tenant_id', 'notification_name', 'component', 'severity', 'trigger_id', 'read_at' ],
             ],
         ],
     ],

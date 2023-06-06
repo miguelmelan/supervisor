@@ -24,6 +24,7 @@ const props = defineProps({
 let form = useForm({
     id: props.alert.id,
     id_padded: props.alert.id_padded,
+    trigger: props.alert.trigger,
     locked_at: props.alert.locked_at,
     locked_by: props.alert.locked_by,
     read_at: props.alert.read_at,

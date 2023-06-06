@@ -31,6 +31,7 @@ class StoreAIBasedAlertTriggerRequest extends FormRequest
             'conditions' => 'required',
             'recurrence' => 'required',
             'crons' => 'required|array',
+            'verifications' => 'required',
         ];
 
         return $rules;

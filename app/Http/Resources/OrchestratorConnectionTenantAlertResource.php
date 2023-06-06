@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\AIBasedAlertTrigger;
 use App\Models\OrchestratorConnectionTenant;
 use App\Models\OrchestratorConnectionTenantAlert;
 use App\Models\User;
@@ -24,6 +25,7 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
         return [
             'id' => $this->id,
             'id_padded' => str_pad($this->id, 4, '0', STR_PAD_LEFT),
+            'trigger' => $this->trigger_id ? new AIBasedAlertTriggerResource(AIBasedAlertTrigger::find($this->trigger_id)) : null,
             'tenant_id' => $this->tenant_id,
             'automated_process_id' => $this->automated_process_id,
             'external_id' => $this->external_id,

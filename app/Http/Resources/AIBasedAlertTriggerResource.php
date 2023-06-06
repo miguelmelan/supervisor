@@ -27,6 +27,7 @@ class AIBasedAlertTriggerResource extends JsonResource
             'conditions' => $this->conditions,
             'recurrence' => $this->recurrence,
             'crons' => $this->crons,
+            'verifications' => $this->verifications,
         ];
     }
 }

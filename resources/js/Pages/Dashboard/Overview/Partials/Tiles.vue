@@ -8,6 +8,7 @@ const props = defineProps({
     orchestratorConnections: Array,
     automatedProcesses: Array,
     pendingAlertsCount: Number,
+    aiBasedAlertTriggersCount: Number,
 });
 
 const orchestratorConnectionsCount = ref(props.orchestratorConnections.length);
@@ -74,7 +75,7 @@ const pendingAlertsCount = ref(props.pendingAlertsCount);
             </span>
             <div class="flex flex-col items-end justify-between">
                 <span class="text-sm text-right text-gray-neutral-55">{{ __('AI based alert triggers') }}</span>
-                <span class="text-xl text-blue-50 font-bold">0</span>
+                <span class="text-xl text-blue-50 font-bold">{{ aiBasedAlertTriggersCount }}</span>
             </div>
         </Link>
     </div>

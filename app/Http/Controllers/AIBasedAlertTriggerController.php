@@ -88,6 +88,12 @@ class AIBasedAlertTriggerController extends Controller
     {
         $attributes = $request->validated();
         
+        foreach ($attributes['verifications'] as $verification) {
+            $verification['orchestrator_connection'] = new OrchestratorConnectionResource(
+                OrchestratorConnection::find($verification['orchestrator_connection']['id'])
+            );
+        }
+        
         $alertTrigger = AIBasedAlertTrigger::create($attributes);
         $alertTrigger->save();
         $alertTrigger->attachTags(array_column($attributes['tags'], 'name'));
@@ -203,6 +209,13 @@ class AIBasedAlertTriggerController extends Controller
         $attributes = $request->validated();
 
         $aiBasedAlertTrigger = AIBasedAlertTrigger::find($aiBasedAlertTrigger->id);
+        
+        foreach ($attributes['verifications'] as $key => $verification) {
+            $attributes['verifications'][$key]['orchestrator_connection'] = new OrchestratorConnectionResource(
+                OrchestratorConnection::find($verification['orchestrator_connection']['id'])
+            );
+        }
+
         $aiBasedAlertTrigger->fill($attributes);
         $aiBasedAlertTrigger->save();
 

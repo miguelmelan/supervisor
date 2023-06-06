@@ -28,7 +28,7 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
     public function __construct($tenant, $data)
     {
         $this->tenant = $tenant;
-        $this->data = json_decode($data);
+        $this->data = $data;
     }
 
     /**
@@ -69,7 +69,7 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
 
         $alert = $this->tenant->alerts()->create([
             'notification_name' => $notificationName,
-            'data' => json_encode($this->data),
+            'data' => stripslashes($this->data),
             'component' => $component,
             'severity' => $severity,
             'creation_time' => $creationTime,

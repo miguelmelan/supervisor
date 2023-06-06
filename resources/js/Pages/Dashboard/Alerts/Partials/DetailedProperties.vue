@@ -205,7 +205,7 @@ const openAlert = () => {
                         </div>
                     </div>
                 </li>
-                <li class="flex">
+                <li v-if="!form.trigger" class="flex">
                     <div class="flex space-x-4 p-4 w-full">
                         <div class="flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
@@ -216,8 +216,48 @@ const openAlert = () => {
                             <p class="text-sm font-medium truncate">
                                 {{ __('Associated data') }}
                             </p>
-                            <JsonPretty class="text-xs" :data="JSON.parse(JSON.parse(form._data))"
+                            <JsonPretty class="text-xs" :data="JSON.parse(form._data)"
                                 :deep="0" />
+                        </div>
+                    </div>
+                </li>
+                <li v-else class="flex flex-col">
+                    <div class="flex space-x-4 p-4 w-full">
+                        <div class="flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium">
+                                {{ __('Reason') }}
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                {{ JSON.parse(form._data).reason }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 p-4 w-full">
+                        <div class="flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium">
+                                {{ __('Sources') }}
+                            </p>
+                            <a v-for="(source, indexS) in JSON.parse(form._data).sources.filter(s => s.startsWith('http://') || s.startsWith('https://'))" :href="source" target="_blank"
+                                class="inline-flex items-center text-sm font-semibold text-blue-50 tracking-widest hover:text-blue-500 active:text-blue-900 focus:outline-none disabled:opacity-25 transition" :class="{
+                                'ml-2': indexS > 0,
+                            }">
+                                {{ source }}
+                            </a>
+                            <span v-for="(source, indexS) in JSON.parse(form._data).sources.filter(s => !s.startsWith('http://') && !s.startsWith('https://'))" class="text-sm text-gray-500" :class="{
+                                'ml-2': indexS > 0,
+                            }">
+                                {{ source }}
+                            </span>
                         </div>
                     </div>
                 </li>

@@ -22,7 +22,8 @@ const selectColors = (number) => {
     return `hsl(${hue},50%,75%)`;
 }
 const generateColors = (count) => {
-    return Array.from({ length: count }, (element, index) => selectColors(index));
+    return [ '#dc2560', '#f4a700', '#8b3d8a', '#0ba2b3', '#95d041'];
+    //return Array.from({ length: count }, (element, index) => selectColors(index));
 }
 const indicatorsBackgroundColors = {
     severity: {
@@ -59,7 +60,7 @@ const indicators = ref([{
     categories: alertsByCategory.value.component.map(i => i.component),
     key: 'component',
     title: translate('By component type'),
-    backgroundColor: indicatorsBackgroundColors.component(alertsByCategory.value.notificationName.length),
+    backgroundColor: indicatorsBackgroundColors.component(alertsByCategory.value.component.length),
     icon: 'puzzle-piece',
 }]);
 </script>

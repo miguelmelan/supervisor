@@ -31,6 +31,7 @@ class UpdateAIBasedAlertTriggerRequest extends FormRequest
             'conditions' => 'required',
             'recurrence' => 'required',
             'crons' => 'required|array',
+            'verifications' => 'required',
         ];
     }
 

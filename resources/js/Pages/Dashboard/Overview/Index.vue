@@ -51,6 +51,7 @@ const props = defineProps({
     automatedProcesses: Array,
     pendingAlertsCount: Number,
     closedAlertsCount: Number,
+    aiBasedAlertTriggersCount: Number,
     mostAlertingAutomatedProcesses: Array,
     alerts: Object,
 });
@@ -63,6 +64,8 @@ const newPendingAlertsCount = ref(0);
 
 const closedAlertsCount = ref(props.closedAlertsCount);
 const newClosedAlertsCount = ref(0);
+
+const aiBasedAlertTriggersCount = ref(props.aiBasedAlertTriggersCount);
 
 const alertsOverTime = ref(props.alerts.overTime);
 const alertsEveryFifteenMinutes = ref(props.alerts.everyFifteenMinutes.data);
@@ -123,7 +126,9 @@ onMounted(() => {
             <!-- Navbar -->
             <div class="p-6 sm:px-20 bg-gray-200 bg-opacity-25">
                 <Navbar :pending-alerts-count="pendingAlertsCount"
-                    :closed-alerts-count="closedAlertsCount" />
+                    :closed-alerts-count="closedAlertsCount"
+                    :new-pending-alerts-count="newPendingAlertsCount"
+                    :new-closed-alerts-count="newClosedAlertsCount" />
             </div>
 
             <!-- Main content -->
@@ -132,7 +137,8 @@ onMounted(() => {
                     <!-- Tiles -->
                     <Tiles :orchestrator-connections="orchestratorConnections"
                         :automated-processes="automatedProcesses"
-                        :pending-alerts-count="pendingAlertsCount" />
+                        :pending-alerts-count="pendingAlertsCount"
+                        :ai-based-alert-triggers-count="aiBasedAlertTriggersCount" />
 
                     <div class="col-span-4">
                         <SectionBorder />

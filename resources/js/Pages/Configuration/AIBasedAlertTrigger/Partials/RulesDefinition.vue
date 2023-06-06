@@ -130,7 +130,7 @@ const check = () => {
                                         <span v-if="tenantVerification.answer.error">{{ tenantVerification.answer.error }}</span>
                                     </dt>
                                     <dd v-for="text in tenantVerification.related_text_parts" class="text-xs font-semibold">{{ text }}</dd>
-                                    <div class="flex mt-2">
+                                    <div v-if="tenantVerification.data_source !== 'Machines details'" class="flex mt-2">
                                         <a v-for="(source, indexS) in tenantVerification.answer.sources" :href="source" target="_blank"
                                             class="inline-flex items-center justify-center px-4 py-2 bg-blue-50 border border-transparent rounded-md font-semibold text-white tracking-widest hover:bg-blue-500 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition" :class="{
                                             'ml-2': indexS > 0,
@@ -141,10 +141,18 @@ const check = () => {
                                             <span v-if="tenantVerification.data_source === 'Jobs execution history' || tenantVerification.data_source === 'Robots logs'">
                                                 {{ __('Job n°' + (indexS + 1)) }}
                                             </span>
+                                            <span v-if="tenantVerification.data_source === 'Machines details'">
+                                                {{ __('Machine n°' + (indexS + 1)) }}
+                                            </span>
                                             <span v-if="tenantVerification.data_source === 'Queue items details'">
                                                 {{ __('Queue n°' + (indexS + 1)) }}
                                             </span>
                                         </a>
+                                    </div>
+                                    <div v-else class="flex mt-2">
+                                        <span v-for="source in tenantVerification.answer.sources">
+                                            {{ source }}
+                                        </span>
                                     </div>
                                 </div>
                             </dl>
