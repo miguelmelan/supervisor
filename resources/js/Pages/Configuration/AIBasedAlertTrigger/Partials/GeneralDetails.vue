@@ -35,9 +35,7 @@ watch(name, debounce(function (value) {
         <template #description>
             <div class="text-sm">
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non beatae, aspernatur incidunt, hic vel ea
-                    modi reiciendis cumque eos itaque numquam suscipit exercitationem earum voluptates illo. Vero
-                    laborum illo id.
+                    {{ __('This section provides essential information about the AI-based alert trigger. It includes details such as the trigger\'s name, code, and associated tags. The name represents a descriptive title for the trigger, allowing users to easily identify and manage it. The code serves as a unique identifier for the trigger, helping to ensure proper tracking and referencing.') }}
                 </p>
             </div>
         </template>

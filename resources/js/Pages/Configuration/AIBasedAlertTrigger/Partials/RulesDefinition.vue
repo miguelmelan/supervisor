@@ -52,9 +52,7 @@ const check = () => {
         <template #description>
             <div class="text-sm">
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non beatae, aspernatur incidunt, hic vel ea
-                    modi reiciendis cumque eos itaque numquam suscipit exercitationem earum voluptates illo. Vero
-                    laborum illo id.
+                    {{ __('This section enables users to describe and define conditions for the AI-based alert trigger using natural language. Users can specify criteria and conditions based on data from UiPath Orchestrator instances, such as job execution history, robot logs, queue details, and machine specifics. The rules are formulated in human-readable language, allowing users to express the triggering conditions in a more intuitive and accessible manner.') }}
                 </p>
             </div>
         </template>
@@ -139,13 +137,14 @@ const check = () => {
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                                             </svg>
                                             <span v-if="tenantVerification.data_source === 'Jobs execution history' || tenantVerification.data_source === 'Robots logs'">
-                                                {{ __('Job n°' + (indexS + 1)) }}
-                                            </span>
-                                            <span v-if="tenantVerification.data_source === 'Machines details'">
-                                                {{ __('Machine n°' + (indexS + 1)) }}
+                                                {{ __('Job n°:number', {
+                                                    number: (indexS + 1)
+                                                }) }}
                                             </span>
                                             <span v-if="tenantVerification.data_source === 'Queue items details'">
-                                                {{ __('Queue n°' + (indexS + 1)) }}
+                                                {{ __('Queue n°:number', {
+                                                    number: (indexS + 1)
+                                                }) }}
                                             </span>
                                         </a>
                                     </div>

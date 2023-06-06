@@ -57,9 +57,7 @@ const compute = () => {
         <template #description>
             <div class="text-sm">
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non beatae, aspernatur incidunt, hic vel ea
-                    modi reiciendis cumque eos itaque numquam suscipit exercitationem earum voluptates illo. Vero
-                    laborum illo id.
+                    {{ __('This section allows users to define the frequency and timing of when the AI-based alert trigger will be activated using natural language. Users can specify how often the trigger should be evaluated and activated, such as daily, weekly, or at specific intervals. This scheduling functionality provides flexibility and customization options for determining the trigger\'s activation frequency based on user requirements.') }}
                 </p>
             </div>
         </template>

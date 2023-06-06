@@ -481,9 +481,7 @@ watch(selectedTenantPivot, pivot => {
         <template #description>
             <div class="text-sm">
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non beatae, aspernatur incidunt, hic vel ea
-                    modi reiciendis cumque eos itaque numquam suscipit exercitationem earum voluptates illo. Vero
-                    laborum illo id.
+                    {{ __('This section enables users to configure and select one or multiple entities related to the business process within the UiPath Orchestrator. These entities can include processes, machines, and queues that are directly associated with the Automated Business Process. Users can specify the specific processes that need to be executed, machines to be utilized, and queues to be accessed during the execution of the Automated Business Process. This configuration ensures that the Automated Business Process is properly linked and interacts with the relevant components in the UiPath Orchestrator environment.') }}
                 </p>
             </div>
 

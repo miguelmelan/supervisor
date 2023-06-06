@@ -444,9 +444,7 @@ const removeEntityFromSelectedTenant = (id, node, type, selected, treeview) => {
         <template #description>
             <div class="text-sm">
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non beatae, aspernatur incidunt, hic vel ea
-                    modi reiciendis cumque eos itaque numquam suscipit exercitationem earum voluptates illo. Vero
-                    laborum illo id.
+                    {{ __('This section allows users to configure and select one or multiple entities (processes, machines, and queues) related to the trigger. The rules defined within the trigger will be applied to the selected entities. Users can specify the specific processes, machines, and queues that the trigger should monitor and analyze for generating alerts.') }}
                 </p>
             </div>
 

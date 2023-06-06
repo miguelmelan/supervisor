@@ -100,9 +100,7 @@ const alreadySelectedOrchestratorConnection = (id) => {
         <template #description>
             <div class="text-sm">
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non beatae, aspernatur incidunt, hic vel ea
-                    modi reiciendis cumque eos itaque numquam suscipit exercitationem earum voluptates illo. Vero
-                    laborum illo id.
+                    {{ __('This section allows users to select one or multiple connections to UiPath Orchestrator instances. This selection enables seamless integration between the AI-based alert trigger and the UiPath Orchestrator environment. Users can choose the relevant Orchestrator connections to establish a connection and access the necessary data sources, such as job execution history, robot logs, queue details, and machine specifics.') }}
                 </p>
             </div>
         </template>

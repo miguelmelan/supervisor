@@ -35,9 +35,7 @@ watch(name, debounce(function (value) {
         <template #description>
             <div class="text-sm">
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Non beatae, aspernatur incidunt, hic vel ea
-                    modi reiciendis cumque eos itaque numquam suscipit exercitationem earum voluptates illo. Vero
-                    laborum illo id.
+                    {{ __('This section provides comprehensive information about the specific Automated Business Process. It includes details such as the name, code, and associated tags. The name typically represents a descriptive title for the Automated Business Process, while the code represents a unique identifier or reference for the process. Tags can be used to categorize and organize based on different criteria, allowing for easy search and filtering.') }}
                 </p>
             </div>
         </template>
