@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, watch, reactive, inject } from 'vue';
+import { ref, onMounted, computed, watch, reactive, inject, onUnmounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -167,18 +167,7 @@ const reload = () => {
     });
 };
 
-Echo.channel('orchestrator-connection-tenant-alert')
-    .listen('.new', (data) => {
-        const alert = data.orchestratorConnectionTenantAlert;
-        newPendingAlertsCount.value++;
-        // sendNotification(translate('A new alert was created!'));
-    })
-    .listen('.closed', (data) => {
-        const alert = data.orchestratorConnectionTenantAlert;
-        if (alert.read_by.id !== usePage().props.value.user.id) {
-            newClosedAlertsCount.value++;
-        }
-    });
+let channel = null;
 
 onMounted(() => {
     setTimeout(() => {
@@ -193,6 +182,23 @@ onMounted(() => {
             }
         }
     }, 500);
+
+    channel = Echo.channel('orchestrator-connection-tenant-alert')
+    .listen('.new', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        newPendingAlertsCount.value++;
+    })
+    .listen('.closed', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        if (alert.read_by.id !== usePage().props.value.user.id) {
+            newClosedAlertsCount.value++;
+        }
+    });
+});
+
+onUnmounted(() => {
+    channel.stopListening('.new');
+    channel.stopListening('.closed');
 });
 </script>
 

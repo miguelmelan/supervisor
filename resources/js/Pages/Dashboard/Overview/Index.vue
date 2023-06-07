@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue';
+import { ref, inject, onUnmounted, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
@@ -83,11 +83,13 @@ const alertsEveryWeekCategories = ref(props.alerts.everyWeek.categories);
 const alertsEveryMonth = ref(props.alerts.everyMonth.data);
 const alertsEveryMonthCategories = ref(props.alerts.everyMonth.categories);
 
-Echo.channel('orchestrator-connection-tenant-alert')
+let channel = null;
+
+onMounted(() => {
+    channel = Echo.channel('orchestrator-connection-tenant-alert')
     .listen('.new', (data) => {
         const alert = data.orchestratorConnectionTenantAlert;
         newPendingAlertsCount.value++;
-        // sendNotification(translate('A new alert was created!'));
     })
     .listen('.closed', (data) => {
         const alert = data.orchestratorConnectionTenantAlert;
@@ -95,6 +97,12 @@ Echo.channel('orchestrator-connection-tenant-alert')
             newClosedAlertsCount.value++;
         }
     });
+});
+
+onUnmounted(() => {
+    channel.stopListening('.new');
+    channel.stopListening('.closed');
+});
 </script>
 
 <template>

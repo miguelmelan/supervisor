@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, inject } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
@@ -11,6 +11,9 @@ import NavLink from '@/Components/NavLink.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Footer from '@/Components/Footer.vue';
+
+const translate = inject('translate');
+const sendNotification = inject('sendNotification');
 
 defineProps({
     title: String,
@@ -41,6 +44,8 @@ const requestNotificationPermission = () => {
     });
 };
 
+let channel = null;
+
 onMounted(() => {
     document.querySelectorAll('[data-tooltip-target^="tooltip"]').forEach(trigger => {
         const target = document.getElementById(trigger.getAttribute('data-tooltip-target'));
@@ -48,6 +53,16 @@ onMounted(() => {
             placement: target.getAttribute('data-position') ?? 'bottom',
         });
     });
+
+    channel = Echo.channel('orchestrator-connection-tenant-alert')
+        .listen('.new', (data) => {
+            const alert = data.orchestratorConnectionTenantAlert;
+            sendNotification(translate('A new alert was created!'));
+        });
+});
+
+onUnmounted(() => {
+    channel.stopListening('.new');
 });
 </script>
 
