@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrchestratorConnectionTenantAlertClosed;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\OrchestratorConnectionTenantAlert;
 use App\Models\User;
@@ -114,6 +115,7 @@ class OrchestratorConnectionTenantAlertController extends Controller
             $alert->readBy()->associate(auth()->user());
             $alert->save();
             $alert->comment('Alert read');
+            broadcast(new OrchestratorConnectionTenantAlertClosed($alert));
         }
         return true;
     }

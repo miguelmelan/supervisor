@@ -1,15 +1,19 @@
 <script setup>
-import { ref, onMounted, computed, watch, reactive } from 'vue';
+import { ref, onMounted, computed, watch, reactive, inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import Pagination from '@/Components/Pagination.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Filters from './Partials/Filters/Index.vue';
+import NewAlertsReload from './Partials/NewAlertsReload.vue';
 import Tiles from './Partials/Tiles.vue';
 import Navbar from '../Navbar.vue';
-import { Link, useForm } from '@inertiajs/inertia-vue3';
+import { Link, useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
 import QueryString from 'qs';
+
+const translate = inject('translate');
+const sendNotification = inject('sendNotification');
 
 const props = defineProps({
     alerts: Object,
@@ -155,6 +159,27 @@ const open = (item) => {
     }));
 };
 
+const reload = () => {
+    Inertia.visit(route('closed-alerts.index', {
+        loadSavedSearch: true,
+    }), {
+        preserveScroll: true,
+    });
+};
+
+Echo.channel('orchestrator-connection-tenant-alert')
+    .listen('.new', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        newPendingAlertsCount.value++;
+        // sendNotification(translate('A new alert was created!'));
+    })
+    .listen('.closed', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        if (alert.read_by.id !== usePage().props.value.user.id) {
+            newClosedAlertsCount.value++;
+        }
+    });
+
 onMounted(() => {
     setTimeout(() => {
         if (window.location.href.endsWith('/true')) {
@@ -168,21 +193,6 @@ onMounted(() => {
             }
         }
     }, 500);
-
-    Echo.channel('orchestrator-connection-tenant-alert')
-        .listen('.new', (data) => {
-            console.log(data);
-            //pendingAlertsCount.value++;
-            newPendingAlertsCount.value++;
-        });
-    Echo.channel('orchestrator-connection-tenant-alert')
-        .listen('.closed', (data) => {
-            console.log(data);
-            //pendingAlertsCount.value--;
-            newPendingAlertsCount.value--;
-            //closedAlertsCount.value++;
-            newClosedAlertsCount.value++;
-        });
 });
 </script>
 
@@ -204,6 +214,8 @@ onMounted(() => {
             <div class="p-6 sm:px-20 bg-gray-200 bg-opacity-25">
                 <Navbar :pending-alerts-count="pendingAlertsCount"
                     :closed-alerts-count="closedAlertsCount"
+                    :new-pending-alerts-count="newPendingAlertsCount"
+                    :new-closed-alerts-count="newClosedAlertsCount"
                     :closed-alerts-filters-selected="filtersSelected" />
             </div>
 
@@ -222,6 +234,8 @@ onMounted(() => {
                     :orchestrator-connections-properties="orchestratorConnectionsProperties"
                     @property-updated="filter"
                     class="mb-4" />
+
+                <NewAlertsReload :show="newClosedAlertsCount > 0" :action="reload" />
 
                 <table class="min-w-full divide-y divide-y-gray-200 text-sm text-left text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
@@ -459,6 +473,8 @@ onMounted(() => {
                 <Pagination class="mt-4" :links="alerts.links"
                     :from="alerts.from" :to="alerts.to"
                     :total="alerts.total" />
+
+                <NewAlertsReload :show="newPendingAlertsCount > 0" :action="reload" />
             </div>
         </div>
     </AppLayout>

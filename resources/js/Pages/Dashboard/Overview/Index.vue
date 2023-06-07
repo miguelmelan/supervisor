@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, inject } from 'vue';
+import { ref, inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
@@ -11,8 +11,10 @@ import OrchestratorConnectionTenantsChart from './Charts/OrchestratorConnectionT
 import MostAlertingEntitiesChart from './Charts/MostAlertingEntities.vue';
 import AutomatedProcessesHealthIndicator from './Charts/AutomatedProcessesHealthIndicator.vue';
 import AlertsOverTimeChart from './Charts/AlertsOverTime.vue';
+import { usePage } from '@inertiajs/inertia-vue3';
 
 const translate = inject('translate');
+const sendNotification = inject('sendNotification');
 
 const chartConfiguration = {
     labels: {
@@ -81,32 +83,18 @@ const alertsEveryWeekCategories = ref(props.alerts.everyWeek.categories);
 const alertsEveryMonth = ref(props.alerts.everyMonth.data);
 const alertsEveryMonthCategories = ref(props.alerts.everyMonth.categories);
 
-onMounted(() => {
-    Echo.channel('orchestrator-connection')
-        .listen('.new', (data) => {
-            console.log(data);
-            orchestratorConnectionsCount.value++;
-        });
-    Echo.channel('automated-process')
-        .listen('.new', (data) => {
-            console.log(data);
-            automatedProcessesCount.value++;
-        });
-    Echo.channel('orchestrator-connection-tenant-alert')
-        .listen('.new', (data) => {
-            console.log(data);
-            pendingAlertsCount.value++;
-            newPendingAlertsCount.value++;
-        });
-    Echo.channel('orchestrator-connection-tenant-alert')
-        .listen('.closed', (data) => {
-            console.log(data);
-            pendingAlertsCount.value--;
-            newPendingAlertsCount.value--;
-            closedAlertsCount.value++;
+Echo.channel('orchestrator-connection-tenant-alert')
+    .listen('.new', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        newPendingAlertsCount.value++;
+        // sendNotification(translate('A new alert was created!'));
+    })
+    .listen('.closed', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        if (alert.read_by.id !== usePage().props.value.user.id) {
             newClosedAlertsCount.value++;
-        });
-});
+        }
+    });
 </script>
 
 <template>

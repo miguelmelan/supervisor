@@ -1,8 +1,9 @@
 <script setup>
-import { ref, onMounted, reactive, computed, watch } from 'vue';
+import { ref, onMounted, reactive, computed, watch, inject } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import ActionConfirmationModal from './Partials/ActionConfirmationModal.vue';
 import BulkConfirmationModal from './Partials/BulkConfirmationModal.vue';
+import NewAlertsReload from './Partials/NewAlertsReload.vue';
 import BulkButtons from './Partials/BulkButtons.vue';
 import Filters from './Partials/Filters/Index.vue';
 import PageContentHeader from '@/Components/PageContentHeader.vue';
@@ -14,6 +15,9 @@ import Navbar from '../Navbar.vue';
 import { Link, useForm, usePage } from '@inertiajs/inertia-vue3';
 import { Inertia } from '@inertiajs/inertia';
 import QueryString from 'qs';
+
+const translate = inject('translate');
+const sendNotification = inject('sendNotification');
 
 const props = defineProps({
     alerts: Object,
@@ -307,6 +311,27 @@ const alertsLockedByCurrentUser = computed(() => props.alerts.data.filter(a => a
 const alertsLockedByOtherUsers = computed(() => props.alerts.data.filter(a => a.locked_at && a.locked_by.id !== usePage().props.value.user.id).map(a => a.id));
 const alertsUnlocked = computed(() => props.alerts.data.filter(a => !a.locked_at).map(a => a.id));
 
+const reload = () => {
+    Inertia.visit(route('pending-alerts.index', {
+        loadSavedSearch: true,
+    }), {
+        preserveScroll: true,
+    });
+};
+
+Echo.channel('orchestrator-connection-tenant-alert')
+    .listen('.new', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        newPendingAlertsCount.value++;
+        // sendNotification(translate('A new alert was created!'));
+    })
+    .listen('.closed', (data) => {
+        const alert = data.orchestratorConnectionTenantAlert;
+        if (alert.read_by.id !== usePage().props.value.user.id) {
+            newClosedAlertsCount.value++;
+        }
+    });
+
 onMounted(() => {
     setTimeout(() => {
         if (window.location.href.endsWith('/true')) {
@@ -320,24 +345,7 @@ onMounted(() => {
             }
         }
     }, 500);
-
-    Echo.channel('orchestrator-connection-tenant-alert')
-        .listen('.new', (data) => {
-            console.log(data);
-            //pendingAlertsCount.value++;
-            newPendingAlertsCount.value++;
-        });
-    Echo.channel('orchestrator-connection-tenant-alert')
-        .listen('.closed', (data) => {
-            console.log(data);
-            //pendingAlertsCount.value--;
-            newPendingAlertsCount.value--;
-            //closedAlertsCount.value++;
-            newClosedAlertsCount.value++;
-        });
 });
-
-
 </script>
 
 <template>
@@ -358,6 +366,8 @@ onMounted(() => {
             <div class="p-6 sm:px-20 bg-gray-200 bg-opacity-25">
                 <Navbar :pending-alerts-count="pendingAlertsCount"
                     :closed-alerts-count="closedAlertsCount"
+                    :new-pending-alerts-count="newPendingAlertsCount"
+                    :new-closed-alerts-count="newClosedAlertsCount"
                     :pending-alerts-filters-selected="filtersSelected" />
             </div>
 
@@ -376,6 +386,8 @@ onMounted(() => {
                     :orchestrator-connections-properties="orchestratorConnectionsProperties"
                     @property-updated="filter"
                     class="mb-4" />
+
+                <NewAlertsReload :show="newPendingAlertsCount > 0" :action="reload" />
                 
                 <BulkButtons class="mb-4" :selected="selected"
                     :show-read="true" :show-lock="selected.every(a => alertsUnlocked.includes(a))"
@@ -622,6 +634,8 @@ onMounted(() => {
                 <Pagination v-show="selected.length == 0" class="mt-4" :links="alerts.links"
                     :from="alerts.from" :to="alerts.to"
                     :total="alerts.total" />
+
+                <NewAlertsReload :show="newPendingAlertsCount > 0" :action="reload" />
             </div>
         </div>
 

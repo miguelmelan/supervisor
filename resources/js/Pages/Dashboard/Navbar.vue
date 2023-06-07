@@ -1,6 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/inertia-vue3';
-import { ref, inject, computed } from 'vue';
+import { inject, computed } from 'vue';
 
 const abbr = inject('abbr');
 
@@ -32,7 +32,7 @@ const newClosedAlertsCount = computed(() => props.newClosedAlertsCount);
             <Link :href="route('dashboard')" class="inline-flex p-4 rounded-md"
                 :class="{
                     'text-white bg-blue-600': route().current() === 'dashboard',
-                    'text-blue-50 bg-gray-100 hover:bg-blue-600 hover:text-white': route().current() !== 'dashboard',
+                    'text-blue-50 bg-gray-200 hover:bg-blue-600 hover:text-white': route().current() !== 'dashboard',
                 }">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="mr-2 w-5 h-5">
@@ -47,7 +47,7 @@ const newClosedAlertsCount = computed(() => props.newClosedAlertsCount);
             <Link :href="route('pending-alerts.index')" class="inline-flex relative p-4 rounded-md"
                 :class="{
                     'text-white bg-blue-600': route().current().startsWith('pending-alerts'),
-                    'text-blue-50 bg-gray-100 hover:bg-blue-600 hover:text-white': !route().current().startsWith('pending-alerts'),
+                    'text-blue-50 bg-gray-200 hover:bg-blue-600 hover:text-white': !route().current().startsWith('pending-alerts'),
                 }">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="mr-2 w-5 h-5">
@@ -70,10 +70,10 @@ const newClosedAlertsCount = computed(() => props.newClosedAlertsCount);
             </Link>
         </li>
         <li class="mr-2">
-            <Link :href="route('closed-alerts.index')" class="inline-flex p-4 rounded-md"
+            <Link :href="route('closed-alerts.index')" class="inline-flex relative p-4 rounded-md"
                 :class="{
                     'text-white bg-blue-600': route().current().startsWith('closed-alerts'),
-                    'text-blue-50 bg-gray-100 hover:bg-blue-600 hover:text-white': !route().current().startsWith('closed-alerts'),
+                    'text-blue-50 bg-gray-200 hover:bg-blue-600 hover:text-white': !route().current().startsWith('closed-alerts'),
                 }">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="mr-2 w-5 h-5">
@@ -96,7 +96,7 @@ const newClosedAlertsCount = computed(() => props.newClosedAlertsCount);
             </Link>
         </li>
         <li class="mr-2 relative">
-            <button class="inline-flex p-4 rounded-md bg-gray-100 hover:bg-blue-100 text-blue-50 disabled:opacity-25"
+            <button class="inline-flex p-4 rounded-md bg-gray-200 hover:bg-blue-100 text-blue-50 disabled:opacity-25"
                 disabled="disabled">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="mr-2 w-5 h-5">

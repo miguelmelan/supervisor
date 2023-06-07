@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
@@ -8,6 +8,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import FlashToast from '@/Components/FlashToast.vue';
 import NavLink from '@/Components/NavLink.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Footer from '@/Components/Footer.vue';
 
@@ -27,6 +28,17 @@ const switchToTeam = (team) => {
 
 const logout = () => {
     Inertia.post(route('logout'));
+};
+
+const showNotificationPermissionBar = ref(Notification.permission === 'default');
+
+const requestNotificationPermission = () => {
+    Notification.requestPermission().then(status => {
+        showNotificationPermissionBar.value = false;
+        if (status === 'granted') {
+            location.reload();
+        }
+    });
 };
 
 onMounted(() => {
@@ -349,6 +361,19 @@ onMounted(() => {
                     </div>
                 </div>
             </nav>
+
+            <!-- Notification permission request -->
+            <div v-if="showNotificationPermissionBar" class="bg-blue-100 p-4 flex items-center justify-center">
+                <span class="mr-2">{{ __('Want to get notifications from us?') }}</span>
+                <PrimaryButton @click="requestNotificationPermission" as="button">
+                    <template #icon>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59" />
+                        </svg>
+                    </template>
+                    {{ __('Set permissions') }}
+                </PrimaryButton>
+            </div>
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-white shadow">

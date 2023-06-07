@@ -19,6 +19,7 @@ import VueApexCharts from "vue3-apexcharts";
 import NumberAbbreviate from 'number-abbreviate';
 import Datepicker from '@vuepic/vue-datepicker';
 import VueJsonPretty from 'vue-json-pretty';
+import { useNotifications } from 'vue-browser-notifications';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -37,7 +38,13 @@ createInertiaApp({
             .component('Datepicker', Datepicker)
             .component('JsonPretty', VueJsonPretty);
 
-        myApp.provide('abbr', NumberAbbreviate)
+        myApp.provide('abbr', NumberAbbreviate);
+        myApp.provide('sendNotification', body => {
+            if (Notification.permission === 'granted') {
+                const { requestPermission, sendNotification } = useNotifications(false, { icon: location.origin + '/images/logo.png'});
+                sendNotification('supervisor', { body: body });
+            }
+        });
 
         myApp.mount(el);
         return myApp;
