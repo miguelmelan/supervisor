@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\OrchestratorConnectionTenantAlertCreated;
+use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\OrchestratorConnectionTenant;
 use App\Services\UiPathOrchestratorService;
 use Carbon\Carbon;
@@ -75,7 +76,8 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
             'creation_time' => $creationTime,
         ]);
 
-        OrchestratorConnectionTenantAlertCreated::dispatch($alert);
+        $resource = new OrchestratorConnectionTenantAlertResource($alert);
+        OrchestratorConnectionTenantAlertCreated::dispatch($resource);
 
         Log::info("New alert created: $alert->id");
     }
@@ -101,7 +103,8 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
             'creation_time' => $creationTime,
         ]);
 
-        OrchestratorConnectionTenantAlertCreated::dispatch($alert);
+        $resource = new OrchestratorConnectionTenantAlertResource($alert);
+        OrchestratorConnectionTenantAlertCreated::dispatch($resource);
 
         Log::info("New alert created: $alert->id");
     }
@@ -132,7 +135,8 @@ class InterpretOrchestratorConnectionTenantWebhookEvent implements ShouldQueue
             'creation_time' => $creationTime,
         ]);
 
-        OrchestratorConnectionTenantAlertCreated::dispatch($alert);
+        $resource = new OrchestratorConnectionTenantAlertResource($alert);
+        OrchestratorConnectionTenantAlertCreated::dispatch($resource);
 
         Log::info("New alert created: $alert->id");
     }

@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\OrchestratorConnectionTenantAlert;
+use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -12,16 +12,16 @@ class OrchestratorConnectionTenantAlertCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public OrchestratorConnectionTenantAlert $orchestratorConnectionTenantAlert;
+    public OrchestratorConnectionTenantAlertResource $resource;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(OrchestratorConnectionTenantAlert $orchestratorConnectionTenantAlert)
+    public function __construct(OrchestratorConnectionTenantAlertResource $resource)
     {
-        $this->orchestratorConnectionTenantAlert = $orchestratorConnectionTenantAlert;
+        $this->resource = $resource;
     }
 
     /**

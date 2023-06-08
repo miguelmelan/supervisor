@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\OrchestratorConnectionTenantAlertCreated;
 use App\Http\Resources\OrchestratorConnectionResource;
+use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\AIBasedAlertTrigger;
 use App\Models\OrchestratorConnectionTenantAlert;
 use App\Services\PythonService;
@@ -113,7 +114,8 @@ class ManageAIBasedAlertTrigger extends Command
                             'creation_time' => $creationTime,
                             'trigger_id' => $trigger->id,
                         ]);
-                        OrchestratorConnectionTenantAlertCreated::dispatch($alert);
+                        $resource = new OrchestratorConnectionTenantAlertResource($alert);
+                        OrchestratorConnectionTenantAlertCreated::dispatch($resource);
                         Log::info("New alert created: $alert->id");
                     } else {
                         Log::info('No new alert created as an existing one is still pending');
