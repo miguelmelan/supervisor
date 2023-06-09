@@ -3,6 +3,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 import '/node_modules/vue3-treeview/dist/style.css';
 import 'vue-json-pretty/lib/styles.css';
+import 'vue3-tour/dist/vue3-tour.css';
 import '../css/app.css';
 
 import { createApp, h } from 'vue';
@@ -19,6 +20,7 @@ import VueApexCharts from "vue3-apexcharts";
 import NumberAbbreviate from 'number-abbreviate';
 import Datepicker from '@vuepic/vue-datepicker';
 import VueJsonPretty from 'vue-json-pretty';
+import Vue3Tour from 'vue3-tour';
 import { useNotifications } from 'vue-browser-notifications';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
@@ -32,6 +34,7 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .use(translationPlugin)
             .use(VueApexCharts)
+            .use(Vue3Tour)
             .component('BaseTagsInput', TagsInput)
             .component('Treeview', Tree)
             .component('ChartJs', Vue3ChartJs)
@@ -45,6 +48,7 @@ createInertiaApp({
                 sendNotification('supervisor', { body: body });
             }
         });
+        myApp.provide('tours', myApp.config.globalProperties.$tours);
 
         myApp.mount(el);
         return myApp;

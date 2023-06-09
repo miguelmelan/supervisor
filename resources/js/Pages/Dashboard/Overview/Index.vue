@@ -14,7 +14,7 @@ import AlertsOverTimeChart from './Charts/AlertsOverTime.vue';
 import { usePage } from '@inertiajs/inertia-vue3';
 
 const translate = inject('translate');
-const sendNotification = inject('sendNotification');
+const tours = inject('tours');
 
 const chartConfiguration = {
     labels: {
@@ -83,20 +83,55 @@ const alertsEveryWeekCategories = ref(props.alerts.everyWeek.categories);
 const alertsEveryMonth = ref(props.alerts.everyMonth.data);
 const alertsEveryMonthCategories = ref(props.alerts.everyMonth.categories);
 
+/* const steps = [
+    {
+        target: '#nav-orchestrator-connections',
+        header: {
+            title: translate('Discover supervisor'),
+        },
+        content: translate('First, you need to connect to a UiPath Orchestrator instance.'),
+        params: {
+            enableScrolling: false
+        },
+    },
+    {
+        target: '#nav-automated-processes',
+        header: {
+            title: translate('Discover supervisor'),
+        },
+        content: translate('Next, you may want to wrap UiPath Orchestrator entities (processes, machines, queues) in what we call an Automated Business Process.'),
+        params: {
+            enableScrolling: false
+        },
+    },
+    {
+        target: '#nav-ai-based-alert-triggers',
+        header: {
+            title: translate('Discover supervisor'),
+        },
+        content: translate('Next, you can define alert triggers based on AI to easily tell <strong>supervisor</strong> when and how to raise alerts.'),
+        params: {
+            enableScrolling: false
+        },
+    },
+]; */
+
 let channel = null;
 
 onMounted(() => {
     channel = Echo.channel('orchestrator-connection-tenant-alert')
-    .listen('.new', (data) => {
-        const alert = data.orchestratorConnectionTenantAlert;
-        newPendingAlertsCount.value++;
-    })
-    .listen('.closed', (data) => {
-        const alert = data.orchestratorConnectionTenantAlert;
-        if (alert.read_by.id !== usePage().props.value.user.id) {
-            newClosedAlertsCount.value++;
-        }
-    });
+        .listen('.new', (data) => {
+            const alert = data.orchestratorConnectionTenantAlert;
+            newPendingAlertsCount.value++;
+        })
+        .listen('.closed', (data) => {
+            const alert = data.orchestratorConnectionTenantAlert;
+            if (alert.read_by.id !== usePage().props.value.user.id) {
+                newClosedAlertsCount.value++;
+            }
+        });
+
+    /* tours['dashboard-overview-tour'].start(); */
 });
 
 onUnmounted(() => {
@@ -106,6 +141,8 @@ onUnmounted(() => {
 </script>
 
 <template>
+    <!-- <v-tour name="dashboard-overview-tour" :steps="steps"></v-tour> -->
+
     <AppLayout :title="__('Dashboard') + ' > ' + __('Overview')">
         <div class="bg-white shadow-xl sm:rounded-lg">
             <PageContentHeader :text="__('Supervise your digital workforce')">
@@ -129,14 +166,14 @@ onUnmounted(() => {
 
             <!-- Main content -->
             <div class="px-6 pb-6 sm:px-20 bg-gray-200 bg-opacity-25">
-                <div class="grid grid-cols-4 gap-4">
+                <div id="tour-step-0" class="grid grid-cols-4 gap-4">
                     <!-- Tiles -->
                     <Tiles :orchestrator-connections="orchestratorConnections"
                         :automated-processes="automatedProcesses"
                         :pending-alerts-count="pendingAlertsCount"
                         :ai-based-alert-triggers-count="aiBasedAlertTriggersCount" />
 
-                    <div class="col-span-4">
+                    <div id="tour-step-1" class="col-span-4">
                         <SectionBorder />
                         <div class="flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

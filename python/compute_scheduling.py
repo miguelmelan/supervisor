@@ -2,7 +2,6 @@ import sys
 from langchain.llms import AzureOpenAI
 from dotenv import load_dotenv
 import json
-import os
 
 def main():
     load_dotenv()

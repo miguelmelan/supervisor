@@ -39,6 +39,7 @@
         "vue-browser-notifications": "^1.1.1",
         "vue-json-pretty": "^2.2.4",
         "vue3-apexcharts": "^1.4.1",
+        "vue3-tour": "^0.3.4",
         "vue3-treeview": "^0.4.0"
     }
 }

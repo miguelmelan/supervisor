@@ -105,7 +105,7 @@ onUnmounted(() => {
                                     </template>
                                 </NavLink>
                             </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div id="nav-orchestrator-connections" class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('configuration.orchestrator-connections.index')"
                                     :active="route().current('configuration.orchestrator-connections.*')">
                                     {{ __('UiPath Orchestrator connections') }}
@@ -116,7 +116,7 @@ onUnmounted(() => {
                                     </template>
                                 </NavLink>
                             </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div id="nav-automated-processes" class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('configuration.automated-processes.index')"
                                     :active="route().current('configuration.automated-processes.*')">
                                     {{ __('Automated business processes') }}
@@ -127,7 +127,7 @@ onUnmounted(() => {
                                     </template>
                                 </NavLink>
                             </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div id="nav-ai-based-alert-triggers" class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('configuration.ai-based-alert-triggers.index')"
                                     :active="route().current('configuration.ai-based-alert-triggers.*')">
                                     {{ __('AI based alert triggers') }}

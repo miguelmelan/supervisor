@@ -336,16 +336,16 @@ onMounted(() => {
     }, 500);
 
     channel = Echo.channel('orchestrator-connection-tenant-alert')
-    .listen('.new', (data) => {
-        const alert = data.orchestratorConnectionTenantAlert;
-        newPendingAlertsCount.value++;
-    })
-    .listen('.closed', (data) => {
-        const alert = data.orchestratorConnectionTenantAlert;
-        if (alert.read_by.id !== usePage().props.value.user.id) {
-            newClosedAlertsCount.value++;
-        }
-    });
+        .listen('.new', (data) => {
+            const alert = data.orchestratorConnectionTenantAlert;
+            newPendingAlertsCount.value++;
+        })
+        .listen('.closed', (data) => {
+            const alert = data.orchestratorConnectionTenantAlert;
+            if (alert.read_by.id !== usePage().props.value.user.id) {
+                newClosedAlertsCount.value++;
+            }
+        });
 });
 
 onUnmounted(() => {
