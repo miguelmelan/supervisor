@@ -467,5 +467,7 @@
     "Advanced configuration": "Configurare avansată",
     "AI based alert trigger named :name successfully removed!": "Declanșatorul de alertă AI numit :name a fost eliminat cu succes!",
     "Want to get notifications from us?": "Vrei să primești notificări de la noi?",
-    "Set permissions": "Setați permisiunile"
+    "Set permissions": "Setați permisiunile",
+    "A new alert was created!": "A fost creată o nouă alertă!",
+    "Trigger name: :name": "Numele declanșatorului: :name"
 }

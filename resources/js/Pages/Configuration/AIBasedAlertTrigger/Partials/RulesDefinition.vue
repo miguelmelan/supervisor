@@ -129,7 +129,7 @@ const check = () => {
                                     </dt>
                                     <dd v-for="text in tenantVerification.related_text_parts" class="text-xs font-semibold">{{ text }}</dd>
                                     <div v-if="tenantVerification.data_source !== 'Machines details'" class="flex mt-2">
-                                        <a v-for="(source, indexS) in tenantVerification.answer.sources" :href="source" target="_blank"
+                                        <a v-for="(source, indexS) in tenantVerification.answer.sources" :href="source.url" target="_blank"
                                             class="inline-flex items-center justify-center px-4 py-2 bg-blue-50 border border-transparent rounded-md font-semibold text-white tracking-widest hover:bg-blue-500 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition" :class="{
                                             'ml-2': indexS > 0,
                                         }">
@@ -150,7 +150,7 @@ const check = () => {
                                     </div>
                                     <div v-else class="flex mt-2">
                                         <span v-for="source in tenantVerification.answer.sources">
-                                            {{ source }}
+                                            {{ source.host_machine_name }}
                                         </span>
                                     </div>
                                 </div>

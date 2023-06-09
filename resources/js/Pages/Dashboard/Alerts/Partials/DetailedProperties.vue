@@ -247,14 +247,14 @@ const openAlert = () => {
                             <p class="text-sm font-medium">
                                 {{ __('Sources') }}
                             </p>
-                            <a v-for="source in JSON.parse(form._data).sources.filter(s => s.startsWith('http://') || s.startsWith('https://'))" :href="source" target="_blank"
+                            <a v-for="source in JSON.parse(form._data).sources.filter(s => s.url)" :href="source.url" target="_blank"
                                 class="inline-flex items-center text-sm font-semibold text-blue-50 tracking-widest hover:text-blue-500 active:text-blue-900 focus:outline-none disabled:opacity-25 transition">
-                                {{ source }}
+                                {{ source.url }}
                             </a>
-                            <span v-for="(source, indexS) in JSON.parse(form._data).sources.filter(s => !s.startsWith('http://') && !s.startsWith('https://'))" class="text-sm text-gray-500" :class="{
+                            <span v-for="(source, indexS) in JSON.parse(form._data).sources.filter(s => s.host_machine_name)" class="text-sm text-gray-500" :class="{
                                 'ml-2': indexS > 0,
                             }">
-                                {{ source }}
+                                {{ source.host_machine_name }}
                             </span>
                         </div>
                     </div>

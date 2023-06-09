@@ -6,8 +6,13 @@ use App\Events\OrchestratorConnectionTenantAlertCreated;
 use App\Http\Resources\OrchestratorConnectionResource;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\AIBasedAlertTrigger;
+use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenantAlert;
+use App\Models\OrchestratorConnectionTenantMachine;
+use App\Models\OrchestratorConnectionTenantQueue;
+use App\Models\OrchestratorConnectionTenantRelease;
 use App\Services\PythonService;
+use App\Services\UiPathOrchestratorService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +38,7 @@ class ManageAIBasedAlertTrigger extends Command
      *
      * @return int
      */
-    public function handle(PythonService $service)
+    public function handle(PythonService $python, UiPathOrchestratorService $uipath)
     {
         Log::info('Managing AI Based Alert Trigger');
 
@@ -78,7 +83,7 @@ class ManageAIBasedAlertTrigger extends Command
                 array_push($queuesByFolder[$folder], $id);
             }
 
-            $output = $service->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
+            $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
             Log::info(json_encode($output));
 
             foreach ($output->verifications as $verification) {
@@ -106,14 +111,31 @@ class ManageAIBasedAlertTrigger extends Command
                         ->whereNull('read_at');
 
                     if ($alerts->count() === 0) {
-                        $alert = $tenant->alerts()->create([
+                        $attributes = [
                             'notification_name' => $notificationName,
                             'data' => json_encode($answer, true),
                             'component' => $component,
                             'severity' => $severity,
                             'creation_time' => $creationTime,
                             'trigger_id' => $trigger->id,
-                        ]);
+                        ];
+                        $externalId = $answer->sources[0]['id'];
+                        if ($component === 'Jobs') {
+                            $job = $uipath->getJob($externalId, OrchestratorConnection::find($orchestratorConnectionId), $tenant);
+                            if ($job['ok'] && count($job['job']) > 0) {
+                                $externalId = $job['job']['Release']['Id'];
+                                $release = OrchestratorConnectionTenantRelease::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
+                                $attributes['release_id'] = $release->id;
+                            }
+                        } elseif ($component === 'Machines') {
+                            $machine = OrchestratorConnectionTenantMachine::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
+                            $attributes['machine_id'] = $machine->id;
+                        } elseif ($component === 'Transactions') {
+                            $queue = OrchestratorConnectionTenantQueue::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
+                            $attributes['queue_id'] = $queue->id;
+                        }
+
+                        $alert = $tenant->alerts()->create($attributes);
                         $resource = new OrchestratorConnectionTenantAlertResource($alert);
                         OrchestratorConnectionTenantAlertCreated::dispatch($resource);
                         Log::info("New alert created: $alert->id");

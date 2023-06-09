@@ -467,5 +467,7 @@
     "Advanced configuration": "Configuration avancée",
     "AI based alert trigger named :name successfully removed!": "Déclencheur d'alerte par IA nommé :name supprimé avec succès !",
     "Want to get notifications from us?": "Voulez-vous recevoir des notifications de notre part ?",
-    "Set permissions": "Définir les autorisations"
+    "Set permissions": "Définir les autorisations",
+    "A new alert was created!": "Une nouvelle alerte a été créée !",
+    "Trigger name: :name": "Nom du déclencheur: :name"
 }

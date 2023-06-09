@@ -467,5 +467,7 @@
     "Advanced configuration": "Advanced configuration",
     "AI based alert trigger named :name successfully removed!": "AI based alert trigger named :name successfully removed!",
     "Want to get notifications from us?": "Want to get notifications from us?",
-    "Set permissions": "Set permissions"
+    "Set permissions": "Set permissions",
+    "A new alert was created!": "A new alert was created!",
+    "Trigger name: :name": "Trigger name: :name"
 }

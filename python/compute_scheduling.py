@@ -17,7 +17,7 @@ def main():
     recurrence = sys.argv[1]
     
     prompt = f"""Give me the cron expressions related to the following text. The answer should be a JSON object with results property valued by an array of objects with 2 properties: 'cron' as a string corresponding to the cron expression, 'description' as a string corresponding to an explanation of the cron expression in natural language. If no cron expression is identified then the array should be empty.
-    Here is the text: "{recurrence}."""
+Here is the text: "{recurrence}"."""
 
     answer = llm(prompt)
     answer = answer.replace('Answer:', '').strip()

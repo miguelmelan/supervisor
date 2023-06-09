@@ -25,10 +25,11 @@ return [
                             'all' => '/%s/orchestrator_/odata/Releases',
                         ],
                         'machines' => [
+                            'single' => '/%s/orchestrator_/odata/Machines(%s)',
                             'all' => '/%s/orchestrator_/odata/Machines/UiPath.Server.Configuration.OData.GetAssignedMachines(folderId=%s)',
                         ],
                         'queue_definitions' => [
-                            'single' => '/%s/orchestrator_/queues/transactions/%s',
+                            'url' => '/%s/orchestrator_/queues/transactions/%s',
                             'all' => '/%s/orchestrator_/odata/QueueDefinitions',
                         ],
                         'queue_items' => [
@@ -48,10 +49,12 @@ return [
                             'all' => '/%s/orchestrator_/odata/RobotLogs',
                         ],
                         'jobs' => [
-                            'single' => '/%s/orchestrator_/jobs/%s/logs',
+                            'url' => '/%s/orchestrator_/jobs/%s/logs',
+                            'single' => '/%s/orchestrator_/odata/Jobs(%s)?$expand=Release',
                             'all' => '/%s/orchestrator_/odata/Jobs',
                         ],
                         'machine_session_runtimes' => [
+                            'single' => '/%s/orchestrator_/odata/Sessions/UiPath.Server.Configuration.OData.GetMachineSessions(key=%s)',
                             'all' => '/%s/orchestrator_/odata/Sessions/UiPath.Server.Configuration.OData.GetMachineSessionRuntimesByFolderId(folderId=%s)',
                         ],
                     ],
@@ -63,10 +66,11 @@ return [
                             'all' => '/odata/Releases',
                         ],
                         'machines' => [
+                            'single' => '/odata/Machines(%s)',
                             'all' => '/odata/Machines/UiPath.Server.Configuration.OData.GetAssignedMachines(folderId=%s)',
                         ],
                         'queue_definitions' => [
-                            'single' => '/queues/transactions/%s',
+                            'url' => '/queues/transactions/%s',
                             'all' => '/odata/QueueDefinitions',
                         ],
                         'queue_items' => [
@@ -86,8 +90,13 @@ return [
                             'all' => '/odata/RobotLogs',
                         ],
                         'jobs' => [
-                            'single' => '/jobs/%s/logs',
+                            'url' => '/jobs/%s/logs',
+                            'single' => '/odata/Jobs(%s)?$expand=Release',
                             'all' => '/odata/Jobs',
+                        ],
+                        'machine_session_runtimes' => [
+                            'single' => '/odata/Sessions/UiPath.Server.Configuration.OData.GetMachineSessions(key=%s)',
+                            'all' => '/odata/Sessions/UiPath.Server.Configuration.OData.GetMachineSessionRuntimesByFolderId(folderId=%s)',
                         ],
                     ]
                 ]

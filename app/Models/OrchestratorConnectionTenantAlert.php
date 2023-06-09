@@ -25,6 +25,9 @@ class OrchestratorConnectionTenantAlert extends Model
         'resolution_details',
         'false_positive',
         'trigger_id',
+        'release_id',
+        'machine_id',
+        'queue_id',
     ];
 
     /**

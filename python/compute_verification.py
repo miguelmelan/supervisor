@@ -126,7 +126,7 @@ You must give an answer as a JSON object (double quotes for properties and value
         if data_source == "Robots logs" or data_source == "Jobs execution history":
             prompt += "Job Id"
         elif data_source == "Machines details":
-            prompt += "Host Machine Name"
+            prompt += "Machine Id"
         elif data_source == "Queue items details":
             prompt += "Queue Definition Id"
         

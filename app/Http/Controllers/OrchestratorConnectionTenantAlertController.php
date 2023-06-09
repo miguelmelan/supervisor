@@ -6,12 +6,20 @@ use App\Events\OrchestratorConnectionTenantAlertClosed;
 use App\Http\Resources\OrchestratorConnectionTenantAlertResource;
 use App\Models\OrchestratorConnectionTenantAlert;
 use App\Models\User;
+use App\Services\PythonService;
 use Illuminate\Http\Request as HttpRequest;
 use Carbon\Carbon;
 use Inertia\Inertia;
 
 class OrchestratorConnectionTenantAlertController extends Controller
 {
+    protected PythonService $python;
+
+    public function __construct(PythonService $service)
+    {
+        $this->python = $service;
+    }
+    
     /**
      * Show the form for editing the specified resource.
      *
@@ -253,5 +261,16 @@ class OrchestratorConnectionTenantAlertController extends Controller
     public function bulkUnlock(HttpRequest $request)
     {
         $this->bulkAction($request, 'unlock', 'unlocked');
+    }
+
+    public function getRecommendedActions(HttpRequest $request)
+    {
+        $id = $request->id;
+        $alert = OrchestratorConnectionTenantAlert::find($id);
+        $recommendedActions = $this->python->computeRecommendedActions($alert);
+        session()->flash('message', [
+            'recommendedActions' => $recommendedActions,
+        ]);
+        return back(303);
     }
 }

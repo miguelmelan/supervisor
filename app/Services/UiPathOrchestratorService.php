@@ -607,6 +607,76 @@ class UiPathOrchestratorService
         return $result;
     }
 
+    public function getMachineSessionRuntime($id, OrchestratorConnection $orchestratorConnection, OrchestratorConnectionTenant $tenant)
+    {
+        $result = $this->checkCredentialsWithOrchestratorConnection($orchestratorConnection);
+        if ($result['ok']) {
+            $hostingType = $orchestratorConnection->hosting_type;
+            $tenantName = $tenant->name;
+            if ($hostingType === 'cloud') {
+                $result = $this->authenticateWithOrchestratorConnection($orchestratorConnection);
+            } elseif ($hostingType === 'on_premise') {
+                $result = $this->authenticateWithOrchestratorConnectionTenant($tenant);
+            }
+    
+            if ($result['ok']) {
+                $token = $result['access_token'];
+                $endpoints = [
+                    'machines' => '',
+                ];
+                $endpointSuffixBaseProperty = "constants.uipath.orchestrator.api_endpoint.suffixes.$hostingType";
+                if ($hostingType === 'cloud') {
+                    $endpoints['machine_session_runtimes'] = sprintf(config("$endpointSuffixBaseProperty.machine_session_runtimes.single"), $tenantName, $id);
+                } elseif ($hostingType === 'on_premise') {
+                    $endpoints['machine_session_runtimes'] = sprintf(config("$endpointSuffixBaseProperty.machine_session_runtimes.single"), $id);
+                }
+    
+                // getting machine session runtimes
+                $endpoint = $orchestratorConnection->url . $endpoints['machine_session_runtimes'];
+                $result['machine_session_runtime'] = Http::withoutVerifying()->withToken($token)->get($endpoint)->json('value');
+            }
+        }
+
+        // !important: do not share access_token
+        unset($result['access_token']);
+        return $result;
+    }
+
+    public function getJob($id, OrchestratorConnection $orchestratorConnection, OrchestratorConnectionTenant $tenant)
+    {
+        $result = $this->checkCredentialsWithOrchestratorConnection($orchestratorConnection);
+        if ($result['ok']) {
+            $hostingType = $orchestratorConnection->hosting_type;
+            $tenantName = $tenant->name;
+            if ($hostingType === 'cloud') {
+                $result = $this->authenticateWithOrchestratorConnection($orchestratorConnection);
+            } elseif ($hostingType === 'on_premise') {
+                $result = $this->authenticateWithOrchestratorConnectionTenant($tenant);
+            }
+    
+            if ($result['ok']) {
+                $token = $result['access_token'];
+                $endpoints = [
+                    'jobs' => '',
+                ];
+                $endpointSuffixBaseProperty = "constants.uipath.orchestrator.api_endpoint.suffixes.$hostingType";
+                if ($hostingType === 'cloud') {
+                    $endpoints['jobs'] = sprintf(config("$endpointSuffixBaseProperty.jobs.single"), $tenantName, $id);
+                } elseif ($hostingType === 'on_premise') {
+                    $endpoints['jobs'] = sprintf(config("$endpointSuffixBaseProperty.jobs.single"), $id);
+                }
+    
+                // getting machine session runtimes
+                $endpoint = $orchestratorConnection->url . $endpoints['jobs'];
+                $result['job'] = Http::withoutVerifying()->withToken($token)->get($endpoint)->json();
+            }
+        }
+
+        // !important: do not share access_token
+        unset($result['access_token']);
+        return $result;
+    }
+
     public function generateJobURL(
         $id,
         OrchestratorConnection $orchestratorConnection,
@@ -619,9 +689,9 @@ class UiPathOrchestratorService
         ];
         $endpointSuffixBaseProperty = "constants.uipath.orchestrator.api_endpoint.suffixes.$hostingType";
         if ($hostingType === 'cloud') {
-            $endpoints['jobs'] = sprintf(config("$endpointSuffixBaseProperty.jobs.single"), $tenantName, $id);
+            $endpoints['jobs'] = sprintf(config("$endpointSuffixBaseProperty.jobs.url"), $tenantName, $id);
         } elseif ($hostingType === 'on_premise') {
-            $endpoints['jobs'] = sprintf(config("$endpointSuffixBaseProperty.jobs.single"), $id);
+            $endpoints['jobs'] = sprintf(config("$endpointSuffixBaseProperty.jobs.url"), $id);
         }
         $endpoint = $orchestratorConnection->url . $endpoints['jobs'];
         
@@ -640,9 +710,9 @@ class UiPathOrchestratorService
         ];
         $endpointSuffixBaseProperty = "constants.uipath.orchestrator.api_endpoint.suffixes.$hostingType";
         if ($hostingType === 'cloud') {
-            $endpoints['queue_definitions'] = sprintf(config("$endpointSuffixBaseProperty.queue_definitions.single"), $tenantName, $id);
+            $endpoints['queue_definitions'] = sprintf(config("$endpointSuffixBaseProperty.queue_definitions.url"), $tenantName, $id);
         } elseif ($hostingType === 'on_premise') {
-            $endpoints['queue_definitions'] = sprintf(config("$endpointSuffixBaseProperty.queue_definitions.single"), $id);
+            $endpoints['queue_definitions'] = sprintf(config("$endpointSuffixBaseProperty.queue_definitions.url"), $id);
         }
         $endpoint = $orchestratorConnection->url . $endpoints['queue_definitions'];
         

@@ -218,7 +218,7 @@ class PythonService
                                 $orchestratorConnectionModel,
                                 $tenantModel,
                             );
-                            $verification->answer->sources[$key] = $URL;
+                            $verification->answer->sources[$key] = [ 'id' => $source, 'url' => $URL ];
                         }
                     }
                 } elseif ($dataSource === 'Queue items details') {
@@ -229,7 +229,19 @@ class PythonService
                                 $orchestratorConnectionModel,
                                 $tenantModel,
                             );
-                            $verification->answer->sources[$key] = $URL;
+                            $verification->answer->sources[$key] = [ 'id' => $source, 'url' => $URL ];
+                        }
+                    }
+                } elseif ($dataSource === 'Machines details') {
+                    if (!property_exists($verification->answer, 'error')) {
+                        foreach ($verification->answer->sources as $key => $source) {
+                            $machineSessionRuntime = $this->orchestratorService->getMachineSessionRuntime($source, $orchestratorConnectionModel, $tenantModel);
+                            if ($machineSessionRuntime['ok'] && count($machineSessionRuntime['machine_session_runtime']) > 0) {
+                                $hostMachineName = $machineSessionRuntime['machine_session_runtime'][0]['HostMachineName'];
+                                $verification->answer->sources[$key] = [ 'id' => $source, 'host_machine_name' => $hostMachineName ];
+                            } else {
+                                $verification->answer->sources[$key] = [ 'id' => $source, 'host_machine_name' => __('Unknown') ];
+                            }
                         }
                     }
                 }
@@ -237,5 +249,10 @@ class PythonService
         }
 
         return $output;
+    }
+
+    public function computeRecommendedActions($alert)
+    {
+        return json_decode('{ "results": ["Restart the affected UiPath process", "Update the input arguments in the Orchestrator"]}');
     }
 }
