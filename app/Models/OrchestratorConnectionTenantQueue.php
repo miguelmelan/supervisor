@@ -32,4 +32,9 @@ class OrchestratorConnectionTenantQueue extends Model
     {
         return $this->hasMany(OrchestratorConnectionTenantAlert::class, 'queue_id');
     }
+
+    public function pendingAlerts()
+    {
+        return $this->alerts()->get()->whereNull('read_at');
+    }
 }

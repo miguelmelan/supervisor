@@ -30,26 +30,35 @@ class AutomatedProcess extends Model
             $health = [];
 
             $releases = $this->releases;
-            $alertingReleases = $this->releases()->withCount('alerts')->get()->where('alerts_count', '>', 0);
+            $alertingReleasesCount = 0;
+            foreach ($releases as $release) {
+                $alertingReleasesCount += ($release->pendingAlerts()->count() > 0) ? 1 : 0;
+            }
             $releasesHealth = 1;
             if (count($releases) > 0) {
-                $releasesHealth = 1 - count($alertingReleases) / count($releases);
+                $releasesHealth = 1 - $alertingReleasesCount / count($releases);
             }
             array_push($health, $releasesHealth);
 
             $machines = $this->machines;
-            $alertingMachines = $this->machines()->withCount('alerts')->get()->where('alerts_count', '>', 0);
+            $alertingMachinesCount = 0;
+            foreach ($machines as $machine) {
+                $alertingMachinesCount += ($machine->pendingAlerts()->count() > 0) ? 1 : 0;
+            }
             $machinesHealth = 1;
             if (count($machines) > 0) {
-                $machinesHealth = 1 - count($alertingMachines) / count($machines);
+                $machinesHealth = 1 - $alertingMachinesCount / count($machines);
             }
             array_push($health, $machinesHealth);
 
             $queues = $this->queues;
-            $alertingQueues = $this->queues()->withCount('alerts')->get()->where('alerts_count', '>', 0);
+            $alertingQueuesCount = 0;
+            foreach ($queues as $queue) {
+                $alertingQueuesCount += ($queue->pendingAlerts()->count() > 0) ? 1 : 0;
+            }
             $queuesHealth = 1;
             if (count($queues) > 0) {
-                $queuesHealth = 1 - count($alertingQueues) / count($queues);
+                $queuesHealth = 1 - $alertingQueuesCount / count($queues);
             }
             array_push($health, $queuesHealth);
 
@@ -126,5 +135,10 @@ class AutomatedProcess extends Model
     public function alerts()
     {
         return $this->hasMany(OrchestratorConnectionTenantAlert::class, 'automated_process_id');
+    }
+
+    public function pendingAlerts()
+    {
+        return $this->alerts()->get()->whereNull('read_at');
     }
 }
