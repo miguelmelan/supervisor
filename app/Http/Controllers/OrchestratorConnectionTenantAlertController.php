@@ -119,8 +119,10 @@ class OrchestratorConnectionTenantAlertController extends Controller
                 return false;
             }
         } else {
-            $alert->read_at = Carbon::now();
+            $readAt = Carbon::now();
+            $alert->read_at = $readAt;
             $alert->readBy()->associate(auth()->user());
+            $alert->resolution_time_in_seconds = $readAt->diffInSeconds(Carbon::create($alert->creation_time));
             $alert->save();
             $alert->comment('Alert read');
             broadcast(new OrchestratorConnectionTenantAlertClosed($alert));
