@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('name')->unique();
+            $table->string('type');
             $table->text('conditions');
             $table->text('recurrence');
             $table->json('crons');

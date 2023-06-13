@@ -30,7 +30,12 @@ class OrchestratorConnectionTenantQueue extends Model
 
     public function alerts()
     {
-        return $this->hasMany(OrchestratorConnectionTenantAlert::class, 'queue_id');
+        return $this->belongsToMany(
+            OrchestratorConnectionTenantAlert::class,
+            'orchestrator_connection_tenant_alert_oct_queue',
+            'orchestrator_connection_tenant_queue_id',
+            'orchestrator_connection_tenant_alert_id',
+        )->withTimestamps();
     }
 
     public function pendingAlerts()

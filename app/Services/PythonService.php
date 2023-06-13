@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Http\Resources\OrchestratorConnectionResource;
+use App\Models\AutomatedProcess;
 use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
 use Symfony\Component\Process\Process;
@@ -94,6 +96,69 @@ class PythonService
             }
             array_push($verifications, [
                 'orchestrator_connection' => $orchestratorConnection['orchestrator_connection'],
+                'tenants' => $tenantsOutput,
+            ]);
+        }
+
+        return $verifications;
+    }
+
+    public function computeVerificationsForAutomatedProcesses(
+        $conditions, $automatedProcesses
+    )
+    {
+        $verifications = array();
+        foreach ($automatedProcesses as $automatedProcess) {
+            $automatedProcessModel = AutomatedProcess::find($automatedProcess);
+            $tenantsOutput = array();
+            foreach ($automatedProcessModel->orchestratorConnectionTenants as $tenant) {
+                $tenantId = $tenant->id;
+                $orchestratorConnectionId = $tenant->orchestratorConnection->id;
+
+                $releasesByFolder = array();
+                foreach ($automatedProcessModel->releases as $release) {
+                    if ($release->tenant_id === $tenantId) {
+                        $folder = $release->external_folder_id;
+                        $id = $release->external_id;
+                        if (!array_key_exists($folder, $releasesByFolder)) {
+                            $releasesByFolder[$folder] = array();
+    
+                        }
+                        array_push($releasesByFolder[$folder], $id);
+                    }
+                }
+
+                $machinesByFolder = array();
+                foreach ($automatedProcessModel->machines as $machine) {
+                    if ($machine->tenant_id === $tenantId) {
+                        $folder = $machine->external_folder_id;
+                        $id = $machine->external_id;
+                        if (!array_key_exists($folder, $machinesByFolder)) {
+                            $machinesByFolder[$folder] = array();
+    
+                        }
+                        array_push($machinesByFolder[$folder], $id);
+                    }
+                }
+
+                $queuesByFolder = array();
+                foreach ($automatedProcessModel->queues as $queue) {
+                    if ($queue->tenant_id === $tenantId) {
+                        $folder = $queue->external_folder_id;
+                        $id = $queue->external_id;
+                        if (!array_key_exists($folder, $queuesByFolder)) {
+                            $queuesByFolder[$folder] = array();
+    
+                        }
+                        array_push($queuesByFolder[$folder], $id);
+                    }
+                }
+
+                $output = $this->computeVerificationsForTenant($conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
+                $tenantsOutput[$tenantId] = $output;
+            }
+            array_push($verifications, [
+                'orchestrator_connection' => new OrchestratorConnectionResource($tenant->orchestratorConnection),
                 'tenants' => $tenantsOutput,
             ]);
         }

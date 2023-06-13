@@ -15,6 +15,7 @@ class AIBasedAlertTrigger extends Model
     protected $fillable = [
         'code',
         'name',
+        'type',
         'conditions',
         'recurrence',
         'crons',
@@ -81,6 +82,16 @@ class AIBasedAlertTrigger extends Model
             'a_i_based_alert_trigger_orchestrator_connection_tenant_queue',
             'a_i_based_alert_trigger_id',
             'queue_id',
+        )->withTimestamps();
+    }
+
+    public function automatedProcesses()
+    {
+        return $this->belongsToMany(
+            AutomatedProcess::class,
+            'a_i_based_alert_trigger_automated_process',
+            'a_i_based_alert_trigger_id',
+            'automated_process_id',
         )->withTimestamps();
     }
 

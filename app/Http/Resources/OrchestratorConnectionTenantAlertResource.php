@@ -27,7 +27,6 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'id_padded' => str_pad($this->id, 4, '0', STR_PAD_LEFT),
             'trigger' => $this->trigger_id ? new AIBasedAlertTriggerResource(AIBasedAlertTrigger::find($this->trigger_id)) : null,
             'tenant_id' => $this->tenant_id,
-            'automated_process_id' => $this->automated_process_id,
             'external_id' => $this->external_id,
             'notification_name' => $this->notification_name,
             '_data' => $this->data,
@@ -46,6 +45,10 @@ class OrchestratorConnectionTenantAlertResource extends JsonResource
             'false_positive' => $this->false_positive,
             'tenant' => new OrchestratorConnectionTenantResource(OrchestratorConnectionTenant::find($this->tenant_id)->load('orchestratorConnection')),
             'comments' => $hasCommentsRelation ? $this->whenLoaded('comments', CommentResource::collection($this->comments()->approved()->orderBy('id', 'desc')->get())) : null,
+            'automated_processes' => AutomatedProcessResource::collection($this->automatedProcesses),
+            'releases' => OrchestratorConnectionTenantReleaseResource::collection($this->releases),
+            'machines' => OrchestratorConnectionTenantMachineResource::collection($this->machines),
+            'queues' => OrchestratorConnectionTenantQueueResource::collection($this->queues),
         ];
     }
 }

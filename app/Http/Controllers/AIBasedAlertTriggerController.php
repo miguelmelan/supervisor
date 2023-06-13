@@ -6,8 +6,10 @@ use App\Events\AIBasedAlertTriggerCreated;
 use App\Http\Requests\StoreAIBasedAlertTriggerRequest;
 use App\Http\Requests\UpdateAIBasedAlertTriggerRequest;
 use App\Http\Resources\AIBasedAlertTriggerResource;
+use App\Http\Resources\AutomatedProcessResource;
 use App\Http\Resources\OrchestratorConnectionResource;
 use App\Models\AIBasedAlertTrigger;
+use App\Models\AutomatedProcess;
 use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
 use App\Models\OrchestratorConnectionTenantMachine;
@@ -75,6 +77,9 @@ class AIBasedAlertTriggerController extends Controller
             'orchestratorConnections' => OrchestratorConnectionResource::collection(
                 OrchestratorConnection::all()->sortBy('code')
             ),
+            'automatedProcesses' => AutomatedProcessResource::collection(
+                AutomatedProcess::all()->sortBy('code')
+            ),
         ]);
     }
 
@@ -98,60 +103,67 @@ class AIBasedAlertTriggerController extends Controller
         $alertTrigger->save();
         $alertTrigger->attachTags(array_column($attributes['tags'], 'name'));
 
-        foreach ($attributes['orchestrator_connections'] as $orchestratorConnectionConfiguration) {
-            $connection = $orchestratorConnectionConfiguration['orchestrator_connection'];
-
-            $alertTrigger->orchestratorConnections()
-                ->attach($connection['id']);
-
-            foreach ($orchestratorConnectionConfiguration['tenants'] as $tenant) {
-                $alertTrigger->orchestratorConnectionTenants()
-                    ->attach($tenant);
-            }
-
-            foreach ($connection['tenants'] as $tenant) {
-                if (in_array($tenant['id'], $orchestratorConnectionConfiguration['tenants'])) {
-                    $releases = $tenant['selected_releases'];
-                    $machines = $tenant['selected_machines'];
-                    $queues = $tenant['selected_queues'];
-                    $tenantModel = OrchestratorConnectionTenant::find($tenant['id']);
-
-                    foreach ($releases as $release) {
-                        $release = OrchestratorConnectionTenantRelease::where('external_id', $release['id'])
-                            ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $release) {
-                                return $tenantModel->releases()->create([
-                                    'external_id' => $release['id'],
-                                    'external_folder_id' => $release['folder'],
-                                ]);
-                            });
-                        $alertTrigger->releases()->attach($release->id);
-                    }
-
-                    foreach ($machines as $machine) {
-                        $machine = OrchestratorConnectionTenantMachine::where('external_id', $machine['id'])
-                            ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $machine) {
-                                return $tenantModel->machines()->create([
-                                    'external_id' => $machine['id'],
-                                    'external_folder_id' => $machine['folder'],
-                                ]);
-                            });
-                        $alertTrigger->machines()->attach($machine->id);
-                    }
-
-                    foreach ($queues as $queue) {
-                        $queue = OrchestratorConnectionTenantQueue::where('external_id', $queue['id'])
-                            ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $queue) {
-                                return $tenantModel->queues()->create([
-                                    'external_id' => $queue['id'],
-                                    'external_folder_id' => $queue['folder'],
-                                ]);
-                            });
-                        $alertTrigger->queues()->attach($queue->id);
+        if ($attributes['type'] === 'orchestrator_connections') {
+            foreach ($attributes['orchestrator_connections'] as $orchestratorConnectionConfiguration) {
+                $connection = $orchestratorConnectionConfiguration['orchestrator_connection'];
+    
+                $alertTrigger->orchestratorConnections()
+                    ->attach($connection['id']);
+    
+                foreach ($orchestratorConnectionConfiguration['tenants'] as $tenant) {
+                    $alertTrigger->orchestratorConnectionTenants()
+                        ->attach($tenant);
+                }
+    
+                foreach ($connection['tenants'] as $tenant) {
+                    if (in_array($tenant['id'], $orchestratorConnectionConfiguration['tenants'])) {
+                        $releases = $tenant['selected_releases'];
+                        $machines = $tenant['selected_machines'];
+                        $queues = $tenant['selected_queues'];
+                        $tenantModel = OrchestratorConnectionTenant::find($tenant['id']);
+    
+                        foreach ($releases as $release) {
+                            $release = OrchestratorConnectionTenantRelease::where('external_id', $release['id'])
+                                ->where('tenant_id', $tenant['id'])
+                                ->firstOr(function () use ($tenantModel, $release) {
+                                    return $tenantModel->releases()->create([
+                                        'external_id' => $release['id'],
+                                        'external_folder_id' => $release['folder'],
+                                    ]);
+                                });
+                            $alertTrigger->releases()->attach($release->id);
+                        }
+    
+                        foreach ($machines as $machine) {
+                            $machine = OrchestratorConnectionTenantMachine::where('external_id', $machine['id'])
+                                ->where('tenant_id', $tenant['id'])
+                                ->firstOr(function () use ($tenantModel, $machine) {
+                                    return $tenantModel->machines()->create([
+                                        'external_id' => $machine['id'],
+                                        'external_folder_id' => $machine['folder'],
+                                    ]);
+                                });
+                            $alertTrigger->machines()->attach($machine->id);
+                        }
+    
+                        foreach ($queues as $queue) {
+                            $queue = OrchestratorConnectionTenantQueue::where('external_id', $queue['id'])
+                                ->where('tenant_id', $tenant['id'])
+                                ->firstOr(function () use ($tenantModel, $queue) {
+                                    return $tenantModel->queues()->create([
+                                        'external_id' => $queue['id'],
+                                        'external_folder_id' => $queue['folder'],
+                                    ]);
+                                });
+                            $alertTrigger->queues()->attach($queue->id);
+                        }
                     }
                 }
+            }
+        } elseif ($attributes['type'] === 'automated_processes') {
+            foreach ($attributes['automated_processes'] as $automatedProcess) {
+                $alertTrigger->automatedProcesses()
+                    ->attach($automatedProcess);
             }
         }
 
@@ -194,6 +206,9 @@ class AIBasedAlertTriggerController extends Controller
             'orchestratorConnections' => OrchestratorConnectionResource::collection(
                 OrchestratorConnection::all()->sortBy('code')
             ),
+            'automatedProcesses' => AutomatedProcessResource::collection(
+                AutomatedProcess::all()->sortBy('code')
+            ),
         ]);
     }
 
@@ -223,74 +238,81 @@ class AIBasedAlertTriggerController extends Controller
 
         $orchestratorConnectionsToSync = [];
         $orchestratorConnectionsTenantsToSync = [];
+        $automatedProcessesToSync = [];
         $releasesToSync = [];
         $machinesToSync = [];
         $queuesToSync = [];
 
-        foreach ($attributes['orchestrator_connections'] as $orchestratorConnectionConfiguration) {
-            $connection = $orchestratorConnectionConfiguration['orchestrator_connection'];
-            array_push($orchestratorConnectionsToSync, $connection['id']);
+        if ($attributes['type'] === 'orchestrator_connections') {
+            foreach ($attributes['orchestrator_connections'] as $orchestratorConnectionConfiguration) {
+                $connection = $orchestratorConnectionConfiguration['orchestrator_connection'];
+                array_push($orchestratorConnectionsToSync, $connection['id']);
 
-            foreach ($connection['tenants'] as $tenant) {
-                if (in_array($tenant['id'], $orchestratorConnectionConfiguration['tenants'])) {
-                    $selectedReleases = $tenant['selected_releases'];
-                    $selectedMachines = $tenant['selected_machines'];
-                    $selectedQueues = $tenant['selected_queues'];
-                    $tenantModel = OrchestratorConnectionTenant::find($tenant['id']);
+                foreach ($connection['tenants'] as $tenant) {
+                    if (in_array($tenant['id'], $orchestratorConnectionConfiguration['tenants'])) {
+                        $selectedReleases = $tenant['selected_releases'];
+                        $selectedMachines = $tenant['selected_machines'];
+                        $selectedQueues = $tenant['selected_queues'];
+                        $tenantModel = OrchestratorConnectionTenant::find($tenant['id']);
 
-                    array_push($orchestratorConnectionsTenantsToSync, $tenant['id']);
+                        array_push($orchestratorConnectionsTenantsToSync, $tenant['id']);
 
-                    $selectedReleasesIds = array();
-                    foreach ($selectedReleases as $release) {
-                        $releaseId = $release['id'];
-                        array_push($selectedReleasesIds, $releaseId);
-                        OrchestratorConnectionTenantRelease::where('external_id', $releaseId)
-                            ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $releaseId) {
-                                return $tenantModel->releases()->create([
-                                    'external_id' => $releaseId,
-                                ]);
-                            });
+                        $selectedReleasesIds = array();
+                        foreach ($selectedReleases as $release) {
+                            $releaseId = $release['id'];
+                            array_push($selectedReleasesIds, $releaseId);
+                            OrchestratorConnectionTenantRelease::where('external_id', $releaseId)
+                                ->where('tenant_id', $tenant['id'])
+                                ->firstOr(function () use ($tenantModel, $releaseId) {
+                                    return $tenantModel->releases()->create([
+                                        'external_id' => $releaseId,
+                                    ]);
+                                });
+                        }
+
+                        $selectedMachinesIds = array();
+                        foreach ($selectedMachines as $machine) {
+                            $machineId = $machine['id'];
+                            array_push($selectedMachinesIds, $machineId);
+                            OrchestratorConnectionTenantMachine::where('external_id', $machineId)
+                                ->where('tenant_id', $tenant['id'])
+                                ->firstOr(function () use ($tenantModel, $machineId) {
+                                    return $tenantModel->machines()->create([
+                                        'external_id' => $machineId,
+                                    ]);
+                                });
+                        }
+
+                        $selectedQueuesIds = array();
+                        foreach ($selectedQueues as $queue) {
+                            $queueId = $queue['id'];
+                            array_push($selectedQueuesIds, $queueId);
+                            OrchestratorConnectionTenantQueue::where('external_id', $queueId)
+                                ->where('tenant_id', $tenant['id'])
+                                ->firstOr(function () use ($tenantModel, $queueId) {
+                                    return $tenantModel->queues()->create([
+                                        'external_id' => $queueId,
+                                    ]);
+                                });
+                        }
+
+                        $releases = OrchestratorConnectionTenantRelease::where('tenant_id', $tenant['id'])
+                            ->whereIn('external_id', $selectedReleasesIds)->get()->pluck('id')->toArray();
+                        $releasesToSync = array_merge($releasesToSync, $releases);
+
+                        $machines = OrchestratorConnectionTenantMachine::where('tenant_id', $tenant['id'])
+                            ->whereIn('external_id', $selectedMachinesIds)->get()->pluck('id')->toArray();
+                        $machinesToSync = array_merge($machinesToSync, $machines);
+
+                        $queues = OrchestratorConnectionTenantQueue::where('tenant_id', $tenant['id'])
+                            ->whereIn('external_id', $selectedQueuesIds)->get()->pluck('id')->toArray();
+                        $queuesToSync = array_merge($queuesToSync, $queues);
                     }
-
-                    $selectedMachinesIds = array();
-                    foreach ($selectedMachines as $machine) {
-                        $machineId = $machine['id'];
-                        array_push($selectedMachinesIds, $machineId);
-                        OrchestratorConnectionTenantMachine::where('external_id', $machineId)
-                            ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $machineId) {
-                                return $tenantModel->machines()->create([
-                                    'external_id' => $machineId,
-                                ]);
-                            });
-                    }
-
-                    $selectedQueuesIds = array();
-                    foreach ($selectedQueues as $queue) {
-                        $queueId = $queue['id'];
-                        array_push($selectedQueuesIds, $queueId);
-                        OrchestratorConnectionTenantQueue::where('external_id', $queueId)
-                            ->where('tenant_id', $tenant['id'])
-                            ->firstOr(function () use ($tenantModel, $queueId) {
-                                return $tenantModel->queues()->create([
-                                    'external_id' => $queueId,
-                                ]);
-                            });
-                    }
-
-                    $releases = OrchestratorConnectionTenantRelease::where('tenant_id', $tenant['id'])
-                        ->whereIn('external_id', $selectedReleasesIds)->get()->pluck('id')->toArray();
-                    $releasesToSync = array_merge($releasesToSync, $releases);
-
-                    $machines = OrchestratorConnectionTenantMachine::where('tenant_id', $tenant['id'])
-                        ->whereIn('external_id', $selectedMachinesIds)->get()->pluck('id')->toArray();
-                    $machinesToSync = array_merge($machinesToSync, $machines);
-
-                    $queues = OrchestratorConnectionTenantQueue::where('tenant_id', $tenant['id'])
-                        ->whereIn('external_id', $selectedQueuesIds)->get()->pluck('id')->toArray();
-                    $queuesToSync = array_merge($queuesToSync, $queues);
                 }
+            }
+        } elseif ($attributes['type'] === 'automated_processes') {
+            foreach ($attributes['automated_processes'] as $automatedProcess) {
+                array_push($automatedProcessesToSync, $automatedProcess);
             }
         }
 
@@ -299,6 +321,9 @@ class AIBasedAlertTriggerController extends Controller
 
         $aiBasedAlertTrigger->orchestratorConnectionTenants()
             ->sync($orchestratorConnectionsTenantsToSync);
+
+        $aiBasedAlertTrigger->automatedProcesses()
+            ->sync($automatedProcessesToSync);
 
         $aiBasedAlertTrigger->releases()->sync($releasesToSync);
         $aiBasedAlertTrigger->machines()->sync($machinesToSync);
@@ -348,8 +373,14 @@ class AIBasedAlertTriggerController extends Controller
     public function checkConditions(HttpRequest $request)
     {
         $conditions = $request->conditions;
-        $orchestratorConnections = $request->orchestrator_connections;
-        $verifications = $this->python->computeVerifications($conditions, $orchestratorConnections);
+        $type = $request->type;
+        if ($type === 'orchestrator_connections') {
+            $orchestratorConnections = $request->orchestrator_connections;
+            $verifications = $this->python->computeVerifications($conditions, $orchestratorConnections);
+        } elseif ($type === 'automated_processes') {
+            $automatedProcesses = $request->automated_processes;
+            $verifications = $this->python->computeVerificationsForAutomatedProcesses($conditions, $automatedProcesses);
+        }
         session()->flash('message', [
             'verifications' => $verifications,
         ]);

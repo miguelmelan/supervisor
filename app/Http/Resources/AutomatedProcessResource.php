@@ -26,6 +26,7 @@ class AutomatedProcessResource extends JsonResource
             'releases' => OrchestratorConnectionTenantReleaseResource::collection($this->releases),
             'machines' => OrchestratorConnectionTenantMachineResource::collection($this->machines),
             'queues' => OrchestratorConnectionTenantQueueResource::collection($this->queues),
+            //'triggers' => AIBasedAlertTriggerResource::collection($this->triggers),
             'alerts_count' => $this->whenCounted('alerts'),
         ];
     }

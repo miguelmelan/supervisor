@@ -132,9 +132,24 @@ class AutomatedProcess extends Model
         )->withTimestamps();
     }
 
+    public function triggers()
+    {
+        return $this->belongsToMany(
+            AIBasedAlertTrigger::class,
+            'a_i_based_alert_trigger_automated_process',
+            'a_i_based_alert_trigger_id',
+            'automated_process_id',
+        )->withTimestamps();
+    }
+
     public function alerts()
     {
-        return $this->hasMany(OrchestratorConnectionTenantAlert::class, 'automated_process_id');
+        return $this->belongsToMany(
+            OrchestratorConnectionTenantAlert::class,
+            'automated_process_orchestrator_connection_tenant_alert',
+            'orchestrator_connection_tenant_alert_id',
+            'automated_process_id',
+        )->withTimestamps();
     }
 
     public function pendingAlerts()

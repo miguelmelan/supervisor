@@ -458,7 +458,7 @@ onUnmounted(() => {
                                 <span>{{ __('UiPath Orchestrator connection') }}</span>
                             </th>
                             <th v-if="automatedProcessesCount > 0" scope="col" class="py-3 px-6">
-                                <span>{{ __('Automated business process') }}</span>
+                                <span>{{ __('Automated business processes') }}</span>
                             </th>
                             <th scope="col" class="py-3 px-6 text-center">
                                 {{ __('Actions') }}
@@ -521,40 +521,53 @@ onUnmounted(() => {
                                 </dl>
                             </td>
                             <td v-if="automatedProcessesCount > 0" class="py-4 px-6">
-                                <span v-if="item.automated_process">
-                                    {{ item.automated_process.code }} -
-                                    {{ item.automated_process.name }}
-                                </span>
+                                <div v-if="item.automated_processes">
+                                    <span v-for="automatedProcess in item.automated_processes">
+                                        {{ automatedProcess.code }} -
+                                        {{ automatedProcess.name }}
+                                    </span>
+                                </div>
                             </td>
                             <td class="py-4 px-6">
                                 <div class="flex justify-center">
                                     <PrimaryButton type="button"
                                         @click.prevent="open(item)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
-                                        </svg>
+                                        <template #icon>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
+                                            </svg>
+                                        </template>
+                                        {{ __('Open') }}
                                     </PrimaryButton>
                                     <PrimaryButton v-if="!item.locked_at || item.locked_by.id === $page.props.user.id" type="button"
                                         @click.prevent="triggerAction('read', item)"
                                         class="ml-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                        </svg>
+                                        <template #icon>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                            </svg>
+                                        </template>
+                                        {{ __('Read') }}
                                     </PrimaryButton>
                                     <SecondaryButton v-if="!item.locked_at" type="button"
                                         @click.prevent="triggerAction('lock', item)"
                                         class="ml-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                                        </svg>
+                                        <template #icon>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                            </svg>
+                                        </template>
+                                        {{ __('Lock') }}
                                     </SecondaryButton>
                                     <SecondaryButton v-if="item.locked_at && item.locked_by.id === $page.props.user.id" type="button"
                                         @click.prevent="triggerAction('unlock', item)"
                                         class="ml-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                                        </svg>
+                                        <template #icon>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                            </svg>
+                                        </template>
+                                        {{ __('Unlock') }}
                                     </SecondaryButton>
                                 </div>
                                 <div v-if="item.locked_at" class="flex justify-center mt-2">

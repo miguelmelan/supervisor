@@ -1,4 +1,4 @@
-FROM sail-8.1/app
+FROM laravelsail/php81-composer
 
 RUN apt-get update && apt-get install -y pip
 RUN pip install langchain

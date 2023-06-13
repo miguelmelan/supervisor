@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('orchestrator_connection_tenant_alerts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tenant_id');
-            $table->unsignedBigInteger('automated_process_id')->nullable();
             $table->unsignedBigInteger('release_id')->nullable();
             $table->unsignedBigInteger('machine_id')->nullable();
             $table->unsignedBigInteger('queue_id')->nullable();
@@ -39,12 +38,6 @@ return new class extends Migration
                 ->foreign('tenant_id', 'octa_t_id_foreign')
                 ->references('id')
                 ->on('orchestrator_connection_tenants')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
-            $table
-                ->foreign('automated_process_id', 'octa_ap_id_foreign')
-                ->references('id')
-                ->on('automated_processes')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table

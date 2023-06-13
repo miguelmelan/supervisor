@@ -30,7 +30,7 @@ let form = useForm({
     read_at: props.alert.read_at,
     read_by: props.alert.read_by,
     resolution_details: props.alert.resolution_details,
-    automated_process_id: props.alert.automated_process_id,
+    automated_processes: props.alert.automated_processes,
     notification_name: props.alert.notification_name,
     _data: props.alert._data,
     component: props.alert.component,

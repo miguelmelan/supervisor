@@ -156,10 +156,10 @@ const openAlert = () => {
                         </div>
                     </div>
                 </li>
-                <li v-if="withOrchestratorConnection || (form.automated_process && withAutomatedProcess)" class="flex">
+                <li v-if="withOrchestratorConnection || (form.automated_processes.length > 0 && withAutomatedProcess)" class="flex">
                     <div v-if="withOrchestratorConnection" class="flex space-x-4 p-4" :class="{
-                        'w-full': !form.automated_process || !withAutomatedProcess,
-                        'w-1/2': form.automated_process && withAutomatedProcess,
+                        'w-full': form.automated_processes.length === 0 || !withAutomatedProcess,
+                        'w-1/2': form.automated_processes.length > 0 && withAutomatedProcess,
                     }">
                         <div class="flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -186,7 +186,7 @@ const openAlert = () => {
                             </p>
                         </div>
                     </div>
-                    <div v-if="form.automated_process && withAutomatedProcess" class="flex space-x-4 w-1/2 p-4">
+                    <div v-if="form.automated_processes.length > 0 && withAutomatedProcess" class="flex space-x-4 w-1/2 p-4">
                         <div class="flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
@@ -194,13 +194,13 @@ const openAlert = () => {
                                     d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
                             </svg>
                         </div>
-                        <div class="flex-1 min-w-0">
+                        <div v-for="automatedProcess in form.automated_processes" class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-gray-900 truncate">
-                                {{ __('Automated business process') }}
+                                {{ __('Automated business processes') }}
                             </p>
                             <p class="text-sm text-gray-500 truncate">
-                                {{ form.automated_process.code }} -
-                                {{ form.automated_process.name }}
+                                {{ automatedProcess.code }} -
+                                {{ automatedProcess.name }}
                             </p>
                         </div>
                     </div>
@@ -221,11 +221,26 @@ const openAlert = () => {
                         </div>
                     </div>
                 </li>
-                <li v-else class="flex flex-col">
-                    <div class="flex space-x-4 p-4 w-full">
+                <li v-if="form.trigger" class="flex">
+                    <div class="flex space-x-4 p-4 w-1/2">
                         <div class="flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium">
+                                {{ __('AI based alert trigger') }}
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                {{ form.trigger.name }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-4 p-4 w-1/2">
+                        <div class="flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                             </svg>
                         </div>
                         <div class="flex-1 min-w-0">
@@ -237,6 +252,8 @@ const openAlert = () => {
                             </p>
                         </div>
                     </div>
+                </li>
+                <li v-if="form.trigger" class="flex">
                     <div class="flex space-x-4 p-4 w-full">
                         <div class="flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">

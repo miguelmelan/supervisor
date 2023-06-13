@@ -26,7 +26,9 @@ const check = () => {
     checking.value = true;
     Inertia.post(route('configuration.ai-based-alert-triggers.check-conditions'), {
         conditions: props.form.conditions,
+        type: props.form.type,
         orchestrator_connections: props.form.orchestrator_connections,
+        automated_processes: props.form.automated_processes,
     }, {
         preserveScroll: true,
         onFinish: () => {

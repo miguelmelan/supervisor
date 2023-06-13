@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import axios from 'axios';
 import MachinesSupervisionOptions from './MachinesSupervisionOptions.vue';
 import ProcessesSupervisionOptions from './ProcessesSupervisionOptions.vue';

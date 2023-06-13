@@ -25,9 +25,6 @@ class OrchestratorConnectionTenantAlert extends Model
         'resolution_details',
         'false_positive',
         'trigger_id',
-        'release_id',
-        'machine_id',
-        'queue_id',
     ];
 
     /**
@@ -46,24 +43,44 @@ class OrchestratorConnectionTenantAlert extends Model
         return $this->belongsTo(OrchestratorConnectionTenant::class);
     }
 
-    public function automatedProcess()
+    public function automatedProcesses()
     {
-        return $this->belongsTo(AutomatedProcess::class);
+        return $this->belongsToMany(
+            AutomatedProcess::class,
+            'automated_process_orchestrator_connection_tenant_alert',
+            'orchestrator_connection_tenant_alert_id',
+            'automated_process_id',
+        )->withTimestamps();
     }
 
-    public function release()
+    public function releases()
     {
-        return $this->belongsTo(OrchestratorConnectionTenantRelease::class);
+        return $this->belongsToMany(
+            OrchestratorConnectionTenantRelease::class,
+            'orchestrator_connection_tenant_alert_oct_release',
+            'orchestrator_connection_tenant_alert_id',
+            'orchestrator_connection_tenant_release_id',
+        )->withTimestamps();
     }
 
-    public function machine()
+    public function machines()
     {
-        return $this->belongsTo(OrchestratorConnectionTenantMachine::class);
+        return $this->belongsToMany(
+            OrchestratorConnectionTenantMachine::class,
+            'orchestrator_connection_tenant_alert_oct_machine',
+            'orchestrator_connection_tenant_alert_id',
+            'orchestrator_connection_tenant_machine_id',
+        )->withTimestamps();
     }
 
-    public function queue()
+    public function queues()
     {
-        return $this->belongsTo(OrchestratorConnectionTenantQueue::class);
+        return $this->belongsToMany(
+            OrchestratorConnectionTenantQueue::class,
+            'orchestrator_connection_tenant_alert_oct_queue',
+            'orchestrator_connection_tenant_alert_id',
+            'orchestrator_connection_tenant_queue_id',
+        )->withTimestamps();
     }
 
     public function readBy()

@@ -49,112 +49,191 @@ class ManageAIBasedAlertTrigger extends Command
         $triggerQueues = $trigger->queues();
 
         $verifications = array();
-        foreach ($tenants as $tenant) {
-            $tenantId = $tenant->id;
-            $orchestratorConnectionId = $tenant->orchestratorConnection->id;
 
-            $releasesByFolder = array();
-            foreach ($triggerReleases->where('tenant_id', $tenantId)->get() as $release) {
-                $folder = $release->external_folder_id;
-                $id = $release->external_id;
-                if (!array_key_exists($folder, $releasesByFolder)) {
-                    $releasesByFolder[$folder] = array();
-                }
-                array_push($releasesByFolder[$folder], $id);
-            }
-
-            $machinesByFolder = array();
-            foreach ($triggerMachines->where('tenant_id', $tenantId)->get() as $machine) {
-                $folder = $machine->external_folder_id;
-                $id = $machine->external_id;
-                if (!array_key_exists($folder, $machinesByFolder)) {
-                    $machinesByFolder[$folder] = array();
-                }
-                array_push($machinesByFolder[$folder], $id);
-            }
-
-            $queuesByFolder = array();
-            foreach ($triggerQueues->where('tenant_id', $tenantId)->get() as $queue) {
-                $folder = $queue->external_folder_id;
-                $id = $queue->external_id;
-                if (!array_key_exists($folder, $queuesByFolder)) {
-                    $queuesByFolder[$folder] = array();
-                }
-                array_push($queuesByFolder[$folder], $id);
-            }
-
-            $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
-            Log::info(json_encode($output));
-
-            foreach ($output->verifications as $verification) {
-                $dataSource = $verification->data_source;
-                $answer = $verification->answer;
-                if (!property_exists($answer, 'error') && $answer->result) {
-                    $notificationName = 'Supervisor.AI';
-                    $component = 'Unknown';
-                    if ($dataSource === 'Jobs execution history' || $dataSource === 'Robots logs') {
-                        $component = 'Jobs';
-                    } elseif ($dataSource === 'Machines details') {
-                        $component = 'Machines';
-                    } elseif ($dataSource === 'Queue items details') {
-                        $component = 'Transactions';
+        if ($trigger->type === 'orchestrator_connections') {
+            foreach ($tenants as $tenant) {
+                $tenantId = $tenant->id;
+                $orchestratorConnectionId = $tenant->orchestratorConnection->id;
+    
+                $releasesByFolder = array();
+                foreach ($triggerReleases->where('tenant_id', $tenantId)->get() as $release) {
+                    $folder = $release->external_folder_id;
+                    $id = $release->external_id;
+                    if (!array_key_exists($folder, $releasesByFolder)) {
+                        $releasesByFolder[$folder] = array();
                     }
-                    $severity = 'Error';
-                    $creationTime = Carbon::now();
+                    array_push($releasesByFolder[$folder], $id);
+                }
+    
+                $machinesByFolder = array();
+                foreach ($triggerMachines->where('tenant_id', $tenantId)->get() as $machine) {
+                    $folder = $machine->external_folder_id;
+                    $id = $machine->external_id;
+                    if (!array_key_exists($folder, $machinesByFolder)) {
+                        $machinesByFolder[$folder] = array();
+                    }
+                    array_push($machinesByFolder[$folder], $id);
+                }
+    
+                $queuesByFolder = array();
+                foreach ($triggerQueues->where('tenant_id', $tenantId)->get() as $queue) {
+                    $folder = $queue->external_folder_id;
+                    $id = $queue->external_id;
+                    if (!array_key_exists($folder, $queuesByFolder)) {
+                        $queuesByFolder[$folder] = array();
+                    }
+                    array_push($queuesByFolder[$folder], $id);
+                }
+    
+                $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
+                Log::info(json_encode($output));
+                $this->analyzeVerifications($trigger, $tenant, $output, $uipath);
+                $tenantsOutput[$tenantId] = $output;
+            }
 
-                    $alerts = OrchestratorConnectionTenantAlert::search(json_encode($answer, true))
-                        ->where('trigger_id', $trigger->id)
-                        ->where('notification_name', $notificationName)
-                        ->where('component', $component)
-                        ->where('severity', $severity)
-                        ->get()
-                        ->whereNull('read_at');
-
-                    if ($alerts->count() === 0) {
-                        $attributes = [
-                            'notification_name' => $notificationName,
-                            'data' => json_encode($answer, true),
-                            'component' => $component,
-                            'severity' => $severity,
-                            'creation_time' => $creationTime,
-                            'trigger_id' => $trigger->id,
-                        ];
-                        $externalId = $answer->sources[0]['id'];
-                        if ($component === 'Jobs') {
-                            $job = $uipath->getJob($externalId, OrchestratorConnection::find($orchestratorConnectionId), $tenant);
-                            if ($job['ok'] && count($job['job']) > 0) {
-                                $externalId = $job['job']['Release']['Id'];
-                                $release = OrchestratorConnectionTenantRelease::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
-                                $attributes['release_id'] = $release->id;
+            array_push($verifications, [
+                'orchestrator_connection' => new OrchestratorConnectionResource($tenant->orchestratorConnection),
+                'tenants' => $tenantsOutput,
+            ]);
+        } elseif ($trigger->type === 'automated_processes') {
+            foreach ($trigger->automatedProcesses as $automatedProcess) {
+                $tenantsOutput = array();
+                foreach ($automatedProcess->orchestratorConnectionTenants as $tenant) {
+                    $tenantId = $tenant->id;
+                    $orchestratorConnectionId = $tenant->orchestratorConnection->id;
+    
+                    $releasesByFolder = array();
+                    foreach ($automatedProcess->releases as $release) {
+                        if ($release->tenant_id === $tenantId) {
+                            $folder = $release->external_folder_id;
+                            $id = $release->external_id;
+                            if (!array_key_exists($folder, $releasesByFolder)) {
+                                $releasesByFolder[$folder] = array();
+        
                             }
-                        } elseif ($component === 'Machines') {
-                            $machine = OrchestratorConnectionTenantMachine::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
-                            $attributes['machine_id'] = $machine->id;
-                        } elseif ($component === 'Transactions') {
-                            $queue = OrchestratorConnectionTenantQueue::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
-                            $attributes['queue_id'] = $queue->id;
+                            array_push($releasesByFolder[$folder], $id);
                         }
-
-                        $alert = $tenant->alerts()->create($attributes);
-                        $resource = new OrchestratorConnectionTenantAlertResource($alert);
-                        OrchestratorConnectionTenantAlertCreated::dispatch($resource);
-                        Log::info("New alert created: $alert->id");
-                    } else {
-                        Log::info('No new alert created as an existing one is still pending');
                     }
+    
+                    $machinesByFolder = array();
+                    foreach ($automatedProcess->machines as $machine) {
+                        if ($machine->tenant_id === $tenantId) {
+                            $folder = $machine->external_folder_id;
+                            $id = $machine->external_id;
+                            if (!array_key_exists($folder, $machinesByFolder)) {
+                                $machinesByFolder[$folder] = array();
+        
+                            }
+                            array_push($machinesByFolder[$folder], $id);
+                        }
+                    }
+    
+                    $queuesByFolder = array();
+                    foreach ($automatedProcess->queues as $queue) {
+                        if ($queue->tenant_id === $tenantId) {
+                            $folder = $queue->external_folder_id;
+                            $id = $queue->external_id;
+                            if (!array_key_exists($folder, $queuesByFolder)) {
+                                $queuesByFolder[$folder] = array();
+        
+                            }
+                            array_push($queuesByFolder[$folder], $id);
+                        }
+                    }
+    
+                    $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
+                    Log::info(json_encode($output));
+                    $this->analyzeVerifications($trigger, $tenant, $output, $uipath, $automatedProcess);
+                    $tenantsOutput[$tenantId] = $output;
                 }
+                array_push($verifications, [
+                    'orchestrator_connection' => new OrchestratorConnectionResource($tenant->orchestratorConnection),
+                    'tenants' => $tenantsOutput,
+                ]);
             }
-            $tenantsOutput[$tenantId] = $output;
         }
-
-        array_push($verifications, [
-            'orchestrator_connection' => new OrchestratorConnectionResource($tenant->orchestratorConnection),
-            'tenants' => $tenantsOutput,
-        ]);
         
         $trigger->verifications = $verifications;
         $trigger->save();
 
         Log::info('AI Based Alert Trigger managed');
+    }
+
+    private function analyzeVerifications($trigger, $tenant, $output, $uipath, $automatedProcess = null)
+    {
+        $orchestratorConnectionId = $tenant->orchestratorConnection->id;
+        $tenantId = $tenant->id;
+
+        foreach ($output->verifications as $verification) {
+            $dataSource = $verification->data_source;
+            $answer = $verification->answer;
+            if (!property_exists($answer, 'error') && $answer->result) {
+                $notificationName = 'Supervisor.AI';
+                $component = 'Unknown';
+                if ($dataSource === 'Jobs execution history' || $dataSource === 'Robots logs') {
+                    $component = 'Jobs';
+                } elseif ($dataSource === 'Machines details') {
+                    $component = 'Machines';
+                } elseif ($dataSource === 'Queue items details') {
+                    $component = 'Transactions';
+                }
+                $severity = 'Error';
+                $creationTime = Carbon::now();
+
+                $alerts = OrchestratorConnectionTenantAlert::search(json_encode($answer, true))
+                    ->where('trigger_id', $trigger->id)
+                    ->where('notification_name', $notificationName)
+                    ->where('component', $component)
+                    ->where('severity', $severity)
+                    ->get()
+                    ->whereNull('read_at');
+
+                if ($alerts->count() === 0) {
+                    $attributes = [
+                        'notification_name' => $notificationName,
+                        'data' => json_encode($answer, true),
+                        'component' => $component,
+                        'severity' => $severity,
+                        'creation_time' => $creationTime,
+                        'trigger_id' => $trigger->id,
+                    ];
+
+                    foreach ($answer->sources as $source) {
+                        $externalId = $source['id'];
+                        $releasesToSync = [];
+                        $machinesToSync = [];
+                        $queuesToSync = [];
+                        if ($component === 'Jobs') {
+                            $job = $uipath->getJob($externalId, OrchestratorConnection::find($orchestratorConnectionId), $tenant);
+                            if ($job['ok'] && count($job['job']) > 0) {
+                                $externalId = $job['job']['Release']['Id'];
+                                $release = OrchestratorConnectionTenantRelease::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
+                                array_push($releasesToSync, $release->id);
+                            }
+                        } elseif ($component === 'Machines') {
+                            $machine = OrchestratorConnectionTenantMachine::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
+                            array_push($machinesToSync, $machine->id);
+                        } elseif ($component === 'Transactions') {
+                            $queue = OrchestratorConnectionTenantQueue::where('tenant_id', $tenantId)->where('external_id', $externalId)->firstOrFail();
+                            array_push($queuesToSync, $queue->id);
+                        }
+                    }
+
+                    $alert = $tenant->alerts()->create($attributes);
+                    if ($automatedProcess) {
+                        $alert->automatedProcesses()->attach($automatedProcess);
+                    }
+                    $alert->releases()->sync($releasesToSync);
+                    $alert->machines()->sync($machinesToSync);
+                    $alert->queues()->sync($queuesToSync);
+                    
+                    $resource = new OrchestratorConnectionTenantAlertResource($alert);
+                    OrchestratorConnectionTenantAlertCreated::dispatch($resource);
+                    Log::info("New alert created: $alert->id");
+                } else {
+                    Log::info('No new alert created as an existing one is still pending');
+                }
+            }
+        }
     }
 }

@@ -40,6 +40,8 @@ class PendingAlertsController extends Controller
         $baseQuery = DB::table('orchestrator_connection_tenant_alerts')
         ->join('orchestrator_connection_tenants', 'orchestrator_connection_tenant_alerts.tenant_id', '=', 'orchestrator_connection_tenants.id')
         ->join('orchestrator_connections', 'orchestrator_connection_tenants.orchestrator_connection_id', '=', 'orchestrator_connections.id')
+        ->leftJoin('automated_process_orchestrator_connection_tenant_alert', 'automated_process_orchestrator_connection_tenant_alert.orchestrator_connection_tenant_alert_id', '=', 'orchestrator_connection_tenant_alerts.id')
+        ->leftJoin('automated_processes', 'automated_processes.id', 'automated_process_orchestrator_connection_tenant_alert.automated_process_id')
         ->when(request('data.alert.creationDateRange'), function ($query, $range) {
             $query->where('creation_time', '>=', $range[0])
                 ->where('creation_time', '<=', $range[1]);
@@ -88,7 +90,11 @@ class PendingAlertsController extends Controller
 
         $alerts = $alerts->paginate(config('constants.pagination.items_per_page'))
             ->withQueryString()
-            ->through(fn ($alert) => new OrchestratorConnectionTenantAlertResource($alert));
+            ->through(function ($alert) {
+                $alert = OrchestratorConnectionTenantAlert::find($alert->id);
+                $alert->load('automatedProcesses');
+                return new OrchestratorConnectionTenantAlertResource($alert);
+            });
 
         $alertsCollection = OrchestratorConnectionTenantAlertResource::collection(
             OrchestratorConnectionTenantAlert::all()->sortBy('read_at')->whereNull('read_at')
