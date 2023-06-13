@@ -20,11 +20,13 @@ class AIBasedAlertTrigger extends Model
         'recurrence',
         'crons',
         'verifications',
+        'look_back_buffer',
     ];
 
     protected $casts = [
         'crons' => 'array',
         'verifications' => AsArrayObject::class,
+        'look_back_buffer' => AsArrayObject::class,
     ];
 
     public function code(): Attribute

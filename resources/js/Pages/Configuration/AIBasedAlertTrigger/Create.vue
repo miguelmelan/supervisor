@@ -30,6 +30,11 @@ const form = useForm({
     recurrence: '',
     crons: [],
     verifications: [],
+    look_back_buffer: {
+        type: 'auto',
+        value: '',
+        unit: '-1',
+    },
 });
 
 const relatedEntitiesSelected = computed(() => {

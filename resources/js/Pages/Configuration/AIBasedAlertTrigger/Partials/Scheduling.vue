@@ -4,6 +4,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
+import TextInput from '@/Components/TextInput.vue';
 import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { ref, inject } from 'vue';
@@ -101,9 +102,43 @@ const compute = () => {
                                 </svg>
                                 <span>{{ cron.description }}</span>
                             </dt>
-                            <dd class="text-xs font-semibold">{{ cron.cron }}</dd>
+                            <dd class="text-xs">
+                                <span class="font-semibold">{{ cron.cron }}</span> | 
+                                {{ __('Next run date: :date', {
+                                    date: cron.next_run_date,
+                                }) }}
+                            </dd>
                         </div>
                     </dl>
+                    
+                    <SectionBorder />
+                    <div>
+                        <InputLabel for="lookBackBuffer" :value="__('Look back buffer')" />
+                        <select id="lookBackBuffer" v-model="form.look_back_buffer.type" class="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <option value="auto">{{ __('Auto (the trigger will look back UiPath Orchestrator entities until the previous run date)') }}</option>
+                            <option value="custom">{{ __('Custom (may lead to performance issues)') }}</option>
+                        </select>
+                        
+                        <div v-if="form.look_back_buffer.type === 'custom'" class="flex mt-2">
+                            <div class="mr-1 w-1/2">
+                                <TextInput id="lookBackBufferValue" v-model="form.look_back_buffer.value" type="number" class="block w-full" autocomplete="lookBackBufferValue"
+                                    :placeholder="__('Type a numeric value')" required />
+                                <InputError :message="form.errors['look_back_buffer.value']" class="mt-2" />
+                            </div>
+                            <div class="ml-1 w-1/2">
+                                <select id="lookBackBufferUnit" v-model="form.look_back_buffer.unit"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 w-full">
+                                    <option value="-1">{{ __('Select a unit') }}</option>
+                                    <option value="minutes">{{ __('Minutes') }}</option>
+                                    <option value="hours">{{ __('Hours') }}</option>
+                                    <option value="days">{{ __('Days') }}</option>
+                                    <option value="weeks">{{ __('Weeks') }}</option>
+                                    <option value="years">{{ __('Years') }}</option>
+                                </select>
+                                <InputError :message="form.errors['look_back_buffer.unit']" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </template>

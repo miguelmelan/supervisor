@@ -44,6 +44,13 @@ class UpdateAIBasedAlertTriggerRequest extends FormRequest
             ]);
         }
 
+        if ($this->look_back_buffer['type'] === 'custom') {
+            $rules = array_merge($rules, [
+                'look_back_buffer.value' => 'required|integer|numeric|min:1',
+                'look_back_buffer.unit' => 'required|in:minutes,hours,days,weeks,years',
+            ]);
+        }
+
         return $rules;
     }
 
@@ -57,6 +64,11 @@ class UpdateAIBasedAlertTriggerRequest extends FormRequest
         return [
             'orchestrator_connections.required' => __('At least one UiPath Orchestrator connection must be selected.'),
             'automated_processes.required' => __('At least one automated process must be selected.'),
+            'look_back_buffer.value.required' => __('Field is required.'),
+            'look_back_buffer.value.integer' => __('Field value must be an integer.'),
+            'look_back_buffer.value.numeric' => __('Field value must be numeric.'),
+            'look_back_buffer.value.min' => __('Field value must be at least :min.'),
+            'look_back_buffer.unit.required' => __('Field is required.'),
         ];
     }
 }

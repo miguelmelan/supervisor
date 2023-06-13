@@ -18,6 +18,7 @@ use App\Models\OrchestratorConnectionTenantRelease;
 use App\Services\PythonService;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Request;
+use Cron\CronExpression;
 
 use Inertia\Inertia;
 
@@ -391,6 +392,12 @@ class AIBasedAlertTriggerController extends Controller
     {
         $recurrence = $request->recurrence;
         $scheduling = $this->python->computeScheduling($recurrence);
+        $locale = app()->getLocale();
+        $language = config("languages.{$locale}");
+        foreach ($scheduling->results as $key => $cron) {
+            $cronModel = new CronExpression($cron->cron);
+            $scheduling->results[$key]->{'next_run_date'} = $cronModel->getNextRunDate()->format($language['dateFormats']['php'] . ' ' . $language['timeFormats']['php']);
+        }
         session()->flash('message', [
             'scheduling' => $scheduling,
         ]);

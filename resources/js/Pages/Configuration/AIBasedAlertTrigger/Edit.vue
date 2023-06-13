@@ -78,6 +78,7 @@ const form = useForm({
     recurrence: props.alertTrigger.recurrence,
     crons: props.alertTrigger.crons,
     verifications: props.alertTrigger.verifications,
+    look_back_buffer: props.alertTrigger.lookBackBuffer,
 });
 
 const relatedEntitiesSelected = computed(() => {

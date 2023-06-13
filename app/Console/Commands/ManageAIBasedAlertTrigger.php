@@ -14,6 +14,7 @@ use App\Models\OrchestratorConnectionTenantRelease;
 use App\Services\PythonService;
 use App\Services\UiPathOrchestratorService;
 use Carbon\Carbon;
+use Cron\CronExpression;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -24,7 +25,7 @@ class ManageAIBasedAlertTrigger extends Command
      *
      * @var string
      */
-    protected $signature = 'trigger:manage {id}';
+    protected $signature = 'trigger:manage {id} {cron_index}';
 
     /**
      * The console command description.
@@ -40,9 +41,36 @@ class ManageAIBasedAlertTrigger extends Command
      */
     public function handle(PythonService $python, UiPathOrchestratorService $uipath)
     {
-        Log::info('Managing AI Based Alert Trigger');
+        Log::info('Managing AI Based Alert Trigger with id ' . $this->argument('id'));
 
         $trigger = AIBasedAlertTrigger::find($this->argument('id'));
+        $cronIndex = $this->argument('cron_index');
+        if ($trigger->look_back_buffer['type'] === 'auto') {
+            $cron = $trigger->crons[$cronIndex]['cron'];
+            $cronModel = new CronExpression($cron);
+            $startTime = Carbon::instance($cronModel->getPreviousRunDate());
+        } elseif ($trigger->look_back_buffer['type'] === 'custom') {
+            $delay = -1 * abs(intval($trigger->look_back_buffer['value']));
+            $startTime = Carbon::now();
+            switch ($trigger->look_back_buffer['unit']) {
+                case 'minutes':
+                    $startTime->addMinutes($delay);
+                    break;
+                case 'hours':
+                    $startTime->addHours($delay);
+                    break;
+                case 'days':
+                    $startTime->addDays($delay);
+                    break;
+                case 'weeks':
+                    $startTime->addWeeks($delay);
+                    break;
+                case 'years':
+                    $startTime->addYears($delay);
+                    break;
+            }
+        }
+
         $tenants = $trigger->orchestratorConnectionTenants()->get();
         $triggerReleases = $trigger->releases();
         $triggerMachines = $trigger->machines();
@@ -85,7 +113,7 @@ class ManageAIBasedAlertTrigger extends Command
                     array_push($queuesByFolder[$folder], $id);
                 }
     
-                $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
+                $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder, $startTime);
                 Log::info(json_encode($output));
                 $this->analyzeVerifications($trigger, $tenant, $output, $uipath);
                 $tenantsOutput[$tenantId] = $output;
@@ -141,7 +169,7 @@ class ManageAIBasedAlertTrigger extends Command
                         }
                     }
     
-                    $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder);
+                    $output = $python->computeVerificationsForTenant($trigger->conditions, $orchestratorConnectionId, $tenantId, $releasesByFolder, $machinesByFolder, $queuesByFolder, $startTime);
                     Log::info(json_encode($output));
                     $this->analyzeVerifications($trigger, $tenant, $output, $uipath, $automatedProcess);
                     $tenantsOutput[$tenantId] = $output;

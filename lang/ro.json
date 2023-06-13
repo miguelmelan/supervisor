@@ -474,5 +474,12 @@
     "AI based alert trigger": "Declanșator de alertă bazat pe AI",
     "UIPath Orchestrator entities": "Entități UiPath Orchestrator",
     "Automated business processes selection": "Selectarea automată a proceselor de afaceri",
-    "This section enables the user to establish a connection between the trigger and specific Automated business processes that should be associated with it. Within this section, users can select one or multiple Automated business processes from a list of available options.": "Această secțiune permite utilizatorului să stabilească o conexiune între declanșator și anumite procese de afaceri automatizate care ar trebui să fie asociate cu acesta. În această secțiune, utilizatorii pot selecta unul sau mai multe procese automate de afaceri dintr-o listă de opțiuni disponibile."
+    "This section enables the user to establish a connection between the trigger and specific Automated business processes that should be associated with it. Within this section, users can select one or multiple Automated business processes from a list of available options.": "Această secțiune permite utilizatorului să stabilească o conexiune între declanșator și anumite procese de afaceri automatizate care ar trebui să fie asociate cu acesta. În această secțiune, utilizatorii pot selecta unul sau mai multe procese automate de afaceri dintr-o listă de opțiuni disponibile.",
+    "Field is required.": "Câmpul este obligatoriu.",
+    "Field value must be an integer.": "Valoarea câmpului trebuie să fie un număr întreg.",
+    "Field value must be numeric.": "Valoarea câmpului trebuie să fie numerică.",
+    "Field value must be at least :min.": "Valoarea câmpului trebuie să fie de cel puțin :min.",
+    "Type a numeric value": "Introduceți o valoare numerică",
+    "Select a unit": "Selectați o unitate",
+    "Next run date: :date": "Următoarea dată de rulare: :date"
 }

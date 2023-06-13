@@ -23,11 +23,12 @@ class Kernel extends ConsoleKernel
 
         $triggers = AIBasedAlertTrigger::all();
         foreach($triggers as $trigger) {
-            foreach ($trigger->crons as $cron) {
+            foreach ($trigger->crons as $index => $cron) {
                 //$schedule->command('trigger:manage', [$trigger->id])->cron($cron['cron']);
-                $schedule->call(function () use ($trigger) {
+                $schedule->call(function () use ($trigger, $index) {
                     Artisan::queue('trigger:manage', [
                         'id' => $trigger->id,
+                        'cron_index' => $index,
                     ]);
                 })->cron($cron['cron']);
             }

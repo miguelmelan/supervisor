@@ -80,7 +80,7 @@ const goToIndexPage = () => {
             </template>
         </DangerButton>
         <PrimaryButton :class="{ 'opacity-25': form.processing || !form.isDirty || !relatedEntitiesSelected || form.conditions.trim() === '' || form.recurrence.trim() === '' || form.crons.length === 0 }"
-            :disabled="form.processing || !form.isDirty || !relatedEntitiesSelected || form.conditions.trim() === '' || form.recurrence.trim() === '' || form.crons.length === 0">
+            :disabled="form.processing || !form.isDirty || !relatedEntitiesSelected || form.conditions.trim() === '' || form.verifications.length === 0 || form.recurrence.trim() === '' || form.crons.length === 0">
             {{ __(confirmationButtonText) }}
             <template #icon>
                 <div v-html="confirmationButtonIcon" />

@@ -6,6 +6,7 @@ use App\Http\Resources\OrchestratorConnectionResource;
 use App\Models\AutomatedProcess;
 use App\Models\OrchestratorConnection;
 use App\Models\OrchestratorConnectionTenant;
+use Carbon\Carbon;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use OzdemirBurak\JsonCsv\File\Json;
@@ -169,6 +170,7 @@ class PythonService
     public function computeVerificationsForTenant(
         $conditions, $orchestratorConnectionId, $tenantId,
         $releasesByFolder, $machinesByFolder, $queuesByFolder,
+        Carbon $startTime = null,
     )
     {
         $uniqid = uniqid();
@@ -190,8 +192,9 @@ class PythonService
                 $tenantModel,
                 $folder,
                 $releases,
+                $startTime,
             );
-            if ($jobs['ok'] && count($jobs['jobs'])) {
+            if ($jobs['ok'] && $jobs['jobs'] && count($jobs['jobs'])) {
                 Storage::disk('python')->put($jobsJSON, json_encode($jobs['jobs']));
                 $json = new Json(Storage::disk('python')->path($jobsJSON));
                 // To set a conversion option then convert JSON to CSV and save
@@ -207,8 +210,9 @@ class PythonService
                     $tenantModel,
                     $folder,
                     $jobsKeys,
+                    $startTime,
                 );
-                if ($robotsLogs['ok'] && count($robotsLogs['logs']) > 0) {
+                if ($robotsLogs['ok'] && $robotsLogs['logs'] && count($robotsLogs['logs']) > 0) {
                     Storage::disk('python')->put($robotsLogsJSON, json_encode($robotsLogs['logs']));
                     $json = new Json(Storage::disk('python')->path($robotsLogsJSON));
                     // To set a conversion option then convert JSON to CSV and save
@@ -225,7 +229,7 @@ class PythonService
                 $folder,
                 $machines,
             );
-            if ($machineSessionRuntimes['ok'] && count($machineSessionRuntimes['machine_session_runtimes']) > 0) {
+            if ($machineSessionRuntimes['ok'] && $machineSessionRuntimes['machine_session_runtimes'] && count($machineSessionRuntimes['machine_session_runtimes']) > 0) {
                 Storage::disk('python')->put($machinesJSON, json_encode($machineSessionRuntimes['machine_session_runtimes']));
                 $json = new Json(Storage::disk('python')->path($machinesJSON));
                 // To set a conversion option then convert JSON to CSV and save
@@ -240,8 +244,9 @@ class PythonService
                 $tenantModel,
                 $folder,
                 $queues,
+                $startTime,
             );
-            if ($queueItems['ok'] && count($queueItems['queue_items']) > 0) {
+            if ($queueItems['ok'] && $queueItems['queue_items'] && count($queueItems['queue_items']) > 0) {
                 Storage::disk('python')->put($queueItemsJSON, json_encode($queueItems['queue_items']));
                 $json = new Json(Storage::disk('python')->path($queueItemsJSON));
                 // To set a conversion option then convert JSON to CSV and save

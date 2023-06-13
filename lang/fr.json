@@ -474,5 +474,12 @@
     "AI based alert trigger": "Déclencheur d'alerte par IA",
     "UIPath Orchestrator entities": "Entités UiPath Orchestrator",
     "Automated business processes selection": "Sélection des processus métier automatisés",
-    "This section enables the user to establish a connection between the trigger and specific Automated business processes that should be associated with it. Within this section, users can select one or multiple Automated business processes from a list of available options.": "Cette section permet à l'utilisateur d'établir une connexion entre le déclencheur et les processus métier automatisés spécifiques qui doivent lui être associés. Dans cette section, les utilisateurs peuvent sélectionner un ou plusieurs processus métier automatisés dans une liste d'options disponibles."
+    "This section enables the user to establish a connection between the trigger and specific Automated business processes that should be associated with it. Within this section, users can select one or multiple Automated business processes from a list of available options.": "Cette section permet à l'utilisateur d'établir une connexion entre le déclencheur et les processus métier automatisés spécifiques qui doivent lui être associés. Dans cette section, les utilisateurs peuvent sélectionner un ou plusieurs processus métier automatisés dans une liste d'options disponibles.",
+    "Field is required.": "Le champ est requis.",
+    "Field value must be an integer.": "Le champ doit contenir une valeur numérique entière.",
+    "Field value must be numeric.": "Le champ doit contenir une valeur numérique.",
+    "Field value must be at least :min.": "Le champ doit contenir une valeur supérieure ou égale à :min.",
+    "Type a numeric value": "Saisir une valeur numérique",
+    "Select a unit": "Sélectionner une unité de temps",
+    "Next run date: :date": "Date de la prochaine exécution : :date"
 }

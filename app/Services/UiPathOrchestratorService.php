@@ -427,7 +427,8 @@ class UiPathOrchestratorService
         OrchestratorConnectionTenant $tenant,
         $folder,
         $releases = [],
-        $keys = [])
+        $keys = [],
+        Carbon $startTime = null)
     {
         $result = $this->checkCredentialsWithOrchestratorConnection($orchestratorConnection);
         if ($result['ok']) {
@@ -460,6 +461,14 @@ class UiPathOrchestratorService
                     $filter = implode(',', $keys);
                     $endpoint .= "?\$filter=Key in ($filter)";
                 }
+                if ($startTime) {
+                    $startTimeAsString = $startTime->format('Y-m-d\TH:i:s.99\Z');
+                    if (str_contains($endpoint, '$filter')) {
+                        $endpoint .= " and StartTime gte DateTime'$startTimeAsString'";
+                    } else {
+                        $endpoint .= "?\$filter=StartTime gte DateTime'$startTimeAsString'";
+                    }
+                }
                 $result['jobs'] = Http::withoutVerifying()->withToken($token)->withHeaders([
                     'X-UIPATH-OrganizationUnitId' => $folder,
                 ])->get($endpoint)->json('value');
@@ -475,7 +484,8 @@ class UiPathOrchestratorService
         OrchestratorConnection $orchestratorConnection,
         OrchestratorConnectionTenant $tenant,
         $folder,
-        $jobs = [])
+        $jobs = [],
+        Carbon $startTime = null)
     {
         $result = $this->checkCredentialsWithOrchestratorConnection($orchestratorConnection);
         if ($result['ok']) {
@@ -505,6 +515,14 @@ class UiPathOrchestratorService
                 if (count($jobs) > 0) {
                     $filter = implode(',', $jobs);
                     $endpoint .= "&\$filter=JobKey in ($filter)";
+                }
+                if ($startTime) {
+                    $startTimeAsString = $startTime->format('Y-m-d\TH:i:s.99\Z');
+                    if (str_contains($endpoint, '$filter')) {
+                        $endpoint .= " and StartTime gte TimeStamp'$startTimeAsString'";
+                    } else {
+                        $endpoint .= "?\$filter=StartTime gte TimeStamp'$startTimeAsString'";
+                    }
                 }
                 $result['logs'] = Http::withoutVerifying()->withToken($token)->withHeaders([
                     'X-UIPATH-OrganizationUnitId' => $folder,
@@ -565,7 +583,8 @@ class UiPathOrchestratorService
         OrchestratorConnection $orchestratorConnection,
         OrchestratorConnectionTenant $tenant,
         $folder,
-        $queues = []
+        $queues = [],
+        Carbon $startTime = null,
     )
     {
         $result = $this->checkCredentialsWithOrchestratorConnection($orchestratorConnection);
@@ -595,6 +614,14 @@ class UiPathOrchestratorService
                 if (count($queues) > 0) {
                     $filter = implode(',', $queues);
                     $endpoint .= "?\$filter=QueueDefinitionId in ($filter)";
+                }
+                if ($startTime) {
+                    $startTimeAsString = $startTime->format('Y-m-d\TH:i:s.99\Z');
+                    if (str_contains($endpoint, '$filter')) {
+                        $endpoint .= " and StartTime gte CreationTime'$startTimeAsString'";
+                    } else {
+                        $endpoint .= "?\$filter=StartTime gte CreationTime'$startTimeAsString'";
+                    }
                 }
                 $result['queue_items'] = Http::withoutVerifying()->withToken($token)->withHeaders([
                     'X-UIPATH-OrganizationUnitId' => $folder,

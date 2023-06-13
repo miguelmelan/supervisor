@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('recurrence');
             $table->json('crons');
             $table->json('verifications');
+            $table->json('look_back_buffer');
             $table->timestamps();
         });
     }
