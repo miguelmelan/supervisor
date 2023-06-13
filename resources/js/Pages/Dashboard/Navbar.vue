@@ -95,7 +95,7 @@ const newClosedAlertsCount = computed(() => props.newClosedAlertsCount);
                 </span>
             </Link>
         </li>
-        <li class="mr-2 relative">
+        <!-- <li class="mr-2 relative">
             <button class="inline-flex p-4 rounded-md bg-gray-100 border border-gray-200 hover:bg-blue-100 text-orange-50 disabled:opacity-25"
                 disabled="disabled">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -109,6 +109,6 @@ const newClosedAlertsCount = computed(() => props.newClosedAlertsCount);
                 class="inline-flex absolute -top-2 -right-14 justify-center items-center h-6 text-xs font-bold text-white bg-blue-500 rounded-sm border-1 border-white p-2">
                 {{ __('Coming soon') }}
             </span>
-        </li>
+        </li> -->
     </ul>
 </template>
