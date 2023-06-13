@@ -57,7 +57,7 @@ onMounted(() => {
     channel = Echo.channel('orchestrator-connection-tenant-alert')
         .listen('.new', (data) => {
             const alert = data.resource;
-            let body = translate('A new alert was created!');
+            let body = translate('A new alert has been created!');
             body += ` (#${alert.id_padded})`;
             if (alert.trigger) {
                 body += `\n${translate('Trigger name: :name', { name: alert.trigger.name })}`;

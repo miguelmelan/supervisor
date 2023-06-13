@@ -469,7 +469,7 @@
     "AI based alert trigger named :name successfully removed!": "Declanșatorul de alertă AI numit :name a fost eliminat cu succes!",
     "Want to get notifications from us?": "Vrei să primești notificări de la noi?",
     "Set permissions": "Setați permisiunile",
-    "A new alert was created!": "A fost creată o nouă alertă!",
+    "A new alert has been created!": "A fost creată o nouă alertă!",
     "Trigger name: :name": "Numele declanșatorului: :name",
     "AI based alert trigger": "Declanșator de alertă bazat pe AI",
     "UIPath Orchestrator entities": "Entități UiPath Orchestrator",
@@ -481,5 +481,6 @@
     "Field value must be at least :min.": "Valoarea câmpului trebuie să fie de cel puțin :min.",
     "Type a numeric value": "Introduceți o valoare numerică",
     "Select a unit": "Selectați o unitate",
-    "Next run date: :date": "Următoarea dată de rulare: :date"
+    "Next run date: :date": "Următoarea dată de rulare: :date",
+    "Direct link to the alert": "Link direct la alerta"
 }

@@ -469,7 +469,7 @@
     "AI based alert trigger named :name successfully removed!": "Déclencheur d'alerte par IA nommé :name supprimé avec succès !",
     "Want to get notifications from us?": "Voulez-vous recevoir des notifications de notre part ?",
     "Set permissions": "Définir les autorisations",
-    "A new alert was created!": "Une nouvelle alerte a été créée !",
+    "A new alert has been created!": "Une nouvelle alerte a été créée !",
     "Trigger name: :name": "Nom du déclencheur: :name",
     "AI based alert trigger": "Déclencheur d'alerte par IA",
     "UIPath Orchestrator entities": "Entités UiPath Orchestrator",
@@ -481,5 +481,6 @@
     "Field value must be at least :min.": "Le champ doit contenir une valeur supérieure ou égale à :min.",
     "Type a numeric value": "Saisir une valeur numérique",
     "Select a unit": "Sélectionner une unité de temps",
-    "Next run date: :date": "Date de la prochaine exécution : :date"
+    "Next run date: :date": "Date de la prochaine exécution : :date",
+    "Direct link to the alert": "Lien direct vers l'alerte"
 }

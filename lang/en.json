@@ -469,7 +469,7 @@
     "AI based alert trigger named :name successfully removed!": "AI based alert trigger named :name successfully removed!",
     "Want to get notifications from us?": "Want to get notifications from us?",
     "Set permissions": "Set permissions",
-    "A new alert was created!": "A new alert was created!",
+    "A new alert has been created!": "A new alert has been created!",
     "Trigger name: :name": "Trigger name: :name",
     "AI based alert trigger": "AI based alert trigger",
     "UIPath Orchestrator entities": "UIPath Orchestrator entities",
@@ -481,5 +481,6 @@
     "Field value must be at least :min.": "Field value must be at least :min.",
     "Type a numeric value": "Type a numeric value",
     "Select a unit": "Select a unit",
-    "Next run date: :date": "Next run date: :date"
+    "Next run date: :date": "Next run date: :date",
+    "Direct link to the alert": "Direct link to the alert"
 }
